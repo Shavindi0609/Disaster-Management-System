@@ -2,9 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victim Dashboard - NDMRS</title>
+    <link rel="stylesheet" href="css/userDashboard.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>UserDashboard</h1>
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-dark text-white p-3" id="sidebar">
+        <h2 class="text-center">NDMRS</h2>
+        <ul class="list-unstyled">
+            <li><a href="#" class="text-white"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="#" class="text-white" onclick="openReportForm()"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="#" class="text-white"><i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="#" class="text-white"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="signIn.html" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div id="page-content" class="p-4">
+        <h2>Welcome, Victim User 👋</h2>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <h5>My Reports</h5>
+                    <p id="report-count">3</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <h5>Aid Received</h5>
+                    <p>2</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm">
+                    <h5>Pending Requests</h5>
+                    <p>1</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disaster Report Form -->
+        <div id="report-form" class="mt-5 d-none">
+            <h4>Submit Disaster Report</h4>
+            <form onsubmit="submitReport(event)">
+                <div class="mb-3">
+                    <label class="form-label">Disaster Type</label>
+                    <select class="form-control" id="disaster-type" required>
+                        <option value="">-- Select --</option>
+                        <option>Flood</option>
+                        <option>Landslide</option>
+                        <option>Tsunami</option>
+                        <option>Earthquake</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="description" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Report</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/user.js"></script>
 </body>
 </html>

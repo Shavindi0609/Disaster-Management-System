@@ -1,0 +1,45 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+
+#wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+#sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: #212529;
+}
+
+#sidebar h2 {
+    margin-bottom: 30px;
+}
+
+#sidebar ul li {
+    padding: 12px 10px;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+}
+
+#sidebar ul li a:hover {
+    background: #495057;
+    border-radius: 5px;
+}
+
+#page-content {
+    flex: 1;
+    background: #f8f9fa;
+}
+
+.card {
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+}

@@ -21,5 +21,19 @@ public class HelloController {
         return "Hello World - User";
     }
 
+    @GetMapping("/volunteer")
+    @PreAuthorize("hasRole('VOLUNTEER')")
+    public String helloVolunteer() {
+        return "Hello World - Victim";
+    }
+
+    @GetMapping("/donor")
+    @PreAuthorize("hasRole('DONOR')")
+    public String helloDonor() {
+        return "Hello World - Donor";
+    }
+
+
+
 
 }

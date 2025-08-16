@@ -11,7 +11,7 @@
 }
 
 body {
-    background: linear-gradient(to right, #1D865C, #23B27D);
+    background: linear-gradient(to right, #066150, #1D865C);
     /* fallback background if needed */
     background: #f6f5f7;
     display: flex;
@@ -87,9 +87,9 @@ a:hover {
 }
 
 button {
-    border: 1px solid #1D865C;
+    border: 1px solid #066150;
 
-    background-color: #1D865C;
+    background-color: #066150;
 
     color: #ffffff;
 
@@ -261,7 +261,7 @@ input:focus {
 
     background: #ff416c;
 
-    background: linear-gradient(to right, #1D865C, #23B27D);
+    background: linear-gradient(to right, #066150, #1D865C);
 
     background-repeat: no-repeat;
 
