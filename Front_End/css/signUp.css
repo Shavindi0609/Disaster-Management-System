@@ -10,18 +10,36 @@
 
 }
 
+
 body {
-    background: linear-gradient(to right, #066150, #1D865C);
-    /* fallback background if needed */
-    background: #f6f5f7;
+    background: linear-gradient(rgba(0,0,0,0.4),  black),
+    url('../css/../images/water.jpg') center/cover no-repeat fixed;
+    /* fallback color if image not load */
+    background-color: #f6f5f7;
+
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     font-family: 'Poppins', sans-serif;
     height: 100vh;
     margin: -20px 0 50px;
 }
+
+
+/*body {*/
+/*    background: linear-gradient(to right, #066150, #1D865C);*/
+/*    !* fallback background if needed *!*/
+/*    background: #f6f5f7;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    flex-direction: column;*/
+/*    font-family: 'Poppins', sans-serif;*/
+/*    height: 100vh;*/
+/*    margin: -20px 0 50px;*/
+/*}*/
 
 
 h1 {

@@ -23,10 +23,27 @@
     .navbar-brand span,
     .nav-link {
       color: #fff !important;
+      position: relative;
     }
-    .nav-link:hover {
-      color: var(--main-light) !important;
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px; /* link eke yatin spacing */
+      width: 100%;
+      height: 2px; /* ira gediya */
+      background-color: #fff; /* underline color */
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: right;
     }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
     .hero-section {
       padding: 60px 0;
       background-color: #f8f9fa;
@@ -62,15 +79,165 @@
       padding: 15px 0;
       text-align: center;
     }
+
+    .banner {
+      position: relative;
+      height: 90vh; /* full-screen */
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .banner-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      object-fit: cover; /* ensures full coverage */
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4); /* dark overlay for readability */
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .news-section {
+      background: #e9ecef;
+    }
+
+    /* FEMA Help Section */
+    .fema-help {
+      padding: 50px 20px;
+      background: #f2f4f5;
+    }
+
+    .fema-help h2 {
+      color: var(--main-dark);
+      font-weight: bold;
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .fema-card-container {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .fema-card {
+      flex: 1;
+      min-width: 150px;
+      max-width: 180px;
+      background: #fff;
+      text-align: center;
+      padding: 20px 15px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .fema-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .fema-card.active {
+      background: #356d36;
+      color: #fff;
+    }
+
+    .fema-card img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 12px;
+    }
+
+    .fema-card p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .fema-card.active p {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .fema-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+
+    /* Natural Disasters Section */
+    .natural-disasters-section {
+      background-color: white;
+    }
+
+    .natural-disasters-section .section-title {
+      color: #066150;
+    }
+
+    /* CSS for Ticker */
+
+    .news-ticker {
+      background:#072445 ; /* Dark Green */
+      color: #fff;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .ticker-wrap {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ticker {
+      display: flex;
+      animation: ticker 20s linear infinite; /* adjust speed */
+    }
+
+    .ticker-item {
+      flex-shrink: 0;
+      padding: 0 2rem;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    /* Continuous animation */
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); } /* scroll half because we duplicated items */
+    }
+
+
   </style>
 </head>
 <body>
-
-<!-- Top Banner -->
-<!--<div class="top-banner">-->
-<!--  🇱🇰 An official website of the Disaster Management Authority |-->
-<!--  <a href="#">Here's how you know</a>-->
-<!--</div>-->
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
@@ -94,40 +261,92 @@
       <form class="d-flex me-2">
         <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
       </form>
-      <a href="#" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
     </div>
   </div>
 </nav>
 
 <!-- Hero Section with Background -->
-<section class="hero-section d-flex align-items-center text-center text-white"
-         style="background: url('images/water.jpg') center/cover no-repeat; height: 100vh; position: relative;">
 
-  <!-- Dark Overlay -->
-  <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6);"></div>
+<section class="banner">
+  <video autoplay muted loop playsinline class="banner-video">
+    <source src="videos/b2.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
-  <div class="container position-relative">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <h1 class="fw-bold display-4">Supporting Community Preparedness</h1>
-        <p class="lead mt-3">
-          Billions of dollars in funding opportunities are now available through several grant programs
-          that will empower communities to take steps in becoming more prepared for disasters and emergencies.
-        </p>
-        <div class="mt-4">
-          <a href="#" class="btn btn-lg text-white px-4 me-3" style="background-color:#066150;">Learn More</a>
-          <a href="#" class="btn btn-lg px-4" style="background-color:#1D865C; color:white;">Get Started</a>
+  <div class="banner-content">
+    <div class="container position-relative">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h1 class="fw-bold display-4">Supporting Community Preparedness</h1>
+          <p class="lead mt-3">
+            Billions of dollars in funding opportunities are now available through several grant programs
+            that will empower communities to take steps in becoming more prepared for disasters and emergencies.
+          </p>
+          <div class="mt-4">
+            <a href="#" class="btn btn-lg text-white px-4 me-3" style="background-color:#066150;">Learn More</a>
+            <a href="#" class="btn btn-lg px-4" style="background-color:#1D865C; color:white;">Get Started</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- FEMA Help Section -->
+<section class="fema-help">
+  <h2>How Can NDMS Help?</h2>
+  <div class="fema-card-container">
+
+    <div class="fema-card active">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/checkmark.png" alt="Check">
+        <p>Check Your<br>Disaster Application</p>
+      </a>
+    </div>
+
+    <div class="fema-card">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/4caf50/backpack.png" alt="Backpack">
+        <p>Get Ready for<br>Disasters</p>
+      </a>
+    </div>
+
+    <div class="fema-card">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/795548/house.png" alt="House">
+        <p>Buy Flood<br>Insurance</p>
+      </a>
+    </div>
+
+    <div class="fema-card">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/2196f3/marker.png" alt="Map">
+        <p>Know Your<br>Flood Risk</p>
+      </a>
+    </div>
+
+    <div class="fema-card">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/616161/book.png" alt="Training">
+        <p>Sign Up for<br>Trainings</p>
+      </a>
+    </div>
+
+    <div class="fema-card">
+      <a href="#">
+        <img src="https://img.icons8.com/ios-filled/50/1565c0/chevron-right.png" alt="Arrow">
+        <p>Learn How<br>FEMA Works</p>
+      </a>
+    </div>
+
+  </div>
+</section>
 
 <!-- News & Updates Section -->
-<section class="news-section">
+<section class="news-section py-5">
   <div class="container">
-    <h2>News & Updates</h2>
+    <h2 class="text-center mb-4 fw-bold">News & Updates</h2>
     <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
 
       <!-- Indicators -->
@@ -139,51 +358,82 @@
 
       <!-- Carousel Items -->
       <div class="carousel-inner">
+
         <!-- Item 1 -->
         <div class="carousel-item active">
           <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="card shadow-sm">
-                <img src="https://www.fema.gov/sites/default/files/2023-07/disaster-response.jpg" class="card-img-top" alt="Disaster Response">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Flood Relief Operations</h5>
-                  <p class="card-text">Immediate relief measures are underway in flood-affected regions with food, water, and shelter provided to victims.</p>
-                  <a href="#" class="btn btn-primary btn-sm rounded-pill">Read More</a>
+            <div class="col-md-10 col-lg-8">
+              <div class="card shadow-sm border-0">
+                <div class="row g-0 align-items-center">
+                  <!-- Image Left -->
+                  <div class="col-md-5">
+                    <img src="images/Flood-Relief-Operations.jpg"
+                         class="img-fluid rounded-start" alt="Disaster Response">
+                  </div>
+                  <!-- Content Right -->
+                  <div class="col-md-7">
+                    <div class="card-body">
+                      <h5 class="card-title">Flood Relief Operations</h5>
+                      <p class="card-text">Immediate relief measures are underway in flood-affected regions with food, water, and shelter provided to victims.</p>
+                      <a href="#" class="btn btn-primary btn-sm rounded-pill">Read More</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <!-- Item 2 -->
         <div class="carousel-item">
           <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="card shadow-sm">
-                <img src="https://www.fema.gov/sites/default/files/2023-07/emergency-training.jpg" class="card-img-top" alt="Training">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Community Training</h5>
-                  <p class="card-text">Workshops on emergency management and disaster preparedness are being conducted in schools and communities.</p>
-                  <a href="#" class="btn btn-primary btn-sm rounded-pill">Learn More</a>
+            <div class="col-md-10 col-lg-8">
+              <div class="card shadow-sm border-0">
+                <div class="row g-0 align-items-center">
+                  <!-- Image Left -->
+                  <div class="col-md-5">
+                    <img src="images/Commiunity-Trainnig.jpg"
+                         class="img-fluid rounded-start" alt="Training">
+                  </div>
+                  <!-- Content Right -->
+                  <div class="col-md-7">
+                    <div class="card-body">
+                      <h5 class="card-title">Community Training</h5>
+                      <p class="card-text">Workshops on emergency management and disaster preparedness are being conducted in schools and communities.</p>
+                      <a href="#" class="btn btn-primary btn-sm rounded-pill">Learn More</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <!-- Item 3 -->
         <div class="carousel-item">
           <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="card shadow-sm">
-                <img src="https://www.fema.gov/sites/default/files/2023-07/aid-donations.jpg" class="card-img-top" alt="Aid Donations">
-                <div class="card-body text-center">
-                  <h5 class="card-title">International Aid</h5>
-                  <p class="card-text">Global partners have pledged financial and material support for rebuilding disaster-affected areas.</p>
-                  <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+            <div class="col-md-10 col-lg-8">
+              <div class="card shadow-sm border-0">
+                <div class="row g-0 align-items-center">
+                  <!-- Image Left -->
+                  <div class="col-md-5">
+                    <img src="images/Aid.jpg"
+                         class="img-fluid rounded-start" alt="Aid Donations">
+                  </div>
+                  <!-- Content Right -->
+                  <div class="col-md-7">
+                    <div class="card-body">
+                      <h5 class="card-title">International Aid</h5>
+                      <p class="card-text">Global partners have pledged financial and material support for rebuilding disaster-affected areas.</p>
+                      <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- Controls -->
@@ -194,8 +444,117 @@
         <span class="carousel-control-next-icon" style="background-color: rgba(29,134,92,0.7); border-radius:50%;"></span>
       </button>
     </div>
+
+    <p class="text-center mb-4">
+      This News & Updates section in the Natural Disaster Management System provides real-time information about ongoing disasters and relief efforts.
+      The carousel highlights major updates such as flood relief operations, community training sessions, and international aid contributions,
+      while the news ticker displays live alerts and emergency messages, helping users stay informed and take timely action.
+    </p>
+
+    <!-- CSS Scrolling News Ticker -->
+    <div class="news-ticker mt-4">
+      <div class="ticker-wrap">
+        <div class="ticker">
+          <div class="ticker-item">⚡ Flood Relief Operations underway across the island</div>
+          <div class="ticker-item">🌍 International Aid pledged by global partners</div>
+          <div class="ticker-item">📢 Community Training sessions scheduled this week</div>
+          <div class="ticker-item">🚑 Emergency response teams deployed in affected regions</div>
+
+          <!-- Duplicate items for seamless loop -->
+          <div class="ticker-item">⚡ Flood Relief Operations underway across the island</div>
+          <div class="ticker-item">🌍 International Aid pledged by global partners</div>
+          <div class="ticker-item">📢 Community Training sessions scheduled this week</div>
+          <div class="ticker-item">🚑 Emergency response teams deployed in affected regions</div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
+
+<!-- Natural Disasters Section -->
+<section class="natural-disasters-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4 fw-bold">Natural Disasters</h2>
+    <div class="row g-4">
+
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/flood.webp" class="card-img-top" alt="Flood">
+          <div class="card-body">
+            <h5 class="card-title">Floods</h5>
+            <p class="card-text">Heavy rains cause flooding in several regions, leading to displacement and property damage. Relief operations are ongoing.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">Read More</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/Earthquakes.jpg" class="card-img-top" alt="Earthquake">
+          <div class="card-body">
+            <h5 class="card-title">Earthquakes</h5>
+            <p class="card-text">Earthquakes can strike without warning, causing major infrastructure damage. Learn how to stay prepared.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">Learn More</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/Tsunamis.jpg" class="card-img-top" alt="Tsunami">
+          <div class="card-body">
+            <h5 class="card-title">Tsunamis</h5>
+            <p class="card-text">Coastal areas are vulnerable to tsunamis triggered by undersea earthquakes. Evacuation planning is essential.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/landslide.jpg" class="card-img-top" alt="Tsunami">
+          <div class="card-body">
+            <h5 class="card-title">Landslide</h5>
+            <p class="card-text">Landslides often occur after heavy rainfall or earthquakes, destroying homes and roads. Stay alert in high-risk areas.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/tonado2.jpg" class="card-img-top" alt="Tsunami">
+          <div class="card-body">
+            <h5 class="card-title">Tornado</h5>
+            <p class="card-text">Tornadoes form suddenly with powerful winds that can destroy buildings and uproot trees. Quick evacuation saves lives.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <img src="images/niyagayab.jpg" class="card-img-top" alt="Tsunami">
+          <div class="card-body">
+            <h5 class="card-title">Drought</h5>
+            <p class="card-text"> Droughts occur when rainfall is scarce for long periods, leading to water shortages and crop failures. Conservation is crucial.</p>
+            <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 
 <!-- Footer -->
