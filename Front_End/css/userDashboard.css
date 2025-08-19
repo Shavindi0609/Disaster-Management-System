@@ -1,45 +1,127 @@
+:root {
+    --main-dark: #066150;
+    --main-light: #1D865C;
+    --text-dark: #000;   /* black text */
+    --bg-light: #f4f6f8;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
+    font-family: "Poppins", sans-serif;
+    background-color: var(--bg-light);
 }
 
 #wrapper {
-    display: flex;
     min-height: 100vh;
 }
 
+/* Sidebar (Only Green Part) */
 #sidebar {
-    width: 250px;
+    background: linear-gradient(180deg, var(--main-dark), var(--main-light));
+    width: 240px;
     min-height: 100vh;
-    background: #212529;
+    border-radius: 0 15px 15px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
 }
 
 #sidebar h2 {
+    font-weight: 700;
     margin-bottom: 30px;
+    color: var(--bg-light); /* black */
 }
 
 #sidebar ul li {
-    padding: 12px 10px;
+    margin: 15px 0;
 }
 
+/*#sidebar ul li a {*/
+/*    padding: 10px 15px;*/
+/*    display: block;*/
+/*    border-radius: 10px;*/
+/*    transition: all 0.3s ease;*/
+/*    color: var(--text-dark); !* black text *!*/
+/*    font-weight: 500;*/
+/*}*/
+
+/*#sidebar ul li a:hover {*/
+/*    background-color: rgba(255,255,255,0.4);*/
+/*    text-decoration: none;*/
+/*    transform: translateX(5px);*/
+/*}*/
+
+
 #sidebar ul li a {
-    text-decoration: none;
+    padding: 10px 15px;
     display: block;
-    transition: 0.3s;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    color: #000; /* black text */
+    font-weight: 500;
+    text-decoration: none; /* remove underline */
 }
 
 #sidebar ul li a:hover {
-    background: #495057;
-    border-radius: 5px;
+    background-color: rgba(255,255,255,0.4);
+    text-decoration: none; /* still no underline */
+    transform: translateX(5px);
 }
 
+/* Main Content */
 #page-content {
     flex: 1;
-    background: #f8f9fa;
 }
 
+#page-content h2 {
+    color: #333;  /* dark gray, not green */
+    font-weight: 600;
+}
+
+/* Cards */
 .card {
-    text-align: center;
-    background: white;
-    border-radius: 10px;
+    border: none;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: #fff;  /* white card */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.card h5 {
+    color: #333;  /* black/dark text */
+    font-weight: 600;
+}
+
+.card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #555;   /* dark gray instead of green */
+    margin: 0;
+}
+
+/* Form */
+#report-form {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#report-form h4 {
+    color: #333; /* dark gray */
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #333; /* dark gray/black instead of green */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #555; /* slightly lighter gray */
+    transform: scale(1.05);
 }

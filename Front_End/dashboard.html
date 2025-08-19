@@ -234,6 +234,51 @@
       100% { transform: translateX(-50%); } /* scroll half because we duplicated items */
     }
 
+    footer {
+      background-color: var(--main-dark); /* FEMA blue */
+      color: white;
+      padding: 2rem 0;
+    }
+    footer a {
+      color: #cce4f6;
+      text-decoration: underline;
+    }
+    footer a:hover {
+      color: #fff;
+    }
+    .footer-top {
+      background: #e5e5e5;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-top .social-icons a {
+      margin-left: 10px;
+      display: inline-block;
+      background: #dcdcdc;
+      padding: 8px;
+      border-radius: 3px;
+      color: black;
+    }
+    .footer-top .social-icons a:hover {
+      background: #bbb;
+    }
+    .footer-logo {
+      max-width: 60px;
+      margin-bottom: 10px;
+    }
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+    .footer-ntas {
+      background: var(--main-dark);
+      padding: 1rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
 
   </style>
 </head>
@@ -295,7 +340,7 @@
 
 <!-- FEMA Help Section -->
 <section class="fema-help">
-  <h2>How Can NDMS Help?</h2>
+  <h2 class="text-center mb-3 fw-bold">How Can NDMS Help?</h2>
   <div class="fema-card-container">
 
     <div class="fema-card active">
@@ -346,7 +391,7 @@
 <!-- News & Updates Section -->
 <section class="news-section py-5">
   <div class="container">
-    <h2 class="text-center mb-4 fw-bold">News & Updates</h2>
+    <h2 class="text-center mb-3 fw-bold">News & Updates</h2>
     <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
 
       <!-- Indicators -->
@@ -445,11 +490,12 @@
       </button>
     </div>
 
-    <p class="text-center mb-4">
-      This News & Updates section in the Natural Disaster Management System provides real-time information about ongoing disasters and relief efforts.
-      The carousel highlights major updates such as flood relief operations, community training sessions, and international aid contributions,
-      while the news ticker displays live alerts and emergency messages, helping users stay informed and take timely action.
+    <p class="text-center mb-4 mt-5">
+      Stay updated with the latest <strong>disaster alerts, relief efforts, and community activities</strong> through our News & Updates section.
+      From <em>flood relief operations</em> to <em>emergency response deployments</em> and <em>international aid contributions</em>,
+      this space brings you real-time information to keep you <strong>informed, prepared, and safe</strong>.
     </p>
+
 
     <!-- CSS Scrolling News Ticker -->
     <div class="news-ticker mt-4">
@@ -476,7 +522,7 @@
 <!-- Natural Disasters Section -->
 <section class="natural-disasters-section py-5">
   <div class="container">
-    <h2 class="section-title text-center mb-4 fw-bold">Natural Disasters</h2>
+    <h2 class="section-title text-center mb-3 fw-bold">Natural Disasters</h2>
     <div class="row g-4">
 
       <!-- Card 1 -->
@@ -555,14 +601,69 @@
   </div>
 </section>
 
-
-
 <!-- Footer -->
+<div class="footer-top">
+  <div>
+    <img src="images/disaster-logo.webp" width="40" alt="logo">
+    <span class="ms-2 fw-bold">NDMS</span>
+    <a href="#">Contact NDMS</a>
+  </div>
+  <div class="social-icons">
+    <a href="#"><i class="bi bi-facebook"></i></a>
+    <a href="#"><i class="bi bi-instagram"></i></a>
+    <a href="#"><i class="bi bi-twitter"></i></a>
+    <a href="#"><i class="bi bi-youtube"></i></a>
+    <a href="#"><i class="bi bi-linkedin"></i></a>
+    <a href="#"><i class="bi bi-envelope"></i></a>
+  </div>
+</div>
+
 <footer>
-  <div class="container">
-    <p class="mb-0">© 2025 NDMS - Supporting Community Preparedness</p>
+  <div class="container text-center">
+    <img src="images/disaster-logo.webp" class="footer-logo" alt="seal">
+    <p><strong>NDMS.gov</strong><br>An official website of the <strong>Sri Lanka Department of Homeland Security</strong></p>
+
+    <div class="footer-links text-start">
+      <div>
+        <a href="#">Accessibility</a><br>
+        <a href="#">Accountability</a><br>
+        <a href="#">Careers</a><br>
+        <a href="#">Civil Rights</a><br>
+        <a href="#">Contact Us</a>
+      </div>
+      <div>
+        <a href="#">FOIA</a><br>
+        <a href="#">Glossary</a><br>
+        <a href="#">No FEAR Act</a><br>
+        <a href="#">Plug-Ins</a><br>
+        <a href="#">Privacy</a>
+      </div>
+      <div>
+        <a href="#">Report Disaster Fraud</a><br>
+        <a href="#">Website Information</a><br>
+        <a href="#">DHS.gov</a><br>
+        <a href="#">USA.gov</a><br>
+        <a href="#">Inspector General</a>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p class="mb-0 mt-5">© 2025 NDMS - Supporting Community Preparedness</p>
+    </div>
+
+<!--    <div class="footer-ntas">-->
+<!--      <h5>National Terrorism Advisory System</h5>-->
+<!--      <h3>NTAS</h3>-->
+<!--      <p><strong>BULLETIN</strong><br>-->
+<!--        <a href="#">READ MORE</a></p>-->
+<!--    </div>-->
   </div>
 </footer>
+
+<!-- Bootstrap icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

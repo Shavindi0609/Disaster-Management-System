@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Volunteer</title>
+    <style>
+        :root {
+            --main-dark: #066150;
+            --main-light: #1D865C;
+            --bg-light: #f0f4f8;
+            --text-dark: #333;
+            --text-muted: #555;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #volunteer-form {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        #volunteer-form h4 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--main-dark);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--main-light);
+            box-shadow: 0 0 5px rgba(29, 134, 92, 0.3);
+            outline: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--main-dark);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--main-light);
+        }
+
+        .btn-dashboard {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            background-color:var(--text-muted);
+            border-radius: 0;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button-row {
+            display: flex;
+        }
+
+        .button-row .btn-primary {
+            border-radius: 0;
+        }
+
+        .button-row .btn-dashboard:hover {
+            background-color: var(--main-dark);
+        }
+
+
+        .button-row {
+            display: flex;
+            gap: 10px; /* space between buttons */
+        }
+
+        .button-row .btn {
+            flex: 1; /* both buttons take equal width */
+            width: auto; /* remove full-width style */
+            margin-top: 0; /* remove extra top margin */
+        }
+
+
+        @media (max-width: 450px) {
+            #volunteer-form {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div id="volunteer-form">
+    <h4>Add New Volunteer</h4>
+    <form id="addVolunteerForm" onsubmit="addVolunteer(event)">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="volunteerName" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" id="volunteerEmail" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" id="volunteerPhone" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Skills</label>
+            <input type="text" class="form-control" id="volunteerSkills" placeholder="First Aid, Driving, etc.">
+        </div>
+        <!-- Buttons in one row -->
+        <div class="button-row">
+            <button type="submit" class="btn btn-primary">Add Volunteer</button>
+            <button type="button" class="btn btn-dashboard" onclick="goToDashboard()">Go to Dashboard</button>
+        </div>
+
+    </form>
+
+    <script src="js/volunteer.js"></script>
+</div>
+</body>
+</html>
