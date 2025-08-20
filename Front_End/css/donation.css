@@ -1,0 +1,111 @@
+:root {
+    --main-dark: #066150;
+    --main-light: #1D865C;
+}
+
+/* Input fields */
+.input-field {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+.input-field:focus {
+    outline: none;
+    border-color: var(--main-light);
+    box-shadow: 0 0 0 3px rgba(29,134,92,0.3);
+}
+
+/* Donate button */
+.donate-btn,
+.confirm-button {
+    background: var(--main-light);
+    color: white;
+    padding: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    width: 100%;
+    transition: background 0.3s ease;
+}
+.donate-btn:hover,
+.confirm-button:hover {
+    background: var(--main-dark);
+}
+
+.donation-body {
+    background-color: #733D3D;
+}
+
+.donation-right {
+    background-color: #E5D8B8;
+}
+
+.heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937; /* gray-800 */
+}
+
+.subtext {
+    color: #4b5563; /* gray-600 */
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151; /* gray-700 */
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    color: #4b5563; /* gray-600 */
+}
+
+/* Payment method buttons */
+.payment-methods {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.payment-method {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    margin: 0 0.25rem;
+    border: 2px solid #ccc;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.payment-method.active,
+.payment-method:hover {
+    border-color: #166534; /* Tailwind green-800 */
+    background: rgba(22,101,52,0.1);
+    font-weight: 600;
+}
+
+/* Form layout */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.form-group input {
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #166534;
+    box-shadow: 0 0 0 3px rgba(22,101,52,0.2);
+}
