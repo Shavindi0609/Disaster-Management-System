@@ -10,7 +10,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:63342") // Frontend origin
 @RestController
-@RequestMapping("/api/disasters")
+@RequestMapping("/auth/disasters")
 public class DisasterController {
 
     @Autowired

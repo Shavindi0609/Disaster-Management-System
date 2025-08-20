@@ -62,7 +62,7 @@
     }
 
     function sendLocation(lat, lng, type) {
-        fetch("http://localhost:8080/api/disasters/report", {
+        fetch("http://localhost:8080/auth/disasters/report", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ latitude: lat, longitude: lng, type: type })
@@ -75,7 +75,7 @@
     }
 
     function loadSavedReports() {
-        fetch("http://localhost:8080/api/disasters/all")
+        fetch("http://localhost:8080/auth/disasters/all")
             .then(response => response.json())
             .then(reports => {
                 reports.forEach(report => {

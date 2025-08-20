@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate for Disaster Relief</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<!-- Header -->
+<header class="bg-red-600 text-white text-center py-6 shadow-md">
+    <h1 class="text-3xl font-bold">Support Disaster Relief</h1>
+    <p class="mt-2">Your donation can save lives during natural disasters</p>
+</header>
+
+<!-- Donation Card -->
+<section class="flex justify-center items-center mt-10">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Make a Donation</h2>
+
+        <!-- Donation Amount -->
+        <label class="block mb-2 text-gray-600">Enter Amount (USD)</label>
+        <input type="number" id="amount"
+               class="w-full border rounded-lg p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-red-500"
+               placeholder="50" min="1">
+
+        <!-- Payment Method -->
+        <label class="block mb-2 text-gray-600">Select Payment Method</label>
+        <select id="payment"
+                class="w-full border rounded-lg p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <option value="">-- Choose Method --</option>
+            <option value="card">Credit / Debit Card</option>
+            <option value="paypal">PayPal</option>
+            <option value="bank">Bank Transfer</option>
+        </select>
+
+        <!-- Donate Button -->
+        <button onclick="donateNow()"
+                class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition">
+            Donate Now
+        </button>
+
+        <!-- Message -->
+        <p id="message" class="mt-4 text-center text-green-600 font-medium hidden">
+            ✅ Thank you for your generous donation!
+        </p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-gray-300 text-center py-4 mt-10">
+    <p>&copy; 2025 Disaster Management Project | All Rights Reserved</p>
+</footer>
+
+<!-- Script -->
+<script>
+    function donateNow() {
+        const amount = document.getElementById("amount").value;
+        const method = document.getElementById("payment").value;
+        const message = document.getElementById("message");
+
+        if (!amount || amount <= 0 || !method) {
+            alert("⚠️ Please enter a valid amount and select a payment method.");
+            return;
+        }
+
+        message.classList.remove("hidden");
+        setTimeout(() => {
+            message.classList.add("hidden");
+            document.getElementById("amount").value = "";
+            document.getElementById("payment").value = "";
+        }, 3000);
+    }
+</script>
+</body>
+</html>
