@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class VolunteerService {
@@ -25,5 +28,15 @@ public class VolunteerService {
 
         // Save to DB
         return volunteerRepository.save(volunteer);
+    }
+
+    // Get all volunteers
+    public List<Volunteer> getAllVolunteers() {
+        return volunteerRepository.findAll();
+    }
+
+    // Get volunteer by ID
+    public Optional<Volunteer> getVolunteerById(Long id) {
+        return volunteerRepository.findById(id);
     }
 }

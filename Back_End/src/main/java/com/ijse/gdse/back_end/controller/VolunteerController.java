@@ -31,5 +31,38 @@ public class VolunteerController {
                 )
         );
     }
+
+    // Get All Volunteers
+    @GetMapping
+    public ResponseEntity<APIResponse> getAllVolunteers() {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteers fetched successfully",
+                        volunteerService.getAllVolunteers()
+                )
+        );
+    }
+
+    // Get Volunteer by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<APIResponse> getVolunteerById(@PathVariable Long id) {
+        return volunteerService.getVolunteerById(id)
+                .map(volunteer -> ResponseEntity.ok(
+                        new APIResponse(
+                                200,
+                                "Volunteer fetched successfully",
+                                volunteer
+                        )
+                ))
+                .orElse(ResponseEntity.status(404).body(
+                        new APIResponse(
+                                404,
+                                "Volunteer not found",
+                                null
+                        )
+                ));
+    }
+
 }
 
