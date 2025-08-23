@@ -2,201 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Volunteers Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f0f4f8;
-        }
-
-        header {
-            background: #066150;
-            color: #fff;
-            padding: 15px;
-            font-size: 20px;
-        }
-
-        .volunteers-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .vol-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 220px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .vol-card:hover {
-            transform: scale(1.05);
-        }
-
-        .vol-card img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            width: 500px;
-            position: relative;
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            color: #066150;
-        }
-
-        .close-btn {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            cursor: pointer;
-            font-size: 20px;
-            color: #444;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
-    </style>
+    <title>Admin Dashboard - Disaster Management</title>
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-<header>Volunteers Dashboard (Admin)</header>
-
-<div class="volunteers-container" id="volunteersList">
-    <!-- Cards will be injected by JS -->
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="#" class="active" onclick="showPage('employees')">Employees</a>
+    <a href="#" onclick="showPage('volunteers')">Volunteers</a>
+    <a href="#" onclick="showPage('donors')">Donors</a>
 </div>
 
-<!-- Modal -->
-<div class="modal" id="volunteerModal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3 id="volName">Volunteer Name</h3>
-        <form>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text" id="volEmail">
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" id="volPhone">
-            </div>
-            <div class="form-group">
-                <label>Skills</label>
-                <input type="text" id="volSkills">
-            </div>
-            <div class="form-group">
-                <label>Notes</label>
-                <textarea id="volNotes"></textarea>
-            </div>
-        </form>
+<!-- Main Content -->
+<div class="main-content">
+    <div class="topbar">
+        <h1 id="pageTitle">Employees</h1>
+        <span>👤 Admin</span>
+    </div>
+
+    <!-- Employees Page -->
+    <div id="employees" class="page active">
+        <div class="card">
+            <h3>Add Employee</h3>
+            <form id="addEmployeeForm">
+                <div class="form-group"><label>Name</label><input type="text" id="empName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="empEmail" required></div>
+                <div class="form-group"><label>Position</label><input type="text" id="empPosition" required></div>
+                <button type="submit">Add Employee</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>Employee List</h3>
+            <div class="card-container" id="employeeList"></div>
+        </div>
+    </div>
+
+    <!-- Volunteers Page -->
+    <div id="volunteers" class="page">
+        <div class="card">
+            <h3>Add Volunteer</h3>
+            <form id="addVolunteerForm">
+                <div class="form-group"><label>Name</label><input type="text" id="volName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="volEmail" required></div>
+                <div class="form-group"><label>Phone</label><input type="text" id="volPhone" required></div>
+                <div class="form-group"><label>Skills</label><input type="text" id="volSkills"></div>
+                <button type="submit">Add Volunteer</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>Volunteer List</h3>
+            <div class="card-container" id="volunteerList"></div>
+        </div>
+    </div>
+
+    <!-- Donors Page -->
+    <div id="donors" class="page">
+        <div class="card">
+            <h3>Add Donor</h3>
+            <form id="addDonorForm">
+                <div class="form-group"><label>Name</label><input type="text" id="donName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="donEmail" required></div>
+                <div class="form-group"><label>Donation Amount</label><input type="number" id="donAmount" required></div>
+                <button type="submit">Add Donor</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>Donor List</h3>
+            <div class="card-container" id="donorList"></div>
+        </div>
     </div>
 </div>
 
-<script>
-    const BASE_URL = "http://localhost:8080/auth/volunteers";
+<!-- Popup Modal -->
+<div id="popupModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Edit</h2>
+        <form id="updateForm"></form>
+    </div>
+</div>
 
-    // Load all volunteers when page loads
-    document.addEventListener("DOMContentLoaded", () => {
-        getAllVolunteers();
-    });
-
-    // Render all volunteers as cards
-    async function getAllVolunteers() {
-        try {
-            const response = await fetch(BASE_URL);
-            const result = await response.json();
-
-            const container = document.getElementById("volunteersList");
-            container.innerHTML = ""; // clear before render
-
-            if (result.data && result.data.length > 0) {
-                result.data.forEach(v => {
-                    const card = document.createElement("div");
-                    card.className = "vol-card";
-                    card.innerHTML = `
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="avatar">
-                        <h4>${v.name}</h4>
-                        <p>${v.email}</p>
-                        <p>${v.phone}</p>
-                    `;
-                    card.onclick = () => openModal(v.id); // when click → open modal
-                    container.appendChild(card);
-                });
-            } else {
-                container.innerHTML = "<p>No volunteers found.</p>";
-            }
-        } catch (error) {
-            console.error("Error fetching volunteers:", error);
-        }
-    }
-
-    // Open modal & load volunteer details by ID
-    async function openModal(id) {
-        try {
-            const response = await fetch(`${BASE_URL}/${id}`);
-            const result = await response.json();
-
-            if (result.status === 200 && result.data) {
-                const v = result.data;
-                document.getElementById("volName").innerText = v.name;
-                document.getElementById("volEmail").value = v.email;
-                document.getElementById("volPhone").value = v.phone;
-                document.getElementById("volSkills").value = v.skills || "";
-                document.getElementById("volNotes").value = v.notes || "";
-
-                document.getElementById("volunteerModal").style.display = "flex";
-            } else {
-                alert("Volunteer not found");
-            }
-        } catch (error) {
-            console.error("Error fetching volunteer:", error);
-        }
-    }
-
-    // Close modal
-    function closeModal() {
-        document.getElementById("volunteerModal").style.display = "none";
-    }
-</script>
-
+<script src="js/admin.js"></script>
 </body>
 </html>

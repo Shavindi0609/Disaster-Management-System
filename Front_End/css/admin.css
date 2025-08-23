@@ -1,0 +1,197 @@
+:root {
+    --main-dark: #066150;
+    --main-light: #1D865C;
+    --bg-light: #f4f6f8;
+    --danger: #e74c3c;
+    --danger-dark: #c0392b;
+    --white: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    background: var(--bg-light);
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--main-dark);
+    color: var(--white);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: var(--white);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: block;
+    transition: background 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: var(--main-light);
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.topbar {
+    background: var(--white);
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar h1 {
+    font-size: 20px;
+    color: var(--main-dark);
+}
+
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
+}
+
+/* Cards */
+.card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    color: var(--main-dark);
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+/* Item Cards */
+.item-card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    width: 220px;
+    text-align: left;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.item-card h4 {
+    margin-bottom: 5px;
+    color: var(--main-dark);
+}
+.item-card p {
+    margin: 2px 0;
+    font-size: 14px;
+}
+
+/* Buttons */
+button {
+    background: var(--main-dark);
+    color: var(--white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background: var(--main-light);
+}
+
+/* Danger button (delete) */
+.item-card .delete-btn {
+    margin-top: 10px;
+    background: var(--danger);
+}
+.item-card .delete-btn:hover {
+    background: var(--danger-dark);
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+}
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+}
+.close {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+#updateForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#updateForm input, #updateForm button {
+    padding: 8px;
+    border-radius: 5px;
+}
