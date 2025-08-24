@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/auth/donations")
@@ -40,6 +42,12 @@ public class DonationController {
                         total
                 )
         );
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<APIResponse> getMonthlyDonations() {
+        Map<String, Double> monthlyTotals = donationService.getMonthlyDonations();
+        return ResponseEntity.ok(new APIResponse(200, "Monthly donations fetched successfully", monthlyTotals));
     }
 
 }

@@ -116,6 +116,8 @@
 </div>
 
 <script src="js/admin.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -147,26 +149,32 @@
                 document.getElementById("statDonations").textContent = "$" + data.data;
             });
 
-        // 🔹 Chart example (ඇත්තට DB data use කරගන්නත් පුළුවන්)
-        const ctx = document.getElementById("dashboardChart").getContext("2d");
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                datasets: [{
-                    label: 'Donations',
-                    data: [500, 1200, 950, 1500, 2000, 1750], // ← later DB එකෙන් ගන්න
-                    borderColor: '#ff3d67',
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } }
-            }
-        });
+        fetch("http://localhost:8080/auth/donations/monthly")
+            .then(res => res.json())
+            .then(data => {
+                const months = Object.keys(data.data);
+                const amounts = Object.values(data.data);
+
+                const ctx = document.getElementById("dashboardChart").getContext("2d");
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Donations',
+                            data: amounts,
+                            borderColor: '#ff3d67',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {legend: {display: false}}
+                    }
+                });
+            });
     });
 </script>
 

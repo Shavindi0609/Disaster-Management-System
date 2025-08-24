@@ -6,6 +6,9 @@ import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.repository.DonationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,27 @@ public class DonationService {
     // 🔹 New method for total donations
     public double getTotalDonations() {
         return donationRepository.getTotalDonations();
+    }
+
+
+    public Map<String, Double> getMonthlyDonations() {
+        List<Object[]> results = donationRepository.getMonthlyDonationTotals();
+
+        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+        Map<String, Double> monthlyTotals = new LinkedHashMap<>();
+
+        // initialize all months to 0
+        for (String month : months) {
+            monthlyTotals.put(month, 0.0);
+        }
+
+        for (Object[] row : results) {
+            if (row[0] == null || row[1] == null) continue; // null-safe
+            Integer monthIndex = ((Number) row[0]).intValue();
+            Double total = ((Number) row[1]).doubleValue();
+            monthlyTotals.put(months[monthIndex - 1], total);
+        }
+
+        return monthlyTotals;
     }
 }

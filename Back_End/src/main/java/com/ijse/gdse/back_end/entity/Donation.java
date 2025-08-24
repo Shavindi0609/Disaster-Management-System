@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -29,4 +32,8 @@ public class Donation {
     private String expiry;
     private String cvv;
     private boolean receiveUpdates;
+
+    // 🔹 createdAt field එක auto set වෙනවා save වෙද්දි
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }
