@@ -84,4 +84,15 @@ public class DonorController {
                 )
         );
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<APIResponse> getDonorCount() {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Donor count fetched successfully",
+                        donorService.countDonors()
+                )
+        );
+    }
 }

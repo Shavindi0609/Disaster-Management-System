@@ -90,5 +90,17 @@ public class VolunteerController {
                 )
         );
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<APIResponse> getVolunteerCount() {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteer count fetched successfully",
+                        volunteerService.countVolunteers()
+                )
+        );
+    }
+
 }
 

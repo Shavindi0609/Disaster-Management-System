@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <title>Admin Dashboard - Disaster Management</title>
     <link rel="stylesheet" href="css/admin.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <!-- Sidebar -->
 <div class="sidebar">
     <h2>Admin Panel</h2>
-    <a href="#" class="active" onclick="showPage('employees')">Employees</a>
+    <a href="#" class="active" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('employees')">Employees</a>
     <a href="#" onclick="showPage('volunteers')">Volunteers</a>
     <a href="#" onclick="showPage('donors')">Donors</a>
 </div>
@@ -17,12 +20,39 @@
 <!-- Main Content -->
 <div class="main-content">
     <div class="topbar">
-        <h1 id="pageTitle">Employees</h1>
+        <h1 id="pageTitle">Dashboard</h1>
         <span>👤 Admin</span>
     </div>
 
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h2 id="statEmployees">0</h2>
+                <p>Employees</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="statVolunteers">0</h2>
+                <p>Volunteers</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="statDonors">0</h2>
+                <p>Donors</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="statDonations">$0</h2>
+                <p>Total Donations</p>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+            <canvas id="dashboardChart"></canvas>
+        </div>
+    </div>
+
     <!-- Employees Page -->
-    <div id="employees" class="page active">
+    <div id="employees" class="page">
         <div class="card">
             <h3>Add Employee</h3>
             <form id="addEmployeeForm">
@@ -53,12 +83,9 @@
 
         <div class="card">
             <h3>Volunteer List</h3>
-            <!-- 🔍 Search bar -->
             <input type="text" id="volunteerSearch" placeholder="Search volunteers..." onkeyup="filterVolunteers()" class="search-bar">
-
             <div class="card-container" id="volunteerList"></div>
         </div>
-
     </div>
 
     <!-- Donors Page -->
@@ -89,5 +116,59 @@
 </div>
 
 <script src="js/admin.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 🔹 Fetch Employees count
+        fetch("http://localhost:8080/auth/employees/count")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("statEmployees").textContent = data.data;
+            });
+
+        // 🔹 Fetch Volunteers count
+        fetch("http://localhost:8080/auth/volunteers/count")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("statVolunteers").textContent = data.data;
+            });
+
+        // 🔹 Fetch Donors count
+        fetch("http://localhost:8080/auth/donors/count")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("statDonors").textContent = data.data;
+            });
+
+        // 🔹 Donations amount (ඇත්තටම DB එකේ තියෙනවා නම් backend එකෙන් API එකක් හදන්න)
+        fetch("http://localhost:8080/auth/donations/total")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("statDonations").textContent = "$" + data.data;
+            });
+
+        // 🔹 Chart example (ඇත්තට DB data use කරගන්නත් පුළුවන්)
+        const ctx = document.getElementById("dashboardChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                datasets: [{
+                    label: 'Donations',
+                    data: [500, 1200, 950, 1500, 2000, 1750], // ← later DB එකෙන් ගන්න
+                    borderColor: '#ff3d67',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

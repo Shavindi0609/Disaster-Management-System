@@ -53,4 +53,9 @@ public class DonorService {
     public void deleteDonor(Long id) {
         donorRepository.deleteById(id);
     }
+
+    // ✅ Count Volunteers
+    public long countDonors() {
+        return donorRepository.count();
+    }
 }

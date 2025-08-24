@@ -57,4 +57,9 @@ public class VolunteerService {
     public void deleteVolunteer(Long id) {
         volunteerRepository.deleteById(id);
     }
+
+    // ✅ Count Volunteers
+    public long countVolunteers() {
+        return volunteerRepository.count();
+    }
 }
