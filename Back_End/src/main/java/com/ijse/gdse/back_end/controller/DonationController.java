@@ -29,4 +29,17 @@ public class DonationController {
                 )
         );
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<APIResponse> getTotalDonations() {
+        double total = donationService.getTotalDonations();
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Total Donations fetched successfully",
+                        total
+                )
+        );
+    }
+
 }

@@ -22,7 +22,7 @@ public class Donation {
     private String name;
     private String email;
     private String company;
-    private String donationAmount;
+    private double donationAmount;
     private String paymentMethod;
     private String cardNumber;
     private String cardName;

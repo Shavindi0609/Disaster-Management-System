@@ -31,4 +31,9 @@ public class DonationService {
         // Save to DB
         return donationRepository.save(donation);
     }
+
+    // 🔹 New method for total donations
+    public double getTotalDonations() {
+        return donationRepository.getTotalDonations();
+    }
 }
