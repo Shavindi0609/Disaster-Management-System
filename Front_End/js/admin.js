@@ -214,6 +214,23 @@ function openEditModal(type, id, name, email, field1="", field2="") {
     modal.style.display = "block";
 }
 
+function filterVolunteers() {
+    const input = document.getElementById("volunteerSearch").value.toLowerCase();
+    const cards = document.querySelectorAll("#volunteerList .item-card");
+
+    cards.forEach(card => {
+        const name = card.querySelector("h4").innerText.toLowerCase();
+        const email = card.querySelector("p strong") ? card.querySelector("p").innerText.toLowerCase() : "";
+
+        if (name.includes(input) || email.includes(input)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+
 function closeModal() {
     document.getElementById("popupModal").style.display = "none";
 }

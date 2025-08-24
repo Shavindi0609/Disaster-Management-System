@@ -64,5 +64,31 @@ public class VolunteerController {
                 ));
     }
 
+    // ✅ Update Volunteer
+    @PutMapping("/{id}")
+    public ResponseEntity<APIResponse> updateVolunteer(
+            @PathVariable Long id,
+            @RequestBody VolunteerDTO volunteerDTO) {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteer updated successfully",
+                        volunteerService.updateVolunteer(id, volunteerDTO)
+                )
+        );
+    }
+
+    // ✅ Delete Volunteer
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse> deleteVolunteer(@PathVariable Long id) {
+        volunteerService.deleteVolunteer(id);
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteer deleted successfully",
+                        null
+                )
+        );
+    }
 }
 

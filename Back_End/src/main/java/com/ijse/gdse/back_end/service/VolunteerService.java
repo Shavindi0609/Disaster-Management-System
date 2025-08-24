@@ -39,4 +39,22 @@ public class VolunteerService {
     public Optional<Volunteer> getVolunteerById(Long id) {
         return volunteerRepository.findById(id);
     }
+
+    // ✅ Update Volunteer
+    public Volunteer updateVolunteer(Long id, VolunteerDTO volunteerDTO) {
+        Volunteer volunteer = volunteerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+
+        volunteer.setName(volunteerDTO.getName());
+        volunteer.setEmail(volunteerDTO.getEmail());
+        volunteer.setPhone(volunteerDTO.getPhone());
+        volunteer.setSkills(volunteerDTO.getSkills());
+
+        return volunteerRepository.save(volunteer);
+    }
+
+    // ✅ Delete Volunteer
+    public void deleteVolunteer(Long id) {
+        volunteerRepository.deleteById(id);
+    }
 }

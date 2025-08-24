@@ -50,10 +50,15 @@
                 <button type="submit">Add Volunteer</button>
             </form>
         </div>
+
         <div class="card">
             <h3>Volunteer List</h3>
+            <!-- 🔍 Search bar -->
+            <input type="text" id="volunteerSearch" placeholder="Search volunteers..." onkeyup="filterVolunteers()" class="search-bar">
+
             <div class="card-container" id="volunteerList"></div>
         </div>
+
     </div>
 
     <!-- Donors Page -->
