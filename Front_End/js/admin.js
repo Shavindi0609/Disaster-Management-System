@@ -14,6 +14,7 @@ function showPage(pageId, el) {
     if (pageId === "employees") loadEmployees();
     if (pageId === "volunteers") loadVolunteers();
     if (pageId === "donors") loadDonors();
+    if (pageId === "users") loadUsers();   // ✅ meka add karanna
 }
 
 /* -------------------- Employees -------------------- */
@@ -127,6 +128,38 @@ async function deleteDonor(id) {
     if (!confirm("Are you sure you want to delete this donor?")) return;
     await fetch(`${BASE}/donors/${id}`, {method:"DELETE"});
     loadDonors();
+}
+
+/* -------------------- Users -------------------- */
+function loadUsers() {
+    fetch("http://localhost:8080/auth/users")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("userList");
+            container.innerHTML = "";
+            data.data.forEach(user => {
+                const card = document.createElement("div");
+                card.className = "list-card";
+                card.innerHTML = `
+                    <p><strong>${user.username}</strong> (${user.role})</p>
+                    <p>${user.email}</p>
+                    <button onclick="deleteUser(${user.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        });
+}
+
+function deleteUser(id) {
+    if (confirm("Are you sure you want to delete this user?")) {
+        fetch(`http://localhost:8080/auth/users/${id}`, {
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(() => {
+                loadUsers();
+            });
+    }
 }
 
 /* -------------------- Popup Modal for Edit -------------------- */
