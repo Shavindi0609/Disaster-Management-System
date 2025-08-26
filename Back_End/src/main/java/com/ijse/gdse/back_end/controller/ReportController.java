@@ -7,50 +7,43 @@ import com.ijse.gdse.back_end.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5500") // report.html run වෙන port එක
 @RestController
 @RequestMapping("/auth/reports")
 @RequiredArgsConstructor
 public class ReportController {
-
     private final ReportService reportService;
 
     @PostMapping
-    public ResponseEntity<APIResponse> addReport(@RequestBody ReportDTO reportDTO) {
-        Report savedReport = reportService.addReport(reportDTO);
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Report Added Successfully",
-                        savedReport
-                )
-        );
+    public ResponseEntity<APIResponse> addReport(
+            @RequestParam String type,
+            @RequestParam String description,
+            @RequestParam(required = false) String reporterContact,
+            @RequestParam Double latitude,
+            @RequestParam Double longitude,
+            @RequestParam(required = false) MultipartFile photo
+    ) throws IOException {
+
+        Report savedReport = reportService.addReport(type, description, reporterContact, latitude, longitude, photo);
+
+        return ResponseEntity.ok(new APIResponse(200, "Report Added Successfully", savedReport));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<APIResponse> getAllReports() {
+        List<Report> reports = reportService.getAllReports();
+        return ResponseEntity.ok(new APIResponse(200, "Reports fetched successfully", reports));
     }
 
     @GetMapping("/total")
     public ResponseEntity<APIResponse> getTotalReports() {
         long total = reportService.getTotalReports();
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Total Reports fetched successfully",
-                        total
-                )
-        );
-    }
-
-    @GetMapping("/monthly")
-    public ResponseEntity<APIResponse> getMonthlyReports() {
-        Map<String, Long> monthlyTotals = reportService.getMonthlyReports();
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Monthly reports fetched successfully",
-                        monthlyTotals
-                )
-        );
+        return ResponseEntity.ok(new APIResponse(200, "Total reports fetched", total));
     }
 }

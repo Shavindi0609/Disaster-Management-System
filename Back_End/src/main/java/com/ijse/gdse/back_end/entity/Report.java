@@ -5,8 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -17,8 +19,14 @@ public class Report {
     private Long id;
 
     private String type;
-    private String location;
     private String description;
     private String reporterContact;
-    private LocalDate date;
+
+    private Double latitude;
+    private Double longitude;
+
+    private String photoPath; // store file path
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }
