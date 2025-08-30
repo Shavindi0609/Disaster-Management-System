@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - NDMRS</title>
+  <link rel="stylesheet" href="css/profile.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+  <!-- Sidebar -->
+  <div class="bg-dark text-white p-3" id="sidebar">
+    <h2 class="text-center">NDMRS</h2>
+    <ul class="list-unstyled">
+      <li><a href="userDashboard.html" class="text-white"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="#" class="text-white"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+      <li><a href="#" class="text-white"><i class="fas fa-file-alt"></i> My Reports</a></li>
+      <li><a href="profile.html" class="text-white"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="volunteer.html" class="text-white"><i class="fas fa-hands-helping"></i> Volunteer</a></li>
+      <li><a href="signUp.html" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div id="page-content" class="p-4 flex-grow-1">
+    <h2 class="mb-4">My Profile</h2>
+
+    <div class="profile-card">
+      <div class="row">
+        <!-- Left (Profile Picture & Role) -->
+        <div class="col-md-4 text-center">
+          <img src="images/profile.webp" class="profile-pic mb-3" alt="Profile Picture">
+          <h4 id="user-name">John Doe</h4>
+          <p class="profile-role">Victim User</p>
+          <a href="#" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            <i class="fas fa-edit"></i> Edit Profile
+          </a>
+
+        </div>
+
+        <!-- Right (Details) -->
+        <div class="col-md-8 profile-details">
+          <h5 class="mb-3">Personal Details</h5>
+          <table class="table table-borderless">
+            <tr>
+              <th>Email:</th>
+              <td id="user-email">johndoe@example.com</td>
+            </tr>
+<!--            <tr>-->
+<!--              <th>Phone:</th>-->
+<!--              <td id="user-phone">+94 77 123 4567</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--              <th>Address:</th>-->
+<!--              <td id="user-address">123 Main Street, Colombo</td>-->
+<!--            </tr>-->
+            <tr>
+              <th>Joined On:</th>
+              <td id="user-joined">2024-01-15</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="userDashboard.html" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+  <!-- Edit Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editProfileForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="editUsername" class="form-label">Username</label>
+              <input type="text" class="form-control" id="editUsername" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmail" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="editPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="editPassword" name="password">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-dark">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="js/profile.js"></script>
+</body>
+</html>

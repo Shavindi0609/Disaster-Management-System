@@ -3,11 +3,15 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.entity.User;
 import com.ijse.gdse.back_end.repository.UserRepository;
+import com.ijse.gdse.back_end.service.DonorService;
+import com.ijse.gdse.back_end.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth/users")
@@ -15,6 +19,7 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<APIResponse> getAllUsers() {
@@ -31,4 +36,40 @@ public class UserController {
                 new APIResponse(200, "User deleted successfully", null)
         );
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<APIResponse> getLoggedInUser(Authentication authentication) {
+        String principal = authentication.getName(); // JWT -> principal (username/email)
+
+        Optional<User> userOpt = userRepository.findByUsername(principal);
+        // or findByEmail(principal) depending on your entity
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(
+                    new APIResponse(404, "User not found", null)
+            );
+        }
+
+        return ResponseEntity.ok(
+                new APIResponse(200, "User profile loaded", userOpt.get())
+        );
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<APIResponse> updateUser(@PathVariable Long id, @RequestBody User user) {
+        try {
+            User updatedUser = userService.updateUser(id, user);
+            return ResponseEntity.ok(
+                    new APIResponse(200, "User updated successfully", updatedUser)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    new APIResponse(500, "Error updating user: " + e.getMessage(), null)
+            );
+        }
+    }
+
+
+
 }

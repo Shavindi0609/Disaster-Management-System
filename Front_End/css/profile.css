@@ -1,0 +1,145 @@
+:root {
+    --main-dark: #066150;
+    --main-light: #1D865C;
+    --text-dark: #000;
+    --bg-light: #f4f6f8;
+}
+
+/* General Body */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: var(--bg-light);
+}
+
+/* Wrapper */
+#wrapper {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* Sidebar */
+#sidebar {
+    background: linear-gradient(180deg, var(--main-dark), var(--main-light));
+    width: 240px;
+    min-height: 100vh;
+    border-radius: 0 15px 15px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+#sidebar h2 {
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--bg-light);
+}
+
+#sidebar ul li {
+    margin: 15px 0;
+}
+
+#sidebar ul li a {
+    padding: 10px 15px;
+    display: block;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    color: #000;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+#sidebar ul li a:hover {
+    background-color: rgba(255,255,255,0.4);
+    transform: translateX(5px);
+}
+
+/* Main Content */
+#page-content {
+    flex: 1;
+}
+
+#page-content h2 {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Profile Card */
+.profile-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Profile Picture */
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* User Name */
+.profile-card h4 {
+    font-weight: 700;
+    color: #333;
+    margin-top: 15px;
+}
+
+/* User Role */
+.profile-role {
+    font-size: 0.95rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Profile Table */
+.profile-details table {
+    width: 100%;
+}
+
+.profile-details th {
+    color: #555;
+    font-weight: 600;
+    padding: 8px 10px;
+    text-align: left;
+    width: 30%;
+}
+
+.profile-details td {
+    color: #333;
+    padding: 8px 10px;
+}
+
+/* Buttons */
+.btn-dark {
+    background-color: #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+    background-color: #555;
+    transform: scale(1.05);
+}
+
+.btn-outline-dark {
+    border: 2px solid #333;
+    color: #333;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+    background-color: #333;
+    color: #fff;
+}
