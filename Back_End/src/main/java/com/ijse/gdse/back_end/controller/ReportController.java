@@ -3,9 +3,11 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.entity.Report;
+import com.ijse.gdse.back_end.service.EmailService;
 import com.ijse.gdse.back_end.service.ReportService;
 import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,8 @@ public class ReportController {
 
     private final ReportService reportService;
     private final JwtUtil jwtUtil;
+    @Autowired
+    private EmailService emailService;
 
     // ================= Add Report =================
     @PostMapping
@@ -66,13 +70,29 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Total reports fetched", total));
     }
 
+//    @PutMapping("/{reportId}/assign/{volunteerId}")
+//    public ResponseEntity<APIResponse> assignVolunteerToReport(
+//            @PathVariable Long reportId,
+//            @PathVariable Long volunteerId
+//    ) {
+//        Report updatedReport = reportService.assignVolunteer(reportId, volunteerId);
+//        return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", updatedReport));
+//    }
+
     @PutMapping("/{reportId}/assign/{volunteerId}")
-    public ResponseEntity<APIResponse> assignVolunteerToReport(
+    public ResponseEntity<APIResponse> assignVolunteer(
             @PathVariable Long reportId,
-            @PathVariable Long volunteerId
-    ) {
-        Report updatedReport = reportService.assignVolunteer(reportId, volunteerId);
-        return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", updatedReport));
+            @PathVariable Long volunteerId) {
+
+        Report report = reportService.assignVolunteer(reportId, volunteerId);
+
+        // Send email
+        if (report.getAssignedVolunteer() != null) {
+            String email = report.getAssignedVolunteer().getEmail();
+            emailService.sendVolunteerAssignmentEmail(email, report.getType(), report.getDescription());
+        }
+
+        return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", report));
     }
 
 }
