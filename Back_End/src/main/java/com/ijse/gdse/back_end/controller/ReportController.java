@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5500") // report.html run වෙන port එක
+@CrossOrigin(origins = "http://localhost:63342")
+//@CrossOrigin(origins = "http://localhost:5500") // report.html run වෙන port එක
 @RestController
 @RequestMapping("/auth/reports")
 @RequiredArgsConstructor

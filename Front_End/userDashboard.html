@@ -16,11 +16,11 @@
         <h2 class="text-center">NDMRS</h2>
         <ul class="list-unstyled">
             <li><a href="#" class="text-white"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="#" class="text-white" onclick="openReportForm()"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
-            <li><a href="#" class="text-white"><i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="report.html" class="text-white"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="myReports.html" class="text-white"><i class="fas fa-file-alt"></i> My Reports</a></li>
             <li><a href="profile.html" class="text-white"><i class="fas fa-user"></i> Profile</a></li>
             <li><a href="volunteer.html" class="text-white"><i class="fas fa-user"></i> Volunteer</a></li>
-            <li><a href="signIn.html" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="signIn.html" class="text-white" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
 
@@ -31,52 +31,76 @@
             <div class="col-md-4">
                 <div class="card p-3 shadow-sm">
                     <h5>My Reports</h5>
-                    <p id="report-count">3</p>
+                    <p id="report-count">0</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card p-3 shadow-sm">
                     <h5>Aid Received</h5>
-                    <p>2</p>
+                    <p id="aid-count">0</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card p-3 shadow-sm">
                     <h5>Pending Requests</h5>
-                    <p>1</p>
+                    <p id="pending-count">0</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Disaster Report Form -->
-        <div id="report-form" class="mt-5 d-none">
-            <h4>Submit Disaster Report</h4>
-            <form onsubmit="submitReport(event)">
-                <div class="mb-3">
-                    <label class="form-label">Disaster Type</label>
-                    <select class="form-control" id="disaster-type" required>
-                        <option value="">-- Select --</option>
-                        <option>Flood</option>
-                        <option>Landslide</option>
-                        <option>Tsunami</option>
-                        <option>Earthquake</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Location</label>
-                    <input type="text" class="form-control" id="location" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-control" id="description" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Report</button>
-            </form>
         </div>
     </div>
 </div>
 
-<script src="js/user.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Get token and user info from localStorage
+        const accessToken = localStorage.getItem("accessToken");
+        const username = localStorage.getItem("username");
+        const role = localStorage.getItem("role");
+
+        // Redirect to login if not logged in
+        if (!accessToken) {
+            alert("⚠️ You must be logged in to access this page.");
+            window.location.href = "signIn.html";
+            return;
+        }
+
+        // Display username in dashboard
+        const welcomeHeader = document.querySelector("h2");
+        if (welcomeHeader && username) {
+            welcomeHeader.textContent = `Welcome, ${username} 👋`;
+        }
+
+        // Fetch user-specific dashboard stats
+        fetch("http://localhost:8080/auth/reports", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById("report-count").textContent = data.totalReports || 0;
+                    document.getElementById("aid-count").textContent = data.aidReceived || 0;
+                    document.getElementById("pending-count").textContent = data.pendingRequests || 0;
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching user data:", err);
+                alert("🚨 Could not load dashboard data.");
+            });
+
+        // Logout functionality
+        const logoutLink = document.getElementById("logoutLink");
+        if (logoutLink) {
+            logoutLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.clear(); // clear token and user info
+                window.location.href = "signIn.html";
+            });
+        }
+    });
+</script>
 </body>
 </html>

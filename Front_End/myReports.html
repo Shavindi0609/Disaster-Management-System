@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Reports - NDMRS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; padding: 0;
+            background: #f0f4f8;
+        }
+
+        header {
+            background: #066150;
+            color: #fff;
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .reports-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .report-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 250px;
+            padding: 15px;
+            transition: 0.3s;
+        }
+
+        .report-card:hover {
+            transform: scale(1.03);
+        }
+
+        .report-card h4 {
+            margin: 5px 0;
+            color: #066150;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .bg-warning { background: #ffc107; color: #000; }
+        .bg-success { background: #28a745; color: #fff; }
+    </style>
+</head>
+<body>
+<header>📑 My Reports</header>
+
+<div class="reports-container" id="reportsList">
+    <!-- Cards injected here -->
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8080/auth/reports";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        getAllReports();
+    });
+
+    async function getAllReports() {
+        try {
+            // Login වෙලා save වු token එක ගන්න
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                alert("⚠️ Please login first.");
+                return;
+            }
+
+            const res = await fetch(BASE_URL, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token // ✅ token send කරනවා
+                }
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`HTTP ${res.status}: ${text}`);
+            }
+
+            const reports = await res.json();
+            const container = document.getElementById("reportsList");
+            container.innerHTML = "";
+
+            if (reports.length > 0) {
+                reports.forEach(r => {
+                    const card = document.createElement("div");
+                    card.className = "report-card";
+                    card.innerHTML = `
+                    <h4>${r.type}</h4>
+                    <p><strong>ID:</strong> ${r.id}</p>
+                    <p><strong>Description:</strong> ${r.description}</p>
+                    <p><strong>Date:</strong> ${new Date(r.createdAt).toLocaleString()}</p>
+                    <p><span class="badge ${r.status === 'Pending' ? 'bg-warning' : 'bg-success'}">${r.status}</span></p>
+                    <p><strong>Location:</strong> ${r.latitude}, ${r.longitude}</p>
+                `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = "<p>No reports found.</p>";
+            }
+
+        } catch (error) {
+            console.error("Error fetching reports:", error);
+            alert("🚨 Error loading reports: " + error.message);
+        }
+    }
+</script>
+
+</body>
+</html>
