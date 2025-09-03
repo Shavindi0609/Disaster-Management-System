@@ -65,4 +65,14 @@ public class ReportController {
         long total = reportService.getTotalReports();
         return ResponseEntity.ok(new APIResponse(200, "Total reports fetched", total));
     }
+
+    @PutMapping("/{reportId}/assign/{volunteerId}")
+    public ResponseEntity<APIResponse> assignVolunteerToReport(
+            @PathVariable Long reportId,
+            @PathVariable Long volunteerId
+    ) {
+        Report updatedReport = reportService.assignVolunteer(reportId, volunteerId);
+        return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", updatedReport));
+    }
+
 }

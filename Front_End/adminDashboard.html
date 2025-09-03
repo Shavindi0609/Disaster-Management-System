@@ -128,6 +128,16 @@
         </div>
     </div>
 
+    <!-- Assign Volunteer Modal -->
+    <div id="assignModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAssignModal()">&times;</span>
+            <h2>Assign Volunteer</h2>
+            <select id="volunteerSelect" class="form-select"></select>
+            <button class="btn btn-success mt-2" onclick="assignVolunteer()">Assign</button>
+        </div>
+    </div>
+
 </div>
 
 
@@ -206,6 +216,8 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
+    let currentReportId = null;
+
     async function loadReports() {
         const reportsContainer = document.getElementById('reportsList');
         reportsContainer.innerHTML = "";
@@ -231,15 +243,21 @@
                 const card = document.createElement('div');
                 card.className = 'card mb-3';
                 card.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${report.type}</h5>
-                    <p class="card-text">${report.description}</p>
-                    <p><b>Contact:</b> ${report.reporterContact || 'N/A'}</p>
-                    <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
-                    ${report.photoFileName ? `<img src="http://localhost:8080/uploads/${report.photoFileName}" class="img-fluid" style="max-height:150px;">` : ''}
-                </div>
-            `;
+    <div class="card-body" data-report-id="${report.id}">
+        <h5 class="card-title">${report.type}</h5>
+        <p class="card-text">${report.description}</p>
+        <p><b>Contact:</b> ${report.reporterContact || 'N/A'}</p>
+        <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
+        <p><b>Assigned Volunteer:</b>
+            <span class="assigned-volunteer">
+                ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}
+            </span>
+        </p>
+        <button class="btn btn-primary" onclick="openAssignModal(${report.id})">Assign Volunteer</button>
+    </div>
+`;
                 reportsContainer.appendChild(card);
+
             });
         } catch (err) {
             console.error("Error fetching reports:", err);
@@ -247,12 +265,68 @@
         }
     }
 
-    // Call when Reports page is opened
     function showReportsPage() {
-        showPage('reports');  // Existing function to show a page
+        showPage('reports');
         loadReports();
     }
+
+    // 🔹 Modal functions
+    async function openAssignModal(reportId) {
+        currentReportId = reportId;
+        const modal = document.getElementById('assignModal');
+        modal.style.display = 'block';
+
+        // Load volunteers
+        // ✅ Correct
+        const res = await fetch("http://localhost:8080/auth/volunteers");
+        const data = await res.json();
+        const volunteers = data.data;
+
+        const select = document.getElementById("volunteerSelect");
+        select.innerHTML = "";
+        volunteers.forEach(v => {
+            const option = document.createElement("option");
+            option.value = v.id;
+            option.textContent = v.name + " (" + v.phone + ")";
+            select.appendChild(option);
+        });
+    }
+
+    function closeAssignModal() {
+        document.getElementById('assignModal').style.display = 'none';
+    }
+
+    async function assignVolunteer() {
+        const volunteerId = document.getElementById("volunteerSelect").value;
+        const token = localStorage.getItem("accessToken");
+
+        const res = await fetch(`http://localhost:8080/auth/reports/${currentReportId}/assign/${volunteerId}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (res.ok) {
+            const updatedReport = await res.json(); // backend return report object
+            alert("Volunteer assigned successfully!");
+            closeAssignModal();
+
+            // 🔹 UI එකේම update කරන්න
+            const card = document.querySelector(`[data-report-id='${currentReportId}']`);
+            if (card) {
+                const volunteerField = card.querySelector(".assigned-volunteer");
+                volunteerField.textContent = updatedReport.assignedVolunteer
+                    ? updatedReport.assignedVolunteer.name
+                    : "Not Assigned";
+            }
+        } else {
+            alert("Failed to assign volunteer.");
+        }
+    }
+
 </script>
+
 
 </body>
 </html>

@@ -2,7 +2,9 @@ package com.ijse.gdse.back_end.service;
 
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.entity.Report;
+import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.repository.ReportRepository;
+import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private final VolunteerRepository volunteerRepository;
 
     private final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 
@@ -86,4 +89,16 @@ public class ReportService {
     public long getTotalReports() {
         return reportRepository.count();
     }
+
+    public Report assignVolunteer(Long reportId, Long volunteerId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+
+        report.setAssignedVolunteer(volunteer);
+        return reportRepository.save(report);
+    }
+
 }

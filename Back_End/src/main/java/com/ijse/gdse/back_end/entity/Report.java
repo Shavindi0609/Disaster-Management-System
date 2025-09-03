@@ -1,9 +1,6 @@
 package com.ijse.gdse.back_end.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -32,4 +29,9 @@ public class Report {
 
     // ✅ Add this field to track which user created the report
     private String username;
+
+    // ✅ Assigned volunteer
+    @ManyToOne
+    @JoinColumn(name = "assigned_volunteer_id")
+    private Volunteer assignedVolunteer;
 }
