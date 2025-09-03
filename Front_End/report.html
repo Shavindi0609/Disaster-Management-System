@@ -114,9 +114,15 @@
         const photoInput = document.getElementById('photo');
         if(photoInput.files.length > 0) formData.append('photo', photoInput.files[0]);
 
+        // ✅ Get JWT token from localStorage
+        const accessToken = localStorage.getItem("accessToken");
+
         try {
             const response = await fetch('http://localhost:8080/auth/reports', {
                 method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${accessToken}` // ✅ Send token
+                },
                 body: formData
             });
 
@@ -126,18 +132,17 @@
                 form.reset();
                 if(marker) map.removeLayer(marker);
             } else {
-                // Debugging info
                 console.error("Failed with status", response.status, response.statusText);
-                const text = await response.text(); // server response body
+                const text = await response.text();
                 alert("Failed to submit report: " + response.status + "\n" + text);
             }
-
 
         } catch (error) {
             alert("Error submitting report. Please try again.");
             console.error(error);
         }
     });
+
 </script>
 
 </body>

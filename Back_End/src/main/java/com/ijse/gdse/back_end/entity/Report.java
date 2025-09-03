@@ -29,4 +29,7 @@ public class Report {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    // ✅ Add this field to track which user created the report
+    private String username;
 }
