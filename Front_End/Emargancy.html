@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --main-dark: #066150;
+      --main-light: #1D865C;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--main-dark) !important;
+    }
+    .navbar-brand, .nav-link {
+      color: #fff !important;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 2px;
+      background-color: #fff;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: right;
+    }
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: url('images/Commiunity-Trainnig.jpg') center/cover no-repeat;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.4);
+    }
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: var(--main-light);
+      border-color: var(--main-light);
+    }
+    .btn-primary:hover {
+      background-color: var(--main-dark);
+      border-color: var(--main-dark);
+    }
+
+    /* Sections */
+    section {
+      padding: 60px 0;
+    }
+    section h2 {
+      color: var(--main-dark);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .card-title {
+      color: var(--main-dark);
+      font-weight: bold;
+    }
+
+    /* Emergency Response Steps Section */
+    .emergency-steps-section {
+      background: linear-gradient(120deg, #e8f4f1, #f2f7f6);
+      padding: 80px 0;
+    }
+
+    .emergency-steps-section h2 {
+      color: #066150;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .emergency-steps-section .card {
+      background: #fff;
+      border: none;
+      border-radius: 15px;
+      padding: 30px 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .emergency-steps-section .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    .emergency-steps-section .card img {
+      width: 60px;
+      margin-bottom: 15px;
+    }
+
+    .emergency-steps-section .card-title {
+      color: #1D865C;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .emergency-steps-section .card-text {
+      font-size: 1.09rem;
+      color: #333;
+      line-height: 1.5;
+    }
+
+
+    /* Footer */
+    footer {
+      background-color: var(--main-dark);
+      color: #fff;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    footer a {
+      color: #cce4f6;
+      text-decoration: underline;
+    }
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
+      <span>NDMS</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="#">Disasters & Assistance</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Emergency Management</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Work With Us</a></li>
+      </ul>
+      <form class="d-flex me-2">
+        <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
+      </form>
+      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+    <h1>Emergency Management</h1>
+    <p>Plan, Respond, Recover – Effective Emergency Management for All</p>
+    <a href="signUp.html" class="btn btn-primary btn-lg mt-3">Get Assistance</a>
+  </div>
+</section>
+
+<!-- Emergency Response Steps -->
+<section class="emergency-steps-section">
+  <div class="container">
+    <h2>Emergency Response Steps</h2>
+    <div class="row g-4 text-center">
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <img src="https://img.icons8.com/?size=100&id=16229&format=png&color=000000" alt="Preparation Icon" class="mb-3">
+            <h5 class="card-title">Preparation</h5>
+            <p class="card-text">Create evacuation plans, emergency kits, and communication strategies.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <img src="https://img.icons8.com/?size=100&id=9shlfoGKqCS7&format=png&color=000000" alt="Response Icon" class="mb-3">
+            <h5 class="card-title">Response</h5>
+            <p class="card-text">Coordinate rescue, medical support, and relief during disasters.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <img src="https://img.icons8.com/?size=100&id=7MalriT3c2AC&format=png&color=000000" alt="Recovery Icon" class="mb-3">
+            <h5 class="card-title">Recovery</h5>
+            <p class="card-text">Assess damage, restore essential services, and support affected communities.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Emergency Resources -->
+<section class="bg-light">
+  <div class="container">
+    <h2>Emergency Resources</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-3">
+        <div class="card p-3 border rounded">
+          <h5>Emergency Contacts</h5>
+          <p>List of local and national helplines for immediate assistance.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-3 border rounded">
+          <h5>Shelter Locations</h5>
+          <p>Find nearby emergency shelters and safe zones.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-3 border rounded">
+          <h5>Medical Aid</h5>
+          <p>Access to hospitals, clinics, and mobile medical units.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-3 border rounded">
+          <h5>Supplies & Relief</h5>
+          <p>Distribution points for food, water, and emergency kits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Preparedness Tips -->
+<section>
+  <div class="container">
+    <h2>Preparedness Tips</h2>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><strong>Plan:</strong> Know your evacuation routes and keep emergency kits ready.</li>
+      <li class="list-group-item"><strong>Stay Informed:</strong> Monitor alerts from authorities and local news.</li>
+      <li class="list-group-item"><strong>Community Support:</strong> Check on neighbors, volunteers, and vulnerable populations.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Emergency Helpline: 123-456-7890 | Contact us: info@ndms.com</p>
+  <p>&copy; 2025 NDMS. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
