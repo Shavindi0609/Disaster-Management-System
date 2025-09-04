@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Disaster Management Project</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --main-dark: #066150;
+      --main-light: #1D865C;
+      --accent-color: #FF6B35;
+      --light-bg: #F8F9FA;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      line-height: 1.6;
+      background-color: var(--light-bg);
+    }
+
+    .navbar {
+      background-color: var(--light-bg) !important;
+    }
+    .navbar-brand span,
+    .nav-link {
+      color: var(--main-light);
+      position: relative;
+      padding: 8px 12px;
+      text-decoration: none;
+    }
+
+    /* Active link line always visible */
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;              /* <-- important eka */
+      height: 3px;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+      transform: scaleX(1);     /* <-- force to show */
+    }
+
+    /* Default hidden line */
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;              /* <-- Add width here */
+      height: 2px;
+      background-color: var(--accent-color);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: right;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .hero-section {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1593113630400-ea4288922497?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80') no-repeat center center/cover;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .hero-section .btn {
+      background-color: var(--accent-color);
+      border: none;
+    }
+
+    .section-title {
+      position: relative;
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      color: var(--main-dark);
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--accent-color);
+    }
+
+    .section-title.center:after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .mission-card {
+      background: darkslategray;
+      color: white;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .mission-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .team-member {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .team-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 5px solid var(--light-bg);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .stats-section {
+      background: var(--main-dark);
+      color: white;
+      padding: 80px 0;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0;
+    }
+
+    .value-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      height: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .value-icon {
+      font-size: 2.5rem;
+      color: var(--accent-color);
+      margin-bottom: 15px;
+    }
+
+    .contact-info {
+      list-style: none;
+      padding: 0;
+    }
+
+    .contact-info li {
+      margin-bottom: 15px;
+      padding-left: 30px;
+      position: relative;
+    }
+
+    .contact-info i {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      color: var(--accent-color);
+    }
+
+    footer {
+      background: var(--main-dark);
+      color: white;
+      padding: 50px 0 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.2rem;
+      margin-right: 15px;
+    }
+
+    .bg-light {
+      background-color: var(--light-bg) !important;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
+      <span>NDMS</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Disasters & Assistance</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
+        <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="Work_With_Us.html">Work With Us</a></li>
+      </ul>
+      <form class="d-flex me-2">
+        <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
+      </form>
+      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-4">About DisasterGuard</h1>
+    <p class="lead mb-4">We are dedicated to saving lives and reducing impact through effective disaster management</p>
+    <a href="#our-mission" class="btn btn-primary btn-lg px-4">Learn More</a>
+  </div>
+</section>
+
+<!-- Mission Section -->
+<section id="our-mission" class="py-5">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <h2 class="section-title">Our Mission</h2>
+        <p class="lead">To build resilient communities through proactive disaster management and rapid response systems.</p>
+        <p>DisasterGuard was established in 2010 with the vision of creating a world where communities are prepared for disasters and can recover quickly. We work with governments, NGOs, and local communities to develop comprehensive disaster management strategies.</p>
+        <p>Our team of experts includes emergency responders, urban planners, data scientists, and community engagement specialists who work together to create innovative solutions for disaster preparedness and response.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="mission-card p-4 text-center h-100">
+              <i class="fas fa-hands-helping fa-3x mb-3"></i>
+              <h4>Community Support</h4>
+              <p>Empowering communities with knowledge and resources for disaster preparedness</p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="mission-card p-4 text-center h-100">
+              <i class="fas fa-tools fa-3x mb-3"></i>
+              <h4>Innovative Solutions</h4>
+              <p>Developing cutting-edge technology for early warning and response systems</p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="mission-card p-4 text-center h-100">
+              <i class="fas fa-globe-americas fa-3x mb-3"></i>
+              <h4>Global Reach</h4>
+              <p>Working in over 20 countries to implement disaster management programs</p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="mission-card p-4 text-center h-100">
+              <i class="fas fa-book-reader fa-3x mb-3"></i>
+              <h4>Education & Training</h4>
+              <p>Providing comprehensive training programs for professionals and communities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-3 col-6 mb-4">
+        <h3 class="stat-number">12+</h3>
+        <p class="mb-0">Years of Experience</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <h3 class="stat-number">350+</h3>
+        <p class="mb-0">Projects Completed</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <h3 class="stat-number">24</h3>
+        <p class="mb-0">Countries Served</p>
+      </div>
+      <div class="col-md-3 col-6 mb-4">
+        <h3 class="stat-number">98%</h3>
+        <p class="mb-0">Client Satisfaction</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+  <div class="container py-5">
+    <h2 class="section-title text-center center">Our Leadership Team</h2>
+    <p class="text-center lead mb-5">Meet the experts leading our disaster management initiatives</p>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team Member" class="team-img">
+          <h4>David Chen</h4>
+          <p class="text-primary">Executive Director</p>
+          <p>15+ years in emergency management</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team Member" class="team-img">
+          <h4>Sarah Johnson</h4>
+          <p class="text-primary">Operations Director</p>
+          <p>Specialized in disaster response</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Team Member" class="team-img">
+          <h4>Michael Rodriguez</h4>
+          <p class="text-primary">Technology Lead</p>
+          <p>Developer of early warning systems</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Team Member" class="team-img">
+          <h4>Emma Wilson</h4>
+          <p class="text-primary">Community Outreach</p>
+          <p>Expert in community preparedness</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-5">
+  <div class="container py-5">
+    <h2 class="section-title text-center center">Our Values</h2>
+    <p class="text-center lead mb-5">The principles that guide everything we do</p>
+
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h4>Compassion</h4>
+          <p>We approach every situation with empathy and understanding for affected communities.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h4>Innovation</h4>
+          <p>We continuously seek new and better ways to predict, prepare for, and respond to disasters.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h4>Collaboration</h4>
+          <p>We believe in working together with communities, governments, and organizations.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h4>Resilience</h4>
+          <p>We focus on building capacity to withstand and recover from disasters.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h4>Accountability</h4>
+          <p>We take responsibility for our actions and are transparent in our operations.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h4>Efficiency</h4>
+          <p>We maximize our resources to deliver timely and effective disaster response.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5 bg-light">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <h2 class="section-title">Get In Touch</h2>
+        <p class="lead">Interested in learning more about our disaster management solutions?</p>
+        <p>We're always looking for partners and organizations who share our vision of creating disaster-resilient communities worldwide.</p>
+
+        <ul class="contact-info">
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <strong>Headquarters:</strong> 123 Safety Avenue, Disaster Prevention Center, City
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <strong>Phone:</strong> +1 (555) 123-4567
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <strong>Email:</strong> info@disasterguard.org
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <strong>Hours:</strong> Monday-Friday: 9am - 5pm
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <div class="bg-white p-4 rounded shadow-sm">
+          <h4 class="mb-4">Send us a message</h4>
+          <form>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Your Name">
+            </div>
+            <div class="mb-3">
+              <input type="email" class="form-control" placeholder="Your Email">
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Subject">
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" rows="4" placeholder="Message"></textarea>
+            </div>
+            <button class="btn btn-primary w-100">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <h4>DisasterGuard</h4>
+        <p>Building resilient communities through effective disaster management since 2010.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Projects</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4">
+        <h5>Services</h5>
+        <ul class="footer-links">
+          <li><a href="#">Risk Assessment</a></li>
+          <li><a href="#">Emergency Planning</a></li>
+          <li><a href="#">Training Programs</a></li>
+          <li><a href="#">Response Systems</a></li>
+          <li><a href="#">Recovery Support</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-4 mb-4">
+        <h5>Newsletter</h5>
+        <p>Subscribe to our newsletter for updates on disaster management best practices.</p>
+        <form>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Your Email">
+            <button class="btn btn-primary" type="button">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr class="mt-4">
+    <div class="text-center py-3">
+      <p class="mb-0">&copy; 2023 DisasterGuard. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

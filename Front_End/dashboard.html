@@ -10,6 +10,7 @@
     :root {
       --main-dark: #066150;
       --main-light: #1D865C;
+      --accent-color: #FF6B35;
     }
     .top-banner {
       background: #e6f5f0;
@@ -228,6 +229,19 @@
       white-space: nowrap;
     }
 
+    .btn-primary {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: #fff; /* ensure text is visible */
+    }
+
+    .btn-primary:hover {
+      background-color:var(--accent-color); /* or manually #e65b2d */
+      border-color:var(--accent-color);
+      color: #fff;
+    }
+
+
     /* Continuous animation */
     @keyframes ticker {
       0% { transform: translateX(0); }
@@ -300,8 +314,8 @@
         <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
         <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Work With Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="About_Us.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="Work_With_Us.html">Work With Us</a></li>
       </ul>
       <form class="d-flex me-2">
         <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
