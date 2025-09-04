@@ -231,3 +231,45 @@ button:hover {
     border-radius: 6px;
     font-size: 14px;
 }
+
+.chart-card {
+    width: 40%;            /* pituwen half width */
+    margin-left: auto;     /* right side ekata yawanna */
+    margin-right: 20px;    /* optional spacing from right edge */
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dashboard-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.chart-card {
+    flex: 1;               /* left side */
+    max-width: 50%;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.map-card {
+    flex: 1;               /* right side */
+    max-width: 50%;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#todayMap {
+    width: 100%;
+    height: 400px;   /* map height */
+    border-radius: 8px;
+}
+
+

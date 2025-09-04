@@ -8,6 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 <body>
 <div class="d-flex" id="wrapper">
@@ -48,6 +51,16 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card p-3 shadow-sm">
+                <h5>Today’s Reported Disasters</h5>
+                <div id="todayDisastersMap" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -101,6 +114,63 @@
             });
         }
     });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        if (!accessToken) {
+            alert("⚠️ You must be logged in to access this page.");
+            window.location.href = "signIn.html";
+            return;
+        }
+
+        // ✅ Load today's disasters on map inside DOMContentLoaded
+        fetch("http://localhost:8080/auth/reports/today", {
+            headers: { "Authorization": `Bearer ${accessToken}` }
+        })
+            .then(res => res.json())
+            .then(data => {
+                const reports = data.data || [];
+
+                // Initialize map
+                const map = L.map("todayDisastersMap").setView([7.8731, 80.7718], 7);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    attribution: "&copy; OpenStreetMap contributors"
+                }).addTo(map);
+
+                // Add markers
+                reports.forEach(r => {
+                    if (r.latitude && r.longitude) {
+                        L.marker([r.latitude, r.longitude])
+                            .addTo(map)
+                            .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+                    }
+                });
+            })
+            .catch(err => console.error("🚨 Error loading today's reports:", err));
+    });
+
+    // ✅ Fetch My Reports count
+    fetch("http://localhost:8080/auth/reports/my", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+        }
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.data) {
+                // APIResponse.data contains the list of reports
+                document.getElementById("report-count").textContent = data.data.length;
+            }
+        })
+        .catch(err => {
+            console.error("🚨 Error fetching my reports:", err);
+        });
+
+
 </script>
 </body>
 </html>

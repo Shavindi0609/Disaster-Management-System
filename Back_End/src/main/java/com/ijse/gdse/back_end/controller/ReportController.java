@@ -95,4 +95,13 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", report));
     }
 
+    // ================= Today's Reports =================
+    @GetMapping("/today")
+    public ResponseEntity<APIResponse> getTodayReports() {
+        List<Report> todayReports = reportService.getTodayReports();
+        return ResponseEntity.ok(new APIResponse(200, "Today's reports fetched", todayReports));
+    }
+
+
+
 }

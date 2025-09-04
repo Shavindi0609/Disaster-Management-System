@@ -33,10 +33,16 @@
     <!-- Dashboard Page -->
     <div id="dashboard" class="page active">
         <div class="stats-grid">
+<!--            <div class="stat-card">-->
+<!--                <h2 id="statEmployees">0</h2>-->
+<!--                <p>Employees</p>-->
+<!--            </div>-->
+
             <div class="stat-card">
-                <h2 id="statEmployees">0</h2>
-                <p>Employees</p>
+                <h2 id="statTodayDisasters">0</h2>
+                <p>Today's Disasters</p>
             </div>
+
             <div class="stat-card">
                 <h2 id="statVolunteers">0</h2>
                 <p>Volunteers</p>
@@ -51,10 +57,20 @@
             </div>
         </div>
 
-        <!-- Chart -->
-        <div class="chart-card">
-            <canvas id="dashboardChart"></canvas>
+        <!-- 🆕 Wrap chart + map inside one row -->
+        <div class="dashboard-row">
+            <!-- Chart left -->
+            <div class="chart-card">
+                <canvas id="dashboardChart"></canvas>
+            </div>
+
+            <!-- Map right -->
+            <div class="map-card">
+                <div id="todayMap"></div>
+            </div>
         </div>
+
+
     </div>
 
     <!-- Employees Page -->
@@ -157,11 +173,12 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // 🔹 Fetch Employees count
-        fetch("http://localhost:8080/auth/employees/count")
+
+        // 🔹 Fetch Today's Reports
+        fetch("http://localhost:8080/auth/reports/today")
             .then(res => res.json())
             .then(data => {
-                document.getElementById("statEmployees").textContent = data.data;
+                document.getElementById("statTodayDisasters").textContent = data.data.length;
             });
 
         // 🔹 Fetch Volunteers count
@@ -324,6 +341,25 @@
             alert("Failed to assign volunteer.");
         }
     }
+
+    // Load today's reports on small map
+    fetch("http://localhost:8080/auth/reports/today")
+        .then(res => res.json())
+        .then(data => {
+            const reports = data.data;
+
+            const map = L.map("todayMap").setView([7.8731, 80.7718], 7);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            reports.forEach(r => {
+                L.marker([r.latitude, r.longitude])
+                    .addTo(map)
+                    .bindPopup(`<b>${r.type}</b><br>${r.description}`);
+            });
+        });
+
 
 </script>
 

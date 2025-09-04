@@ -101,4 +101,13 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
+    public List<Report> getTodayReports() {
+        LocalDate today = LocalDate.now();
+        return reportRepository.findByCreatedAtBetween(
+                today.atStartOfDay(),
+                today.plusDays(1).atStartOfDay()
+        );
+    }
+
+
 }
