@@ -31,12 +31,11 @@
     <div id="page-content" class="p-4">
         <h2>Welcome, Victim User 👋</h2>
         <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <h5>My Reports</h5>
-                    <p id="report-count">0</p>
-                </div>
+            <div class="card p-3 shadow-sm">
+                <h5>My Reports</h5>
+                <p id="report-count">0</p>
             </div>
+
             <div class="col-md-4">
                 <div class="card p-3 shadow-sm">
                     <h5>Aid Received</h5>
@@ -83,26 +82,26 @@
             welcomeHeader.textContent = `Welcome, ${username} 👋`;
         }
 
-        // Fetch user-specific dashboard stats
-        fetch("http://localhost:8080/auth/reports", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data) {
-                    document.getElementById("report-count").textContent = data.totalReports || 0;
-                    document.getElementById("aid-count").textContent = data.aidReceived || 0;
-                    document.getElementById("pending-count").textContent = data.pendingRequests || 0;
-                }
-            })
-            .catch(err => {
-                console.error("Error fetching user data:", err);
-                alert("🚨 Could not load dashboard data.");
-            });
+        // // Fetch user-specific dashboard stats
+        // fetch("http://localhost:8080/auth/reports", {
+        //     method: "GET",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": `Bearer ${accessToken}`
+        //     }
+        // })
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         if (data) {
+        //             document.getElementById("report-count").textContent = data.totalReports || 0;
+        //             document.getElementById("aid-count").textContent = data.aidReceived || 0;
+        //             document.getElementById("pending-count").textContent = data.pendingRequests || 0;
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.error("Error fetching user data:", err);
+        //         alert("🚨 Could not load dashboard data.");
+        //     });
 
         // Logout functionality
         const logoutLink = document.getElementById("logoutLink");
@@ -151,24 +150,26 @@
             .catch(err => console.error("🚨 Error loading today's reports:", err));
     });
 
-    // ✅ Fetch My Reports count
-    fetch("http://localhost:8080/auth/reports/my", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
-        }
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.data) {
-                // APIResponse.data contains the list of reports
-                document.getElementById("report-count").textContent = data.data.length;
+    document.addEventListener("DOMContentLoaded", () => {
+        const accessToken = localStorage.getItem("accessToken");
+        if (!accessToken) return;
+
+        fetch("http://localhost:8080/auth/reports/my", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             }
         })
-        .catch(err => {
-            console.error("🚨 Error fetching my reports:", err);
-        });
+            .then(res => res.json())
+            .then(data => {
+                // ✅ data.data is list of reports
+                const myReportsCount = data.data ? data.data.length : 0;
+                document.getElementById("report-count").textContent = myReportsCount;
+            })
+            .catch(err => console.error("🚨 Error fetching my reports:", err));
+    });
+
 
 
 </script>
