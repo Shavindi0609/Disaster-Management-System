@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disaster Map - NDMRS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+
+    :root {
+      --main-dark: #066150;
+      --main-light: #1D865C;
+      --accent-color: #FF6B35;
+      --light-bg: #F8F9FA;
+    }
+
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+
+    #disasterMap {
+      height: 90vh;
+      border-radius: 15px;
+    }
+    /* Navbar */
+    .navbar {
+      background-color: var(--light-bg) !important;
+    }
+    .navbar-brand span,
+    .nav-link {
+      color: var(--main-light);
+      position: relative;
+      padding: 8px 12px;
+      text-decoration: none;
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 3px;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+      transform: scaleX(1);
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent-color);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: right;
+    }
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
+      <span>NDMS</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Disasters & Assistance</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
+        <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Get Ready</a></li>
+      </ul>
+      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+  <h3 class="mb-3"><i class="fas fa-map-marker-alt"></i> Today’s Reported Disasters</h3>
+  <div class="mb-3 d-flex justify-content-start">
+    <select id="filterType" class="form-select w-auto">
+      <option value="all">All</option>
+      <option value="Flood">Flood</option>
+      <option value="Fire">Fire</option>
+      <option value="Earthquake">Earthquake</option>
+      <option value="Landslide">Landslide</option>
+    </select>
+  </div>
+  <div id="disasterMap" style="height: 500px; border-radius: 15px;"></div> <!-- smaller height -->
+  <div class="mt-2">
+    <small><b>Legend:</b>
+      <span style="color:blue">● Flood</span> |
+      <span style="color:red">● Fire</span> |
+      <span style="color:orange">● Landslide</span> |
+      <span style="color:green">● Earthquake</span>
+    </small>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      alert("⚠️ You must be logged in to access this page.");
+      window.location.href = "signIn.html";
+      return;
+    }
+
+    const map = L.map("disasterMap").setView([7.8731, 80.7718], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    let allMarkers = [];
+
+    function loadDisasters(filter = "all") {
+      fetch("http://localhost:8080/auth/reports/today", {
+        headers: { "Authorization": `Bearer ${accessToken}` }
+      })
+              .then(res => res.json())
+              .then(data => {
+                allMarkers.forEach(m => map.removeLayer(m));
+                allMarkers = [];
+
+                const reports = data.data || [];
+                reports.forEach(r => {
+                  if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
+                    const color = r.type === "Flood" ? "blue" :
+                            r.type === "Fire" ? "red" :
+                                    r.type === "Landslide" ? "orange" :
+                                            "green";
+
+                    const marker = L.circleMarker([r.latitude, r.longitude], {
+                      radius: 8, color: color, fillColor: color, fillOpacity: 0.7
+                    }).addTo(map)
+                            .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+                    allMarkers.push(marker);
+                  }
+                });
+              })
+              .catch(err => console.error("Error loading reports:", err));
+    }
+
+    loadDisasters();
+
+    document.getElementById("filterType").addEventListener("change", e => {
+      loadDisasters(e.target.value);
+    });
+  });
+</script>
+</body>
+</html>

@@ -14,55 +14,52 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar (Only Green Part) */
-#sidebar {
-    background: linear-gradient(180deg, var(--main-dark), var(--main-light));
+.sidebar {
     width: 240px;
+    background: #066150; /* dark green */
+    color: #fff;
+    padding: 20px;
     min-height: 100vh;
-    border-radius: 0 15px 15px 0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-#sidebar h2 {
+.sidebar h2 {
+    margin-bottom: 35px;
+    font-size: 22px;
     font-weight: 700;
-    margin-bottom: 30px;
-    color: var(--bg-light); /* black */
+    letter-spacing: 1px;
 }
 
-#sidebar ul li {
-    margin: 15px 0;
+.sidebar ul {
+    padding-left: 0;
 }
 
-/*#sidebar ul li a {*/
-/*    padding: 10px 15px;*/
-/*    display: block;*/
-/*    border-radius: 10px;*/
-/*    transition: all 0.3s ease;*/
-/*    color: var(--text-dark); !* black text *!*/
-/*    font-weight: 500;*/
-/*}*/
+.sidebar ul li {
+    margin-bottom: 15px;
+}
 
-/*#sidebar ul li a:hover {*/
-/*    background-color: rgba(255,255,255,0.4);*/
-/*    text-decoration: none;*/
-/*    transform: translateX(5px);*/
-/*}*/
-
-
-#sidebar ul li a {
-    padding: 10px 15px;
-    display: block;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    color: #000; /* black text */
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 15px;
     font-weight: 500;
-    text-decoration: none; /* remove underline */
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-#sidebar ul li a:hover {
-    background-color: rgba(255,255,255,0.4);
-    text-decoration: none; /* still no underline */
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background: #1D865C; /* lighter green hover */
     transform: translateX(5px);
+}
+
+.sidebar ul li a i {
+    width: 20px; /* icon alignment */
+    text-align: center;
 }
 
 /* Main Content */
@@ -124,4 +121,26 @@ body {
 .btn-primary:hover {
     background-color: #555; /* slightly lighter gray */
     transform: scale(1.05);
+}
+
+.brand i {
+    color: #fff;
+}
+
+.welcome-card {
+    background: #f8f9fa;
+    border-left: 6px solid var(--main-light);
+}
+
+.stat-card {
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.stat-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
 }

@@ -7,116 +7,124 @@
     <link rel="stylesheet" href="css/userDashboard.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 </head>
 <body>
 <div class="d-flex" id="wrapper">
-    <!-- Sidebar -->
-    <div class="bg-dark text-white p-3" id="sidebar">
-        <h2 class="text-center">NDMRS</h2>
+    <!-- User Sidebar -->
+    <div class="sidebar">
+        <div class="brand text-center mb-4">
+            <i class="fas fa-shield-alt fa-2x"></i>
+            <h2 class="mt-2">NDMRS</h2>
+        </div>
         <ul class="list-unstyled">
-            <li><a href="#" class="text-white"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="report.html" class="text-white"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
-            <li><a href="myReports.html" class="text-white"><i class="fas fa-file-alt"></i> My Reports</a></li>
-            <li><a href="profile.html" class="text-white"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="volunteer.html" class="text-white"><i class="fas fa-user"></i> Volunteer</a></li>
-            <li><a href="signIn.html" class="text-white" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="dashboard.html" class="active">
+                <i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="report.html">
+                <i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="myReports.html">
+                <i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="profile.html">
+                <i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="volunteer.html">
+                <i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+            <li><a href="signIn.html" id="logoutLink">
+                <i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
 
     <!-- Main Content -->
     <div id="page-content" class="p-4">
-        <h2>Welcome, Victim User 👋</h2>
-        <div class="row mt-4">
-            <div class="card p-3 shadow-sm">
-                <h5>My Reports</h5>
-                <p id="report-count">0</p>
+        <!-- Welcome Card (smaller) -->
+        <div class="welcome-card p-3 mb-3 shadow-sm rounded d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="mb-0">Welcome, <span id="username">Victim User</span> 👋</h5>
+                <p class="text-muted mb-0" style="font-size: 0.85rem;">Here’s an overview of your activities</p>
             </div>
+            <div class="user-avatar">
+                <i class="fas fa-user-circle fa-2x text-secondary"></i>
+            </div>
+        </div>
 
+
+        <!-- Disaster Map -->
+        <div class="mt-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Today’s Reported Disasters</h5>
+                    <select id="filterType" class="form-select w-auto">
+                        <option value="all">All</option>
+                        <option value="Flood">Flood</option>
+                        <option value="Fire">Fire</option>
+                        <option value="Earthquake">Earthquake</option>
+                        <option value="Landslide">Landslide</option>
+                    </select>
+                </div>
+                <div class="card-body p-0">
+                    <div id="todayDisastersMap" style="height: 350px; border-radius: 0 0 15px 15px;"></div>
+                </div>
+                <div class="p-3">
+                    <small><b>Legend:</b>
+                        <span style="color:blue">● Flood</span> |
+                        <span style="color:red">● Fire</span> |
+                        <span style="color:orange">● Landslide</span> |
+                        <span style="color:green">● Earthquake</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="mt-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-history"></i> Recent Reports</h5>
+                </div>
+                <div class="card-body">
+                    <ul id="recentReports" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-4">
             <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <h5>Aid Received</h5>
-                    <p id="aid-count">0</p>
+                <div class="card stat-card shadow-sm text-center">
+                    <div class="card-body">
+                        <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                        <h5>My Reports</h5>
+                        <p id="report-count">0</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-3 shadow-sm">
-                    <h5>Pending Requests</h5>
-                    <p id="pending-count">0</p>
+                <div class="card stat-card shadow-sm text-center">
+                    <div class="card-body">
+                        <i class="fas fa-hand-holding-usd fa-2x text-success mb-2"></i>
+                        <h5>Aid Received</h5>
+                        <p id="aid-count">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card shadow-sm text-center">
+                    <div class="card-body">
+                        <i class="fas fa-hourglass-half fa-2x text-warning mb-2"></i>
+                        <h5>Pending Requests</h5>
+                        <p id="pending-count">0</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card p-3 shadow-sm">
-                <h5>Today’s Reported Disasters</h5>
-                <div id="todayDisastersMap" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // Get token and user info from localStorage
         const accessToken = localStorage.getItem("accessToken");
         const username = localStorage.getItem("username");
-        const role = localStorage.getItem("role");
-
-        // Redirect to login if not logged in
-        if (!accessToken) {
-            alert("⚠️ You must be logged in to access this page.");
-            window.location.href = "signIn.html";
-            return;
-        }
-
-        // Display username in dashboard
-        const welcomeHeader = document.querySelector("h2");
-        if (welcomeHeader && username) {
-            welcomeHeader.textContent = `Welcome, ${username} 👋`;
-        }
-
-        // // Fetch user-specific dashboard stats
-        // fetch("http://localhost:8080/auth/reports", {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         "Authorization": `Bearer ${accessToken}`
-        //     }
-        // })
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         if (data) {
-        //             document.getElementById("report-count").textContent = data.totalReports || 0;
-        //             document.getElementById("aid-count").textContent = data.aidReceived || 0;
-        //             document.getElementById("pending-count").textContent = data.pendingRequests || 0;
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.error("Error fetching user data:", err);
-        //         alert("🚨 Could not load dashboard data.");
-        //     });
-
-        // Logout functionality
-        const logoutLink = document.getElementById("logoutLink");
-        if (logoutLink) {
-            logoutLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                localStorage.clear(); // clear token and user info
-                window.location.href = "signIn.html";
-            });
-        }
-    });
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const accessToken = localStorage.getItem("accessToken");
 
         if (!accessToken) {
             alert("⚠️ You must be logged in to access this page.");
@@ -124,54 +132,81 @@
             return;
         }
 
-        // ✅ Load today's disasters on map inside DOMContentLoaded
-        fetch("http://localhost:8080/auth/reports/today", {
+        // Set username
+        if (username) document.getElementById("username").textContent = username;
+
+        // Logout
+        document.getElementById("logoutLink").addEventListener("click", e => {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = "signIn.html";
+        });
+
+        // Initialize map
+        const map = L.map("todayDisastersMap").setView([7.8731, 80.7718], 7);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        let allMarkers = [];
+
+        function loadDisasters(filter = "all") {
+            fetch("http://localhost:8080/auth/reports/today", {
+                headers: { "Authorization": `Bearer ${accessToken}` }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    allMarkers.forEach(m => map.removeLayer(m));
+                    allMarkers = [];
+
+                    const reports = data.data || [];
+                    reports.forEach(r => {
+                        if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
+                            const color = r.type === "Flood" ? "blue" :
+                                r.type === "Fire" ? "red" :
+                                    r.type === "Landslide" ? "orange" :
+                                        "green";
+                            const marker = L.circleMarker([r.latitude, r.longitude], {
+                                radius: 8, color: color, fillColor: color, fillOpacity: 0.7
+                            }).addTo(map)
+                                .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+                            allMarkers.push(marker);
+                        }
+                    });
+                })
+                .catch(err => console.error("Error loading reports:", err));
+        }
+
+        // Load all disasters by default
+        loadDisasters();
+
+        // Filter dropdown
+        document.getElementById("filterType").addEventListener("change", e => {
+            loadDisasters(e.target.value);
+        });
+
+        // Load user reports count
+        fetch("http://localhost:8080/auth/reports/my", {
             headers: { "Authorization": `Bearer ${accessToken}` }
         })
             .then(res => res.json())
             .then(data => {
-                const reports = data.data || [];
+                const count = data.data ? data.data.length : 0;
+                document.getElementById("report-count").textContent = count;
 
-                // Initialize map
-                const map = L.map("todayDisastersMap").setView([7.8731, 80.7718], 7);
-                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution: "&copy; OpenStreetMap contributors"
-                }).addTo(map);
-
-                // Add markers
-                reports.forEach(r => {
-                    if (r.latitude && r.longitude) {
-                        L.marker([r.latitude, r.longitude])
-                            .addTo(map)
-                            .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
-                    }
+                // Show recent 5 reports
+                const recent = document.getElementById("recentReports");
+                recent.innerHTML = "";
+                (data.data || []).slice(0, 5).forEach(r => {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.innerHTML = `<b>${r.type}</b> - ${r.description || "No description"} <br>
+                      <small class="text-muted">${r.date || ""}</small>`;
+                    recent.appendChild(li);
                 });
             })
-            .catch(err => console.error("🚨 Error loading today's reports:", err));
+            .catch(err => console.error("Error fetching user reports:", err));
     });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) return;
-
-        fetch("http://localhost:8080/auth/reports/my", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                // ✅ data.data is list of reports
-                const myReportsCount = data.data ? data.data.length : 0;
-                document.getElementById("report-count").textContent = myReportsCount;
-            })
-            .catch(err => console.error("🚨 Error fetching my reports:", err));
-    });
-
-
-
 </script>
 </body>
 </html>

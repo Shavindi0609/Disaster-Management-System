@@ -5,6 +5,8 @@
     <title>Admin Dashboard - Disaster Management</title>
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,16 +14,23 @@
 <body>
 <!-- Sidebar -->
 <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <a href="#" class="active" onclick="showPage('dashboard')">Dashboard</a>
-    <a href="#" onclick="showPage('employees')">Employees</a>
-    <a href="#" onclick="showPage('volunteers')">Volunteers</a>
-    <a href="#" onclick="showPage('donors')">Donors</a>
-    <a href="#" onclick="showPage('users')">Users</a>
-    <a href="#" onclick="showReportsPage()">Reports</a>
-
-
+    <h2 class="text-center">Admin Panel</h2>
+    <ul class="list-unstyled">
+        <li><a href="#" class="active" onclick="showPage('dashboard')">
+            <i class="fa fa-home"></i> Dashboard</a></li>
+        <li><a href="#" onclick="showPage('employees')">
+            <i class="fa fa-users"></i> Employees</a></li>
+        <li><a href="#" onclick="showPage('volunteers')">
+            <i class="fa fa-hand-holding-heart"></i> Volunteers</a></li>
+        <li><a href="#" onclick="showPage('donors')">
+            <i class="fa fa-donate"></i> Donors</a></li>
+        <li><a href="#" onclick="showPage('users')">
+            <i class="fa fa-user-cog"></i> Users</a></li>
+        <li><a href="#" onclick="showReportsPage()">
+            <i class="fa fa-chart-line"></i> Reports</a></li>
+    </ul>
 </div>
+
 
 <!-- Main Content -->
 <div class="main-content">
@@ -57,16 +66,38 @@
             </div>
         </div>
 
-        <!-- 🆕 Wrap chart + map inside one row -->
-        <div class="dashboard-row">
-            <!-- Chart left -->
-            <div class="chart-card">
-                <canvas id="dashboardChart"></canvas>
+        <!-- Dashboard row with map bigger on left -->
+        <div class="dashboard-row d-flex gap-3">
+            <!-- Disaster Map left (bigger) -->
+            <div class="map-card" style="flex: 1 1 60%;">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Today’s Reported Disasters</h5>
+                        <select id="adminFilterType" class="form-select w-auto">
+                            <option value="all">All</option>
+                            <option value="Flood">Flood</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Earthquake">Earthquake</option>
+                            <option value="Landslide">Landslide</option>
+                        </select>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="adminTodayMap" style="height: 400px; border-radius: 0 0 15px 15px;"></div>
+                    </div>
+                    <div class="p-3">
+                        <small><b>Legend:</b>
+                            <span style="color:blue">● Flood</span> |
+                            <span style="color:red">● Fire</span> |
+                            <span style="color:orange">● Landslide</span> |
+                            <span style="color:green">● Earthquake</span>
+                        </small>
+                    </div>
+                </div>
             </div>
 
-            <!-- Map right -->
-            <div class="map-card">
-                <div id="todayMap"></div>
+            <!-- Chart right (smaller) -->
+            <div class="chart-card" style="flex: 1 1 40%;">
+                <canvas id="dashboardChart"></canvas>
             </div>
         </div>
 
@@ -360,6 +391,54 @@
             });
         });
 
+    // Initialize small admin dashboard map
+    const adminMap = L.map("adminTodayMap").setView([7.8731, 80.7718], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(adminMap);
+
+    let adminMarkers = [];
+
+    async function loadAdminDisasters(filter = "all") {
+        try {
+            const res = await fetch("http://localhost:8080/auth/reports/today");
+            const data = await res.json();
+            const reports = data.data || [];
+
+            // Clear previous markers
+            adminMarkers.forEach(m => adminMap.removeLayer(m));
+            adminMarkers = [];
+
+            reports.forEach(r => {
+                if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
+                    const color = r.type === "Flood" ? "blue" :
+                        r.type === "Fire" ? "red" :
+                            r.type === "Landslide" ? "orange" :
+                                "green";
+
+                    const marker = L.circleMarker([r.latitude, r.longitude], {
+                        radius: 8,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.7
+                    }).addTo(adminMap)
+                        .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+
+                    adminMarkers.push(marker);
+                }
+            });
+        } catch (err) {
+            console.error("Error loading admin disasters:", err);
+        }
+    }
+
+    // Load all disasters by default
+    loadAdminDisasters();
+
+    // Filter dropdown
+    document.getElementById("adminFilterType").addEventListener("change", e => {
+        loadAdminDisasters(e.target.value);
+    });
 
 </script>
 

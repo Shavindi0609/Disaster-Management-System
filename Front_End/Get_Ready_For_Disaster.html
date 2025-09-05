@@ -2,28 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Get Ready for Disasters - NDMS</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Ready - Disaster Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --main-dark: #066150;
       --main-light: #1D865C;
+      --accent-color: #FF6B35;
+      --light-bg: #F8F9FA;
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      line-height: 1.6;
+      background-color: var(--light-bg);
     }
 
+    /* Navbar */
     .navbar {
-      background-color: var(--main-dark) !important;
+      background-color: var(--light-bg) !important;
     }
     .navbar-brand span,
     .nav-link {
-      color: #fff !important;
+      color: var(--main-light);
       position: relative;
+      padding: 8px 12px;
+      text-decoration: none;
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 3px;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+      transform: scaleX(1);
     }
     .nav-link::after {
       content: "";
@@ -32,7 +50,7 @@
       bottom: -4px;
       width: 100%;
       height: 2px;
-      background-color: #fff;
+      background-color: var(--accent-color);
       transform: scaleX(0);
       transition: transform 0.3s ease;
       transform-origin: right;
@@ -41,85 +59,40 @@
       transform: scaleX(1);
       transform-origin: left;
     }
+
+    /* Hero Section */
     .hero-section {
-      background: url('images/Black&White.jpg') center/cover no-repeat;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/Black&White.jpg') no-repeat center center/cover;
       color: white;
       padding: 100px 0;
       text-align: center;
-      position: relative;
+    }
+    .hero-section .btn {
+      background-color: var(--accent-color);
+      border: none;
     }
 
-    .hero-section::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.7); /* adjust opacity for darkness */
-      z-index: 1;
-    }
-
-    .hero-section * {
-      position: relative;
-      z-index: 2; /* ensures text is above overlay */
-    }
-
-
-    .hero-section h1 {
-      color: white;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .hero-section p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-    }
-
-    .btn-primary {
-      background-color: var(--main-light);
-      border-color: var(--main-light);
-    }
-    .btn-primary:hover {
-      background-color: var(--main-dark);
-      border-color: var(--main-dark);
-    }
-
+    /* Steps Section */
     .steps-section {
-      padding: 60px 0;
+      padding: 70px 0;
     }
     .step-card {
-      border: none;
+      background: white;
       border-radius: 10px;
       text-align: center;
       padding: 30px 20px;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
     .step-card:hover {
       transform: translateY(-5px);
-      box-shadow:
-              0 10px 20px rgba(0,0,0,0.3),
-              0 20px 40px rgba(0,0,0,0.2),
-              0 30px 60px rgba(0,0,0,0.1);
     }
-
-    .step-card img {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 15px;
-    }
-
     .step-number {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: bold;
-      color: darkred;
-      /*background-color: #e6f5f0;*/
-      /*display: inline-block;*/
-      /*padding: 4px 10px;*/
-      /*border-radius: 20px;*/
+      color: var(--accent-color);
+      margin-bottom: 10px;
     }
-
     .step-card h5 {
       font-weight: bold;
       color: var(--main-dark);
@@ -129,28 +102,43 @@
       font-size: 0.95rem;
       color: #555;
     }
+    .step-card img {
+      width: 70px;
+      margin-bottom: 15px;
+    }
 
+    /* Footer */
     footer {
-      background-color: var(--main-dark);
+      background: var(--main-dark);
       color: white;
-      padding: 2rem 0;
-      text-align: center;
+      padding: 50px 0 20px;
     }
-    footer a {
-      color: #cce4f6;
-      text-decoration: underline;
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.3s;
     }
-    footer a:hover {
-      color: #fff;
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+    .social-icons a {
+      color: white;
+      font-size: 1.2rem;
+      margin-right: 15px;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      border: none;
     }
   </style>
 </head>
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+    <a class="navbar-brand d-flex align-items-center" href="#">
       <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
       <span>NDMS</span>
     </a>
@@ -159,11 +147,11 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto me-3">
-        <li class="nav-item"><a class="nav-link" href="dashboard.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link active" href="#">Get Ready</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Disasters & Assistance</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Emergency Management</a></li>
+        <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Get Ready</a></li>
       </ul>
       <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
     </div>
@@ -173,9 +161,9 @@
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="container">
-    <h1>Prepare Your Family and Community for Disasters</h1>
-    <p>Follow these simple steps to ensure safety during natural disasters like floods, earthquakes, tornadoes, and more. Being prepared saves lives.</p>
-    <a href="#steps" class="btn btn-primary btn-lg rounded-pill">Get Started</a>
+    <h1 class="display-4 fw-bold mb-4">Prepare Your Family and Community</h1>
+    <p class="lead mb-4">Follow these steps to ensure safety during natural disasters. Being prepared saves lives.</p>
+    <a href="#steps" class="btn btn-primary btn-lg px-4">Get Started</a>
   </div>
 </section>
 
@@ -183,76 +171,107 @@
 <section class="steps-section" id="steps">
   <div class="container">
     <div class="row g-4">
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 1</div>
+        <div class="step-card">
+          <div class="step-number">Step 1</div>
           <img src="https://img.icons8.com/?size=100&id=u6KPb5DlK5C9&format=png&color=1D865C" alt="Home Safety">
           <h5>Prepare Your Home</h5>
-          <p>Secure furniture, check emergency exits, and keep a disaster supply kit ready with water, food, and first aid.</p>
+          <p>Secure furniture, check emergency exits, and keep a disaster supply kit ready.</p>
         </div>
       </div>
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 2</div>
+        <div class="step-card">
+          <div class="step-number">Step 2</div>
           <img src="https://img.icons8.com/ios-filled/100/1D865C/backpack.png" alt="Emergency Kit">
           <h5>Build an Emergency Kit</h5>
-          <p>Include essentials such as food, water, medications, flashlights, batteries, and important documents in a grab-and-go bag.</p>
+          <p>Include essentials such as food, water, medications, and important documents.</p>
         </div>
       </div>
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 3</div>
+        <div class="step-card">
+          <div class="step-number">Step 3</div>
           <img src="https://img.icons8.com/ios-filled/100/1D865C/marker.png" alt="Plan">
           <h5>Create a Family Plan</h5>
-          <p>Establish evacuation routes, meeting points, and emergency contacts. Ensure all family members know the plan.</p>
+          <p>Establish evacuation routes, meeting points, and emergency contacts.</p>
         </div>
       </div>
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 4</div>
+        <div class="step-card">
+          <div class="step-number">Step 4</div>
           <img src="https://img.icons8.com/ios-filled/100/1D865C/phone.png" alt="Communication">
           <h5>Stay Informed</h5>
-          <p>Sign up for alerts, monitor local news, and follow NDMS social media channels for real-time updates during disasters.</p>
+          <p>Sign up for alerts, monitor local news, and follow NDMS social media updates.</p>
         </div>
       </div>
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 5</div>
+        <div class="step-card">
+          <div class="step-number">Step 5</div>
           <img src="https://img.icons8.com/ios-filled/100/1D865C/ambulance.png" alt="Emergency Services">
           <h5>Know Emergency Services</h5>
-          <p>Familiarize yourself with local emergency services, hospitals, and shelters. Keep contact numbers handy.</p>
+          <p>Familiarize yourself with local emergency services, hospitals, and shelters.</p>
         </div>
       </div>
-
       <div class="col-md-4">
-        <div class="card step-card shadow-sm">
-          <div class="step-number mb-2">Step 6</div>
+        <div class="step-card">
+          <div class="step-number">Step 6</div>
           <img src="https://img.icons8.com/?size=100&id=112395&format=png&color=1D865C" alt="Practice Drills">
           <h5>Practice Drills</h5>
-          <p>Conduct regular fire, flood, and earthquake drills at home and in your community to be ready for any emergency.</p>
+          <p>Conduct regular fire, flood, and earthquake drills at home and in your community.</p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-
 <!-- Footer -->
 <footer>
   <div class="container">
-    <img src="images/disaster-logo.webp" width="50" alt="logo" class="mb-2">
-    <p><strong>NDMS.gov</strong><br>An official website of the <strong>Sri Lanka Department of Homeland Security</strong></p>
-    <p>© 2025 NDMS - Supporting Community Preparedness</p>
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <h4>NDMS</h4>
+        <p>Supporting community preparedness and safety since 2010.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Get Ready</a></li>
+          <li><a href="#">Grants</a></li>
+          <li><a href="#">Emergency Management</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-4 mb-4">
+        <h5>Services</h5>
+        <ul class="footer-links">
+          <li><a href="#">Risk Assessment</a></li>
+          <li><a href="#">Training Programs</a></li>
+          <li><a href="#">Response Systems</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-4 mb-4">
+        <h5>Newsletter</h5>
+        <p>Subscribe for updates on disaster management best practices.</p>
+        <form>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Your Email">
+            <button class="btn btn-primary" type="button">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr class="mt-4">
+    <div class="text-center py-3">
+      <p class="mb-0">&copy; 2025 NDMS. All rights reserved.</p>
+    </div>
   </div>
 </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
