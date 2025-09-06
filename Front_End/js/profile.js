@@ -103,3 +103,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+
+const links = document.querySelectorAll('.list-unstyled a');
+links.forEach(link => {
+    if (link.href === window.location.href) {
+        link.classList.add('active');
+    }
+});

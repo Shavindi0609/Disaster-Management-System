@@ -264,17 +264,24 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    let currentReportId = null;
+    let reportsMap;
+    let reportMarkers = [];
 
     async function loadReports() {
         const reportsContainer = document.getElementById('reportsList');
         reportsContainer.innerHTML = "";
 
-        // Initialize map
-        const map = L.map('reportsMap').setView([7.8731, 80.7718], 7);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+        // Map එක initialize වෙන්නේ once විතරයි
+        if (!reportsMap) {
+            reportsMap = L.map('reportsMap').setView([7.8731, 80.7718], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(reportsMap);
+        }
+
+        // Clear previous markers
+        reportMarkers.forEach(m => reportsMap.removeLayer(m));
+        reportMarkers = [];
 
         try {
             const res = await fetch("http://localhost:8080/auth/reports/all");
@@ -283,35 +290,37 @@
 
             reports.forEach(report => {
                 // Map marker
-                L.marker([report.latitude, report.longitude])
-                    .addTo(map)
+                const marker = L.marker([report.latitude, report.longitude])
+                    .addTo(reportsMap)
                     .bindPopup(`<b>${report.type}</b><br>${report.description}`);
+                reportMarkers.push(marker);
 
                 // Report card
                 const card = document.createElement('div');
                 card.className = 'card mb-3';
                 card.innerHTML = `
-    <div class="card-body" data-report-id="${report.id}">
-        <h5 class="card-title">${report.type}</h5>
-        <p class="card-text">${report.description}</p>
-        <p><b>Contact:</b> ${report.reporterContact || 'N/A'}</p>
-        <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
-        <p><b>Assigned Volunteer:</b>
-            <span class="assigned-volunteer">
-                ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}
-            </span>
-        </p>
-        <button class="btn btn-primary" onclick="openAssignModal(${report.id})">Assign Volunteer</button>
-    </div>
-`;
+                <div class="card-body" data-report-id="${report.id}">
+                    <h5 class="card-title">${report.type}</h5>
+                    <p class="card-text">${report.description}</p>
+                    <p><b>Contact:</b> ${report.reporterContact || 'N/A'}</p>
+                    <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
+                    <p><b>Assigned Volunteer:</b>
+                        <span class="assigned-volunteer">
+                            ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}
+                        </span>
+                    </p>
+                    <button class="btn btn-primary" onclick="openAssignModal(${report.id})">Assign Volunteer</button>
+                </div>
+            `;
                 reportsContainer.appendChild(card);
-
             });
+
         } catch (err) {
             console.error("Error fetching reports:", err);
             reportsContainer.innerHTML = "<p>Error loading reports.</p>";
         }
     }
+
 
     function showReportsPage() {
         showPage('reports');

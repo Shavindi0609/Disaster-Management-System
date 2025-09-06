@@ -31,20 +31,37 @@
     receiveUpdates
 };
 
-    try {
-    const response = await fetch('http://localhost:8080/auth/donations', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-},
-    body: JSON.stringify(donationDTO)
-});
+        try {
+            const response = await fetch('http://localhost:8080/auth/donations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(donationDTO)
+            });
 
-    const data = await response.json();
-    alert(data.message); // Show response message
-} catch (error) {
-    console.error('Error:', error);
-    alert('Something went wrong. Please try again.');
-}
-});
+            const data = await response.json();
+            alert(data.message); // Show response message
+
+            // ✅ Reset fields after successful donation
+            document.querySelector('input[placeholder="Your Name"]').value = '';
+            document.querySelector('input[placeholder="Your Email"]').value = '';
+            document.querySelector('input[placeholder="Company name (if applicable)"]').value = '';
+            document.querySelectorAll('input[name="amount"]').forEach(r => r.checked = false);
+            document.querySelector('input[placeholder="Amount"]').value = '';
+            document.querySelector('#cardNumber').value = '';
+            document.querySelector('#cardName').value = '';
+            document.querySelector('#expiry').value = '';
+            document.querySelector('#cvv').value = '';
+            document.querySelector('input[type="checkbox"]').checked = false;
+
+            // Remove selected payment method highlight
+            document.querySelectorAll('.payment-method').forEach(pm => pm.classList.remove('active'));
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Something went wrong. Please try again.');
+        }
+
+    });
 

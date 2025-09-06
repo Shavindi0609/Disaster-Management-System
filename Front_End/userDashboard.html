@@ -30,7 +30,9 @@
                 <i class="fas fa-user"></i> Profile</a></li>
             <li><a href="volunteer.html">
                 <i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
-            <li><a href="signIn.html" id="logoutLink">
+            <li><a href="donation.html">
+                <i class="fas fa-donate"></i> Donations</a></li>
+            <li><a href="signUp.html" id="logoutLink">
                 <i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
@@ -207,6 +209,14 @@
             })
             .catch(err => console.error("Error fetching user reports:", err));
     });
+
+    const links = document.querySelectorAll('.list-unstyled a');
+    links.forEach(link => {
+        if (link.href === window.location.href) {
+            link.classList.add('active');
+        }
+    });
+
 </script>
 </body>
 </html>

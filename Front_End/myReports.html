@@ -11,19 +11,29 @@
 </head>
 <body>
 <div class="d-flex" id="wrapper">
-    <!-- Sidebar -->
-    <div class="bg-dark text-white p-3" id="sidebar">
-        <h2 class="text-center">NDMRS</h2>
+    <!-- User Sidebar -->
+    <div class="sidebar">
+        <div class="brand text-center mb-4">
+            <i class="fas fa-shield-alt fa-2x"></i>
+            <h2 class="mt-2">NDMRS</h2>
+        </div>
         <ul class="list-unstyled">
-            <li><a href="userDashboard.html" class="text-white"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="report.html" class="text-white"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
-            <li><a href="myReports.html" class="text-white active"><i class="fas fa-file-alt"></i> My Reports</a></li>
-            <li><a href="profile.html" class="text-white"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="volunteer.html" class="text-white"><i class="fas fa-user"></i> Volunteer</a></li>
-            <li><a href="signIn.html" class="text-white"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="dashboard.html" >
+                <i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="report.html">
+                <i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="myReports.html" class="active">
+                <i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="profile.html">
+                <i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="volunteer.html">
+                <i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+            <li><a href="donation.html">
+                <i class="fas fa-donate"></i> Donations</a></li>
+            <li><a href="signIn.html" id="logoutLink">
+                <i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
-
     <!-- Main Content -->
     <div id="page-content" class="p-4">
         <h2>📑 My Reports</h2>
