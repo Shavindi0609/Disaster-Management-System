@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    // ✅ User reports වලට
+
     List<Report> findByUsername(String username);
 
     List<Report> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);

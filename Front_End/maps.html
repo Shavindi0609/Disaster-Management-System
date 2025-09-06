@@ -195,47 +195,52 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const accessToken = localStorage.getItem("accessToken");
 
-    if (!accessToken) {
-      // Login නොවූ user ලට map එක අක්‍රීය කරන්න
-      document.getElementById("disasterMap").innerHTML = "<div style='height:60vh;display:flex;align-items:center;justify-content:center;color:gray;'>Sign in to view today's disasters</div>";
-      return; // ඉදිරියට fetch එක නොකරන්න
-    }
-
-    // Login user ලට map එක load කරන්න
-    const map = L.map("disasterMap").setView([7.8731, 80.7718], 7);
+    // Map initialize with fixed zoom
+    const map = L.map("disasterMap").setView([7.8731, 80.7718], 7); // Zoom level fixed at 7
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
     let allMarkers = [];
 
-    function loadDisasters(filter = "all") {
-      fetch("http://localhost:8080/auth/reports/today", {
-        headers: { "Authorization": `Bearer ${accessToken}` }
-      })
-              .then(res => res.json())
-              .then(data => {
-                allMarkers.forEach(m => map.removeLayer(m));
-                allMarkers = [];
+    async function loadDisasters(filter = "all") {
+      try {
+        const res = await fetch("http://localhost:8080/auth/reports/today");
+        const data = await res.json();
+        const reports = data.data || [];
 
-                const reports = data.data || [];
+        // Remove old markers
+        allMarkers.forEach(m => map.removeLayer(m));
+        allMarkers = [];
 
-                reports.forEach(r => {
-                  if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
-                    const color = r.type === "Flood" ? "blue" :
-                            r.type === "Fire" ? "red" :
-                                    r.type === "Landslide" ? "orange" : "green";
-                    const marker = L.circleMarker([r.latitude, r.longitude], {
-                      radius: 8, color: color, fillColor: color, fillOpacity: 0.7
-                    }).addTo(map)
-                            .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
-                    allMarkers.push(marker);
-                  }
-                });
-              })
-              .catch(err => console.error("Error loading reports:", err));
+        reports.forEach(r => {
+          if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
+            const color = r.type === "Flood" ? "blue" :
+                    r.type === "Fire" ? "red" :
+                            r.type === "Landslide" ? "orange" : "green";
+
+            const marker = L.circleMarker([r.latitude, r.longitude], {
+              radius: 8,
+              color: color,
+              fillColor: color,
+              fillOpacity: 0.7
+            }).addTo(map)
+                    .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+
+            allMarkers.push(marker);
+          }
+        });
+
+        // ❌ Remove auto-zoom
+        // if (allMarkers.length) {
+        //   const group = new L.featureGroup(allMarkers);
+        //   map.fitBounds(group.getBounds().pad(0.2));
+        // }
+
+      } catch (err) {
+        console.error("Error loading reports:", err);
+      }
     }
 
     loadDisasters();
@@ -243,9 +248,11 @@
     document.getElementById("filterType").addEventListener("change", e => {
       loadDisasters(e.target.value);
     });
+
   });
 
 </script>
+
 
 </body>
 </html>

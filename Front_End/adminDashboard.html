@@ -18,8 +18,8 @@
     <ul class="list-unstyled">
         <li><a href="#" class="active" onclick="showPage('dashboard')">
             <i class="fa fa-home"></i> Dashboard</a></li>
-        <li><a href="#" onclick="showPage('employees')">
-            <i class="fa fa-users"></i> Employees</a></li>
+<!--        <li><a href="#" onclick="showPage('employees')">-->
+<!--            <i class="fa fa-users"></i> Employees</a></li>-->
         <li><a href="#" onclick="showPage('volunteers')">
             <i class="fa fa-hand-holding-heart"></i> Volunteers</a></li>
         <li><a href="#" onclick="showPage('donors')">
@@ -28,6 +28,8 @@
             <i class="fa fa-user-cog"></i> Users</a></li>
         <li><a href="#" onclick="showReportsPage()">
             <i class="fa fa-chart-line"></i> Reports</a></li>
+        <li><a href="dashboard.html" id="logoutLink">
+            <i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
 </div>
 
@@ -104,22 +106,22 @@
 
     </div>
 
-    <!-- Employees Page -->
-    <div id="employees" class="page">
-        <div class="card">
-            <h3>Add Employee</h3>
-            <form id="addEmployeeForm">
-                <div class="form-group"><label>Name</label><input type="text" id="empName" required></div>
-                <div class="form-group"><label>Email</label><input type="email" id="empEmail" required></div>
-                <div class="form-group"><label>Position</label><input type="text" id="empPosition" required></div>
-                <button type="submit">Add Employee</button>
-            </form>
-        </div>
-        <div class="card">
-            <h3>Employee List</h3>
-            <div class="card-container" id="employeeList"></div>
-        </div>
-    </div>
+<!--    &lt;!&ndash; Employees Page &ndash;&gt;-->
+<!--    <div id="employees" class="page">-->
+<!--        <div class="card">-->
+<!--            <h3>Add Employee</h3>-->
+<!--            <form id="addEmployeeForm">-->
+<!--                <div class="form-group"><label>Name</label><input type="text" id="empName" required></div>-->
+<!--                <div class="form-group"><label>Email</label><input type="email" id="empEmail" required></div>-->
+<!--                <div class="form-group"><label>Position</label><input type="text" id="empPosition" required></div>-->
+<!--                <button type="submit">Add Employee</button>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div class="card">-->
+<!--            <h3>Employee List</h3>-->
+<!--            <div class="card-container" id="employeeList"></div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <!-- Volunteers Page -->
     <div id="volunteers" class="page">
@@ -447,6 +449,13 @@
     // Filter dropdown
     document.getElementById("adminFilterType").addEventListener("change", e => {
         loadAdminDisasters(e.target.value);
+    });
+
+    // Logout
+    document.getElementById("logoutLink").addEventListener("click", e => {
+        e.preventDefault();
+        localStorage.clear(); // Clear user session
+        window.location.href = "dashboard.html"; // Redirect to dashboard instead of sign-in
     });
 
 </script>

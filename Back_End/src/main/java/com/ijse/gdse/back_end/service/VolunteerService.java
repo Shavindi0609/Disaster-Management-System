@@ -40,7 +40,7 @@ public class VolunteerService {
         return volunteerRepository.findById(id);
     }
 
-    // ✅ Update Volunteer
+    //  Update Volunteer
     public Volunteer updateVolunteer(Long id, VolunteerDTO volunteerDTO) {
         Volunteer volunteer = volunteerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Volunteer not found"));
@@ -53,12 +53,12 @@ public class VolunteerService {
         return volunteerRepository.save(volunteer);
     }
 
-    // ✅ Delete Volunteer
+    //  Delete Volunteer
     public void deleteVolunteer(Long id) {
         volunteerRepository.deleteById(id);
     }
 
-    // ✅ Count Volunteers
+    //  Count Volunteers
     public long countVolunteers() {
         return volunteerRepository.count();
     }

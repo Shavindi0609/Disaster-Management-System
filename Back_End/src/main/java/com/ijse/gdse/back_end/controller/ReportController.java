@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-@CrossOrigin(origins = "http://localhost:63342") // frontend run වෙන port එක
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/auth/reports")
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class ReportController {
     // ================= Add Report =================
     @PostMapping
     public ResponseEntity<APIResponse> addReport(
-            @RequestHeader("Authorization") String authHeader, // ✅ Token ගන්න
+            @RequestHeader("Authorization") String authHeader,
             @RequestParam String type,
             @RequestParam String description,
             @RequestParam(required = false) String reporterContact,
