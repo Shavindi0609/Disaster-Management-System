@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Weather Danger Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+
+        :root {
+            --main-dark: #066150;
+            --main-light: #1D865C;
+            --accent-color: #FF6B35;
+            --light-bg: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-bg);
+            color: #333;
+        }
+
+
+        #map { height: 500px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+        .map-container { margin: 40px auto; max-width: 1100px; }
+
+        /* Navbar */
+        .navbar {
+            background: var(--light-bg) !important;
+        }
+        .navbar-brand span,
+        .nav-link {
+            color: var(--main-light);
+            position: relative;
+            font-weight: 500;
+        }
+
+        /* Active underline */
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            transform: scaleX(1);
+        }
+
+        /* Hover underline */
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: right;
+        }
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #e55a2b;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
+            <span>NDMS</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Disasters & Assistance</a></li>
+                <li class="nav-item"><a class="nav-link" href="maps.html">Disaster Maps</a></li>
+                <li class="nav-item"><a class="nav-link active" href="Live-Weather.html">Live Weather</a></li>
+                <li class="nav-item"><a class="nav-link " href="Emargancy.html">Emergency</a></li>
+                <li class="nav-item"><a class="nav-link" href="About_Us.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="Work_With_Us.html">Work With Us</a></li>
+            </ul>
+            <form class="d-flex me-2">
+                <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
+            </form>
+            <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+        </div>
+    </div>
+</nav>
+<div class="container map-container">
+    <h2 class="text-center mb-4 fw-bold">🌍 Live Weather Danger Map</h2>
+
+    <!-- Dropdown Filter -->
+    <div class="text-center mb-3">
+        <select id="filter" class="form-select w-50 mx-auto">
+            <option value="all">Show All Cities</option>
+            <option value="danger">Show Dangerous Cities Only</option>
+        </select>
+    </div>
+
+    <div id="map"></div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    // Initialize Map
+    const map = L.map('map').setView([7.8731, 80.7718], 6); // Sri Lanka default
+
+    // Base Layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    // OpenWeatherMap API
+    const API_KEY = "7438063e23b335097fc960d4ba85bbb4";
+    const cities = [
+        "Colombo", "Gampaha", "Kalutara",
+        "Kandy", "Matale", "Nuwara Eliya",
+        "Galle", "Matara", "Hambantota",
+        "Jaffna", "Kilinochchi", "Mannar", "Vavuniya", "Mullaitivu",
+        "Batticaloa", "Ampara", "Trincomalee",
+        "Kurunegala", "Puttalam",
+        "Anuradhapura", "Polonnaruwa",
+        "Badulla", "Monaragala",
+        "Ratnapura", "Kegalle"
+    ];
+
+    // Store markers
+    let allMarkers = [];
+
+    async function loadWeather() {
+        for (const city of cities) {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Weather fetch failed");
+
+                const data = await res.json();
+                const lat = data.coord.lat;
+                const lon = data.coord.lon;
+                const temp = data.main.temp;
+                const wind = data.wind.speed;
+                const humidity = data.main.humidity;
+                const condition = data.weather[0].description;
+
+                // Danger detection
+                let danger = "";
+                if (wind > 60) danger += "🌪 Storm risk<br>";
+                if (humidity > 90) danger += "🌊 Flood risk<br>";
+                if (temp > 38) danger += "🔥 Heatwave<br>";
+
+                const isDanger = danger !== "";
+
+                // Marker
+                const color = isDanger ? "red" : "green";
+                const marker = L.circleMarker([lat, lon], {
+                    radius: 10,
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.8
+                }).bindPopup(`
+                    <b>${city}</b><br>
+                    Condition: ${condition}<br>
+                    🌡 Temp: ${temp}°C<br>
+                    💨 Wind: ${wind} m/s<br>
+                    💧 Humidity: ${humidity}%<br>
+                    ${isDanger ? `<b style="color:red">${danger}</b>` : "✅ Normal"}
+                `);
+
+                marker.addTo(map);
+
+                // Save markers in array
+                allMarkers.push({ marker, isDanger });
+            } catch (err) {
+                console.error("Error loading weather for", city, err);
+            }
+        }
+    }
+
+    // Filter function
+    document.getElementById("filter").addEventListener("change", (e) => {
+        const value = e.target.value;
+
+        allMarkers.forEach(obj => {
+            if (value === "all") {
+                map.addLayer(obj.marker);
+            } else if (value === "danger" && obj.isDanger) {
+                map.addLayer(obj.marker);
+            } else {
+                map.removeLayer(obj.marker);
+            }
+        });
+    });
+
+    loadWeather();
+</script>
+
+</body>
+</html>
