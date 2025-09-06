@@ -299,6 +299,7 @@
 <body>
 
 <!-- Navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="#">
@@ -311,7 +312,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto me-3">
         <li class="nav-item"><a class="nav-link" href="#">Disasters & Assistance</a></li>
-<!--        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>-->
         <li class="nav-item"><a class="nav-link" href="maps.html">Floods & Maps</a></li>
         <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
         <li class="nav-item"><a class="nav-link" href="About_Us.html">About</a></li>
@@ -320,13 +320,13 @@
       <form class="d-flex me-2">
         <input class="form-control form-control-sm me-2" type="search" placeholder="Search">
       </form>
-      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
+      <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill me-2">Apply for Assistance</a>
     </div>
   </div>
 </nav>
 
-<!-- Hero Section with Background -->
 
+<!-- Hero Section with Background -->
 <section class="banner">
   <video autoplay muted loop playsinline class="banner-video">
     <source src="videos/b2.mp4" type="video/mp4" />
@@ -336,7 +336,7 @@
   <div class="banner-content">
     <div class="container position-relative">
       <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-8 text-center">
           <h1 class="fw-bold display-4">Supporting Community Preparedness</h1>
           <p class="lead mt-3">
             Billions of dollars in funding opportunities are now available through several grant programs
@@ -346,11 +346,21 @@
             <a href="#" class="btn btn-lg text-white px-4 me-3" style="background-color:#066150;">Learn More</a>
             <a href="#" class="btn btn-lg px-4" style="background-color:#1D865C; color:white;">Get Started</a>
           </div>
+
+          <!-- ✅ Weather Section CTA -->
+          <div class="mt-5">
+            <h4 class="mb-3"> Do You Want To Check Weather?</h4>
+            <a href="#weather" class="btn btn-secondary btn-lg rounded-pill px-5">
+              Yes, Check Now
+            </a>
+          </div>
+          <!-- ✅ End CTA -->
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 <!-- FEMA Help Section -->
 <section class="fema-help">
@@ -533,6 +543,21 @@
   </div>
 </section>
 
+<section id="weather" class="weather-section py-5" style="background:#e6f5f0;">
+  <div class="container">
+    <h2 class="text-center mb-4 fw-bold" style="color:#066150;">🌦 Weather Checker</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="input-group shadow-sm">
+          <input type="text" id="city" class="form-control" placeholder="Enter city name">
+          <button id="checkBtn" class="btn btn-success">Check</button>
+        </div>
+        <div id="result" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Natural Disasters Section -->
 <section class="natural-disasters-section py-5">
   <div class="container">
@@ -686,5 +711,55 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Smooth scroll effect
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute("href")).scrollIntoView({
+        behavior: "smooth"
+      });
+    });
+  });
+</script>
+
+<script>
+  document.getElementById("checkBtn").addEventListener("click", async () => {
+    const city = document.getElementById("city").value.trim();
+    if(!city) { alert("Enter a city"); return; }
+
+    try {
+      const response = await fetch(`http://localhost:8080/auth/weather?city=${city}`);
+      if(!response.ok) {
+        document.getElementById("result").innerHTML = "<p style='color:red'>❌ Error fetching data</p>";
+        return;
+      }
+
+      const data = await response.json();
+
+      let warnings = "";
+      if(data.wind.speed > 10) warnings += "<p class='warning'>⚠️ Storm Warning!</p>";
+      if(data.main.humidity > 80) warnings += "<p class='warning' style='color:blue'>⚠️ Flood Risk!</p>";
+
+      document.getElementById("result").innerHTML = `
+            <div class="card mt-3">
+                <h4>${data.name}</h4>
+                <p><b>Condition:</b> ${data.weather[0].description}</p>
+                <p><b>Temperature:</b> ${data.main.temp} °C</p>
+                <p><b>Feels Like:</b> ${data.main.feels_like} °C</p>
+                <p><b>Humidity:</b> ${data.main.humidity}%</p>
+                <p><b>Wind Speed:</b> ${data.wind.speed} m/s</p>
+                ${warnings}
+            </div>
+        `;
+
+    } catch (error) {
+      document.getElementById("result").innerHTML = "<p style='color:red'>❌ Error fetching data</p>";
+      console.error(error);
+    }
+  });
+</script>
+
 </body>
 </html>
