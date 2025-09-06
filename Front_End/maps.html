@@ -66,6 +66,11 @@
       border: none;
     }
 
+    .btn-primary:hover {
+      background-color: #e55a2b;
+      border-color: var(--accent-color);
+    }
+
     #disasterMap {
       height: 80vh;
       border-radius: 15px;
@@ -88,7 +93,7 @@
       border-bottom: 1px solid #eee;
       padding: 10px 0;
     }
-    <style>
+
        /* Map */
      #disasterMap {
        height: 60vh; /* smaller than before */
@@ -121,7 +126,6 @@
     }
   </style>
 
-  </style>
 </head>
 <body>
 
@@ -138,10 +142,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto me-3">
         <li class="nav-item"><a class="nav-link" href="dashboard.html">Disasters & Assistance</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>
+<!--        <li class="nav-item"><a class="nav-link" href="#">Grants</a></li>-->
         <li class="nav-item"><a class="nav-link" href="#">Floods & Maps</a></li>
         <li class="nav-item"><a class="nav-link" href="Emargancy.html">Emergency Management</a></li>
-        <li class="nav-item"><a class="nav-link active" href="#">Get Ready</a></li>
+        <li class="nav-item"><a class="nav-link active" href="Get_Ready_For_Disaster.html">Get Ready</a></li>
       </ul>
       <a href="signUp.html" class="btn btn-primary btn-sm rounded-pill">Apply for Assistance</a>
     </div>
@@ -184,7 +188,7 @@
         <i class="fas fa-user-lock fa-3x text-warning mb-3"></i>
         <h5 class="mb-3">Sign In to Report a Disaster</h5>
         <p class="mb-4">You must be logged in to submit a disaster report or access detailed information.</p>
-        <a href="signIn.html" class="btn btn-primary btn-lg rounded-pill">Sign In</a>
+        <a href="signUp.html" class="btn btn-primary btn-lg rounded-pill">Sign In</a>
       </div>
     </div>
 
