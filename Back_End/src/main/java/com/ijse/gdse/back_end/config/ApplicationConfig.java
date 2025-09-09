@@ -18,18 +18,15 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .map(user -> new
-                        org.springframework.security.core.userdetails.User(
-                        user.getUsername(),
+        return email -> userRepository.findByEmail(email)   // 🔹 change here
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getEmail(),                  // 🔹 use email instead of username
                         user.getPassword(),
-                        List.of(new SimpleGrantedAuthority(
-                                "ROLE_"+user.getRole().name()))
-
-                )).orElseThrow(
-                        ()->new RuntimeException("User not found")
-                );
+                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                ))
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

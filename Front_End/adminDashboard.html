@@ -359,30 +359,36 @@
         const volunteerId = document.getElementById("volunteerSelect").value;
         const token = localStorage.getItem("accessToken");
 
-        const res = await fetch(`http://localhost:8080/auth/reports/${currentReportId}/assign/${volunteerId}`, {
-            method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
+        try {
+            const res = await fetch(`http://localhost:8080/auth/reports/${currentReportId}/assign/${volunteerId}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
 
-        if (res.ok) {
-            const updatedReport = await res.json(); // backend return report object
-            alert("Volunteer assigned successfully!");
-            closeAssignModal();
+            if (res.ok) {
+                const updatedReport = await res.json(); // backend returns updated report object
+                alert("Volunteer assigned successfully!");
+                closeAssignModal();
 
-            // 🔹 UI එකේම update කරන්න
-            const card = document.querySelector(`[data-report-id='${currentReportId}']`);
-            if (card) {
-                const volunteerField = card.querySelector(".assigned-volunteer");
-                volunteerField.textContent = updatedReport.assignedVolunteer
-                    ? updatedReport.assignedVolunteer.name
-                    : "Not Assigned";
+                // 🔹 Fix: Select the correct card-body element
+                const cardBody = document.querySelector(`.card-body[data-report-id='${currentReportId}']`);
+                if (cardBody) {
+                    const volunteerField = cardBody.querySelector(".assigned-volunteer");
+                    volunteerField.textContent = updatedReport.assignedVolunteer
+                        ? updatedReport.assignedVolunteer.name
+                        : "Not Assigned";
+                }
+            } else {
+                alert("Failed to assign volunteer.");
             }
-        } else {
-            alert("Failed to assign volunteer.");
+        } catch (err) {
+            console.error("Error assigning volunteer:", err);
+            alert("An error occurred while assigning volunteer.");
         }
     }
+
 
     // Load today's reports on small map
     fetch("http://localhost:8080/auth/reports/today")

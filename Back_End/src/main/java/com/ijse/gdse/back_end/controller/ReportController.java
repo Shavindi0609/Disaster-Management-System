@@ -39,9 +39,9 @@ public class ReportController {
     ) throws IOException {
 
         String token = authHeader.replace("Bearer ", "");
-        String username = jwtUtil.extractUsername(token);
+        String email = jwtUtil.extractUsername(token);
 
-        Report savedReport = reportService.addReportByUser(username, type, description, reporterContact, latitude, longitude, photo);
+        Report savedReport = reportService.addReportByUser(email, type, description, reporterContact, latitude, longitude, photo);
 
         return ResponseEntity.ok(new APIResponse(200, "Report Added Successfully", savedReport));
     }
@@ -57,9 +57,9 @@ public class ReportController {
     @GetMapping("/my")
     public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
-        String username = jwtUtil.extractUsername(token);
+        String email = jwtUtil.extractUsername(token);
 
-        List<Report> reports = reportService.getReportsByUsername(username);
+        List<Report> reports = reportService.getReportsByEmail(email);
         return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
     }
 

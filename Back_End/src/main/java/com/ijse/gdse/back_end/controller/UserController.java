@@ -39,10 +39,9 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<APIResponse> getLoggedInUser(Authentication authentication) {
-        String principal = authentication.getName(); // JWT -> principal (username/email)
+        String principal = authentication.getName(); // JWT -> principal (email)
 
-        Optional<User> userOpt = userRepository.findByUsername(principal);
-        // or findByEmail(principal) depending on your entity
+        Optional<User> userOpt = userRepository.findByEmail(principal); // 🔹 use email here
 
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(404).body(
@@ -54,6 +53,7 @@ public class UserController {
                 new APIResponse(200, "User profile loaded", userOpt.get())
         );
     }
+
 
 
     @PutMapping("/{id}")

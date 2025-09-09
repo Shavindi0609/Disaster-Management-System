@@ -17,46 +17,6 @@ function showPage(pageId, el) {
     if (pageId === "users") loadUsers();   // ✅ meka add karanna
 }
 
-/* -------------------- Employees -------------------- */
-async function loadEmployees() {
-    const res = await fetch(`${BASE}/employees`);
-    const data = await res.json();
-    const container = document.getElementById("employeeList");
-    container.innerHTML = "";
-    data.data.forEach(e => {
-        const card = document.createElement("div");
-        card.className = "item-card";
-        card.innerHTML = `
-            <h4>${e.name}</h4>
-            <p><strong>Email:</strong> ${e.email}</p>
-            <p><strong>Position:</strong> ${e.position}</p>
-            <button onclick="openEditModal('employee', ${e.id}, '${e.name}', '${e.email}', '${e.position}')">Edit</button>
-            <button onclick="deleteEmployee(${e.id})">Delete</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Add Employee
-document.getElementById("addEmployeeForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const emp = { name: empName.value, email: empEmail.value, position: empPosition.value };
-    await fetch(`${BASE}/employees`, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(emp)
-    });
-    loadEmployees();
-    e.target.reset();
-});
-
-// Delete Employee
-async function deleteEmployee(id) {
-    if (!confirm("Are you sure you want to delete this employee?")) return;
-    await fetch(`${BASE}/employees/${id}`, {method:"DELETE"});
-    loadEmployees();
-}
-
 /* -------------------- Volunteers -------------------- */
 async function loadVolunteers() {
     const res = await fetch(`${BASE}/volunteers`);

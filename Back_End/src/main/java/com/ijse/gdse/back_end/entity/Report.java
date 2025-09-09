@@ -28,7 +28,7 @@ public class Report {
     private LocalDateTime createdAt;
 
     // ✅ Add this field to track which user created the report
-    private String username;
+    private String email;
 
     // ✅ Assigned volunteer
     @ManyToOne

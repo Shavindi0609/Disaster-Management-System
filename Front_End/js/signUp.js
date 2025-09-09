@@ -21,18 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", function () {
 
     // =====================
-    // Sign In Form Handler
+    // Sign In Form Handler (Email instead of Username)
     // =====================
     const signInForm = document.querySelector(".sign-in-container form");
+
     signInForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        // 👇 Username use කරන්න
-        const username = signInForm.querySelector("input[type='text']").value.trim();
+        // 👇 Use email instead of username
+        const email = signInForm.querySelector("input[type='email']").value.trim();
         const password = signInForm.querySelector("input[type='password']").value;
 
-        if (!username || !password) {
-            alert("⚠️ Please enter username and password.");
+        if (!email || !password) {
+            alert("⚠️ Please enter email and password.");
             return;
         }
 
@@ -40,16 +41,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }) // ✅ username දාන්න
+                body: JSON.stringify({ email, password }) // ✅ send email to backend
             });
 
             const result = await response.json();
 
             if (response.ok && result.data) {
-                const { accessToken, username, role } = result.data;
+                const { accessToken, email, role } = result.data;
 
                 localStorage.setItem("accessToken", accessToken);
-                localStorage.setItem("username", username);
+                localStorage.setItem("email", email); // save email
                 localStorage.setItem("role", role);
 
                 alert("✅ Login successful!");
@@ -70,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("🚨 Server error, please try again.");
         }
     });
+
+});
 
     // =====================
     // Sign Up Form Handler
@@ -112,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-});
 
 document.addEventListener("DOMContentLoaded", () => {
     const forgotLink = document.querySelector(".sign-in-container a");

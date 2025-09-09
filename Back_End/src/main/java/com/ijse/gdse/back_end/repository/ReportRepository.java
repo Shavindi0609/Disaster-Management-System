@@ -9,7 +9,9 @@ import java.util.List;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
 
-    List<Report> findByUsername(String username);
+//    List<Report> findByUsername(String username);
+
+     List<Report> findByEmail(String email);
 
     List<Report> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 

@@ -52,7 +52,7 @@ public class ReportService {
     }
 
     // Report add with user (when logged in)
-    public Report addReportByUser(String username, String type, String description,
+    public Report addReportByUser(String email, String type, String description,
                                   String reporterContact, Double latitude, Double longitude, MultipartFile photo) throws IOException {
         Report report = new Report();
         report.setType(type);
@@ -60,7 +60,7 @@ public class ReportService {
         report.setReporterContact(reporterContact);
         report.setLatitude(latitude);
         report.setLongitude(longitude);
-        report.setUsername(username);
+        report.setEmail(email);
 
         if (photo != null && !photo.isEmpty()) {
             File uploadDir = new File(UPLOAD_DIR);
@@ -81,8 +81,8 @@ public class ReportService {
     }
 
     // Fetch user reports
-    public List<Report> getReportsByUsername(String username) {
-        return reportRepository.findByUsername(username);
+    public List<Report> getReportsByEmail(String email) {
+        return reportRepository.findByEmail(email);
     }
 
     // Total reports count
@@ -108,6 +108,5 @@ public class ReportService {
                 today.plusDays(1).atStartOfDay()
         );
     }
-
 
 }
