@@ -21,4 +21,13 @@ public class EmailService {
                 + "Please take necessary action.\n\nThanks.");
         mailSender.send(message);
     }
+
+    public void sendOtpEmail(String toEmail, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Password Reset OTP");
+        message.setText("Your OTP is: " + otp + "\n\nThis code will expire in 5 minutes.");
+        mailSender.send(message);
+    }
+
 }

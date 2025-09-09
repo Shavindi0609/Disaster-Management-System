@@ -82,7 +82,7 @@
 
             <input type="password" placeholder="🔒 Password" required/>
 
-            <a href="#">Forgot your password? 🤔</a>
+            <a href="#" id="forgotPasswordLink">Forgot your password? 🤔</a>
 
             <button type="submit">Sign In</button>
 
@@ -123,6 +123,38 @@
         </div>
 
     </div>
+
+
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <!-- Step 1: Enter Email -->
+            <div id="step1">
+                <h2>Forgot Password 🔑</h2>
+                <input type="email" id="resetEmail" placeholder="📧 Enter your email" required>
+                <button id="sendOtpBtn">Send OTP</button>
+            </div>
+
+            <!-- Step 2: Enter OTP -->
+            <div id="step2" style="display:none;">
+                <h2>Verify OTP ✉️</h2>
+                <input type="text" id="otpCode" placeholder="Enter OTP" required>
+                <button id="verifyOtpBtn">Verify OTP</button>
+            </div>
+
+            <!-- Step 3: Reset Password -->
+            <div id="step3" style="display:none;">
+                <h2>Set New Password 🔒</h2>
+                <input type="password" id="newPassword" placeholder="New Password" required>
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <button id="resetPasswordBtn">Reset Password</button>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 

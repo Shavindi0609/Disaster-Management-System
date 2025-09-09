@@ -201,6 +201,38 @@
       color: #066150;
     }
 
+/* CSS for Hover Effects */
+
+     .disaster-card {
+       transition: all 0.4s ease;
+       border-radius: 15px;
+       overflow: hidden;
+     }
+
+    .disaster-card img {
+      transition: transform 0.5s ease;
+    }
+
+    .disaster-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .disaster-card:hover img {
+      transform: scale(1.1);
+    }
+
+    .disaster-card .btn {
+      transition: all 0.3s ease;
+    }
+
+    .disaster-card:hover .btn {
+      background-color: #e55a2b;
+      transform: scale(1.1);
+      box-shadow:  var(--accent-color);
+    }
+
+
     /* CSS for Ticker */
 
     .news-ticker {
@@ -567,7 +599,7 @@
 
       <!-- Card 1 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
+        <div class="card disaster-card h-100 border-0">
           <img src="images/flood.webp" class="card-img-top" alt="Flood">
           <div class="card-body">
             <h5 class="card-title">Floods</h5>
@@ -579,7 +611,7 @@
 
       <!-- Card 2 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
+        <div class="card disaster-card h-100 border-0">
           <img src="images/Earthquakes.jpg" class="card-img-top" alt="Earthquake">
           <div class="card-body">
             <h5 class="card-title">Earthquakes</h5>
@@ -591,7 +623,7 @@
 
       <!-- Card 3 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
+        <div class="card disaster-card h-100 border-0">
           <img src="images/Tsunamis.jpg" class="card-img-top" alt="Tsunami">
           <div class="card-body">
             <h5 class="card-title">Tsunamis</h5>
@@ -603,8 +635,8 @@
 
       <!-- Card 4 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
-          <img src="images/landslide.jpg" class="card-img-top" alt="Tsunami">
+        <div class="card disaster-card h-100 border-0">
+          <img src="images/landslide.jpg" class="card-img-top" alt="Landslide">
           <div class="card-body">
             <h5 class="card-title">Landslide</h5>
             <p class="card-text">Landslides often occur after heavy rainfall or earthquakes, destroying homes and roads. Stay alert in high-risk areas.</p>
@@ -615,8 +647,8 @@
 
       <!-- Card 5 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
-          <img src="images/tonado2.jpg" class="card-img-top" alt="Tsunami">
+        <div class="card disaster-card h-100 border-0">
+          <img src="images/tonado2.jpg" class="card-img-top" alt="Tornado">
           <div class="card-body">
             <h5 class="card-title">Tornado</h5>
             <p class="card-text">Tornadoes form suddenly with powerful winds that can destroy buildings and uproot trees. Quick evacuation saves lives.</p>
@@ -627,11 +659,11 @@
 
       <!-- Card 6 -->
       <div class="col-md-4">
-        <div class="card shadow-sm h-100 border-0">
-          <img src="images/niyagayab.jpg" class="card-img-top" alt="Tsunami">
+        <div class="card disaster-card h-100 border-0">
+          <img src="images/niyagayab.jpg" class="card-img-top" alt="Drought">
           <div class="card-body">
             <h5 class="card-title">Drought</h5>
-            <p class="card-text"> Droughts occur when rainfall is scarce for long periods, leading to water shortages and crop failures. Conservation is crucial.</p>
+            <p class="card-text">Droughts occur when rainfall is scarce for long periods, leading to water shortages and crop failures. Conservation is crucial.</p>
             <a href="#" class="btn btn-primary btn-sm rounded-pill">See Details</a>
           </div>
         </div>
