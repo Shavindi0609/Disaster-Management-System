@@ -217,11 +217,25 @@
         }
     });
 
-    Logout
+    // Logout
     document.getElementById("logoutLink").addEventListener("click", e => {
         e.preventDefault();
         localStorage.clear(); // Clear user session
         window.location.href = "dashboard.html"; // Redirect to dashboard instead of sign-in
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+            // Token නැත්තම් auto logout (localStorage clear + redirect)
+            localStorage.clear();
+            alert("⚠️ Session expired. Please login again.");
+            window.location.href = "signUp.html";
+            return;
+        }
+
+        // වැඩ කරන්න token තිබ්බොත් dashboard load කරන්න
     });
 
 </script>

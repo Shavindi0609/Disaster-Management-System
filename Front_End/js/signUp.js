@@ -18,61 +18,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    // =====================
-    // Sign In Form Handler (Email instead of Username)
-    // =====================
-    const signInForm = document.querySelector(".sign-in-container form");
+        // =====================
+        // Sign In Form Handler (Email instead of Username)
+        // =====================
+        const signInForm = document.querySelector(".sign-in-container form");
 
-    signInForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
+        signInForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-        // 👇 Use email instead of username
-        const email = signInForm.querySelector("input[type='email']").value.trim();
-        const password = signInForm.querySelector("input[type='password']").value;
+            // 👇 Use email instead of username
+            const email = signInForm.querySelector("input[type='email']").value.trim();
+            const password = signInForm.querySelector("input[type='password']").value;
 
-        if (!email || !password) {
-            alert("⚠️ Please enter email and password.");
-            return;
-        }
-
-        try {
-            const response = await fetch("http://localhost:8080/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }) // ✅ send email to backend
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.data) {
-                const { accessToken, email, role } = result.data;
-
-                localStorage.setItem("accessToken", accessToken);
-                localStorage.setItem("email", email); // save email
-                localStorage.setItem("role", role);
-
-                alert("✅ Login successful!");
-
-                if (role === "ADMIN") {
-                    window.location.href = "adminDashboard.html";
-                } else if (role === "USER") {
-                    window.location.href = "userDashboard.html";
-                } else {
-                    window.location.href = "dashboard.html";
-                }
-
-            } else {
-                alert(result.message || "❌ Invalid credentials.");
+            if (!email || !password) {
+                alert("⚠️ Please enter email and password.");
+                return;
             }
-        } catch (error) {
-            console.error("Login error:", error);
-            alert("🚨 Server error, please try again.");
-        }
-    });
 
-});
+            try {
+                const response = await fetch("http://localhost:8080/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }) // ✅ send email to backend
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.data) {
+
+                    const { accessToken, role, username, email } = result.data;
+
+                    localStorage.setItem("accessToken", accessToken);
+                    localStorage.setItem("role", role);
+                    localStorage.setItem("username", username); // display name
+                    localStorage.setItem("email", email);
+
+
+                    alert("✅ Login successful!");
+
+                    switch(role?.toUpperCase()) {
+                        case "ADMIN":
+                            window.location.href = "adminDashboard.html";
+                            break;
+                        case "USER":
+                            window.location.href = "userDashboard.html";
+                            break;
+                        default:
+                            window.location.href = "dashboard.html";
+                    }
+
+
+                } else {
+                    alert(result.message || "❌ Invalid credentials.");
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("🚨 Server error, please try again.");
+            }
+        });
+
+    });
 
     // =====================
     // Sign Up Form Handler
@@ -114,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("🚨 Server error during registration.");
         }
     });
+
 
 
 document.addEventListener("DOMContentLoaded", () => {

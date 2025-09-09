@@ -21,18 +21,26 @@ public class AuthService {
 
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
 
-        // ✅ Validate credentials using email instead of username
+        // 🔹 Validate credentials using email instead of username
         User user = userRepository.findByEmail(authDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email not found"));
 
-        // ✅ Check password
+        // 🔹 Check password
         if (!passwordEncoder.matches(authDTO.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid Credentials");
         }
 
-        // ✅ Generate token
-        String token = jwtUtil.generateToken(user.getEmail()); // email as token subject
-        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
+        // 🔹 Generate JWT token (use email as subject)
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        // 🔹 Return token, email, role, and name
+        return new AuthResponseDTO(
+                token,            // accessToken
+                user.getUsername(), // username / display name
+                user.getRole().name(), // role
+                user.getEmail()      // email
+        );
+
     }
 
 
