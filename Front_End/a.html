@@ -2,109 +2,1197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Weather & Danger Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkHub - Company Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!--  <style>-->
+  <!--    * {-->
+  <!--      margin: 0;-->
+  <!--      padding: 0;-->
+  <!--      box-sizing: border-box;-->
+  <!--      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+  <!--    }-->
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--    body {-->
+  <!--      background-color: #f5f7fa;-->
+  <!--      color: #333;-->
+  <!--      line-height: 1.6;-->
+  <!--    }-->
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <!--    .container {-->
+  <!--      max-width: 1200px;-->
+  <!--      margin: 0 auto;-->
+  <!--      padding: 0 20px;-->
+  <!--    }-->
 
-  <style>
-    body {
-      background: #f8f9fa;
-      font-family: 'Segoe UI', sans-serif;
+  <!--    /* Header Styles */-->
+  <!--    /* Header styles improved */-->
+  <!--    header {-->
+  <!--      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);-->
+  <!--      color: white;-->
+  <!--      padding: 15px 0;-->
+  <!--      position: sticky;-->
+  <!--      top: 0;-->
+  <!--      z-index: 100;-->
+  <!--      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);-->
+  <!--    }-->
+
+  <!--    .user-actions {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 15px;-->
+  <!--    }-->
+
+  <!--    .logout-btn-header {-->
+  <!--      background: #ff4757;-->
+  <!--      color: white;-->
+  <!--      border: none;-->
+  <!--      padding: 8px 18px;-->
+  <!--      border-radius: 25px;-->
+  <!--      font-weight: 600;-->
+  <!--      cursor: pointer;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--      font-size: 14px;-->
+  <!--    }-->
+
+  <!--    .logout-btn-header i {-->
+  <!--      margin-right: 6px;-->
+  <!--    }-->
+
+  <!--    .logout-btn-header:hover {-->
+  <!--      background: #e63946;-->
+  <!--      transform: translateY(-2px);-->
+  <!--    }-->
+
+  <!--    header {-->
+  <!--      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);-->
+  <!--      color: white;-->
+  <!--      padding: 15px 0;-->
+  <!--      position: sticky;-->
+  <!--      top: 0;-->
+  <!--      z-index: 100;-->
+  <!--      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);-->
+  <!--    }-->
+
+  <!--    .header-content {-->
+  <!--      display: flex;-->
+  <!--      justify-content: space-between;-->
+  <!--      align-items: center;-->
+  <!--    }-->
+
+  <!--    .logo {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 10px;-->
+  <!--      font-size: 24px;-->
+  <!--      font-weight: 700;-->
+  <!--    }-->
+
+  <!--    .logo i {-->
+  <!--      font-size: 28px;-->
+  <!--    }-->
+
+  <!--    nav ul {-->
+  <!--      display: flex;-->
+  <!--      list-style: none;-->
+  <!--      gap: 30px;-->
+  <!--    }-->
+
+  <!--    nav a {-->
+  <!--      color: white;-->
+  <!--      text-decoration: none;-->
+  <!--      font-weight: 500;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--      padding: 5px 10px;-->
+  <!--      border-radius: 4px;-->
+  <!--    }-->
+
+  <!--    nav a:hover, nav a.active {-->
+  <!--      background-color: rgba(255, 255, 255, 0.2);-->
+  <!--    }-->
+
+  <!--    .user-actions {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 15px;-->
+  <!--    }-->
+
+  <!--    .search-box {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      background: rgba(255, 255, 255, 0.2);-->
+  <!--      border-radius: 20px;-->
+  <!--      padding: 5px 15px;-->
+  <!--    }-->
+
+  <!--    .search-box input {-->
+  <!--      background: transparent;-->
+  <!--      border: none;-->
+  <!--      color: white;-->
+  <!--      padding: 8px;-->
+  <!--      width: 180px;-->
+  <!--      outline: none;-->
+  <!--    }-->
+
+  <!--    .search-box input::placeholder {-->
+  <!--      color: rgba(255, 255, 255, 0.7);-->
+  <!--    }-->
+
+  <!--    .user-profile {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 10px;-->
+  <!--      cursor: pointer;-->
+  <!--    }-->
+
+  <!--    .user-avatar {-->
+  <!--      width: 40px;-->
+  <!--      height: 40px;-->
+  <!--      border-radius: 50%;-->
+  <!--      background-color: #ff7043;-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      justify-content: center;-->
+  <!--      font-weight: bold;-->
+  <!--      font-size: 18px;-->
+  <!--    }-->
+
+  <!--    /* Profile Section */-->
+  <!--    .profile-section {-->
+  <!--      padding: 40px 0;-->
+  <!--    }-->
+
+  <!--    .profile-card {-->
+  <!--      background: white;-->
+  <!--      border-radius: 15px;-->
+  <!--      padding: 30px;-->
+  <!--      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);-->
+  <!--      text-align: center;-->
+  <!--      margin-bottom: 30px;-->
+  <!--    }-->
+
+  <!--    .profile-header {-->
+  <!--      display: flex;-->
+  <!--      flex-direction: column;-->
+  <!--      align-items: center;-->
+  <!--      margin-bottom: 25px;-->
+  <!--    }-->
+
+  <!--    .profile-avatar {-->
+  <!--      width: 120px;-->
+  <!--      height: 120px;-->
+  <!--      border-radius: 50%;-->
+  <!--      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      justify-content: center;-->
+  <!--      font-size: 50px;-->
+  <!--      color: white;-->
+  <!--      font-weight: bold;-->
+  <!--      margin-bottom: 20px;-->
+  <!--    }-->
+
+  <!--    .profile-info h1 {-->
+  <!--      font-size: 28px;-->
+  <!--      margin-bottom: 5px;-->
+  <!--      color: #2d3748;-->
+  <!--    }-->
+
+  <!--    .profile-info p {-->
+  <!--      color: #718096;-->
+  <!--      margin-bottom: 15px;-->
+  <!--    }-->
+
+  <!--    .followers-count {-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      justify-content: center;-->
+  <!--      gap: 5px;-->
+  <!--      font-size: 16px;-->
+  <!--      color: #4a5568;-->
+  <!--      margin-bottom: 20px;-->
+  <!--    }-->
+
+  <!--    .follow-btn {-->
+  <!--      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);-->
+  <!--      color: white;-->
+  <!--      border: none;-->
+  <!--      padding: 12px 25px;-->
+  <!--      border-radius: 30px;-->
+  <!--      font-weight: 600;-->
+  <!--      cursor: pointer;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--    }-->
+
+  <!--    .follow-btn:hover {-->
+  <!--      opacity: 0.9;-->
+  <!--      transform: translateY(-2px);-->
+  <!--    }-->
+
+  <!--    .profile-description {-->
+  <!--      background: #f8fafc;-->
+  <!--      padding: 20px;-->
+  <!--      border-radius: 10px;-->
+  <!--      margin-bottom: 25px;-->
+  <!--      text-align: left;-->
+  <!--    }-->
+
+  <!--    .profile-description h3 {-->
+  <!--      font-size: 18px;-->
+  <!--      margin-bottom: 15px;-->
+  <!--      color: #2d3748;-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 10px;-->
+  <!--    }-->
+
+  <!--    .logout-btn {-->
+  <!--      background: #ff4757;-->
+  <!--      color: white;-->
+  <!--      border: none;-->
+  <!--      padding: 12px 25px;-->
+  <!--      border-radius: 30px;-->
+  <!--      font-weight: 600;-->
+  <!--      cursor: pointer;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--      width: 100%;-->
+  <!--      margin-top: 15px;-->
+  <!--    }-->
+
+  <!--    .logout-btn:hover {-->
+  <!--      background: #ff3742;-->
+  <!--    }-->
+
+  <!--    /* Profile Navigation */-->
+  <!--    .profile-nav {-->
+  <!--      display: flex;-->
+  <!--      justify-content: center;-->
+  <!--      margin-bottom: 30px;-->
+  <!--      border-bottom: 1px solid #e2e8f0;-->
+  <!--    }-->
+
+  <!--    .nav-item {-->
+  <!--      padding: 15px 25px;-->
+  <!--      font-weight: 600;-->
+  <!--      color: #718096;-->
+  <!--      cursor: pointer;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--      position: relative;-->
+  <!--    }-->
+
+  <!--    .nav-item.active {-->
+  <!--      color: #2575fc;-->
+  <!--    }-->
+
+  <!--    .nav-item.active::after {-->
+  <!--      content: '';-->
+  <!--      position: absolute;-->
+  <!--      bottom: -1px;-->
+  <!--      left: 0;-->
+  <!--      width: 100%;-->
+  <!--      height: 3px;-->
+  <!--      background: #2575fc;-->
+  <!--      border-radius: 3px 3px 0 0;-->
+  <!--    }-->
+
+  <!--    .nav-item:hover {-->
+  <!--      color: #2575fc;-->
+  <!--    }-->
+
+  <!--    /* Content Sections */-->
+  <!--    .content-section {-->
+  <!--      display: none;-->
+  <!--    }-->
+
+  <!--    .content-section.active {-->
+  <!--      display: block;-->
+  <!--    }-->
+
+  <!--    .posts-grid {-->
+  <!--      display: grid;-->
+  <!--      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));-->
+  <!--      gap: 20px;-->
+  <!--    }-->
+
+  <!--    .post-card {-->
+  <!--      background: white;-->
+  <!--      border-radius: 12px;-->
+  <!--      overflow: hidden;-->
+  <!--      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);-->
+  <!--      transition: transform 0.3s ease;-->
+  <!--    }-->
+
+  <!--    .post-card:hover {-->
+  <!--      transform: translateY(-5px);-->
+  <!--    }-->
+
+  <!--    .post-image {-->
+  <!--      height: 200px;-->
+  <!--      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      justify-content: center;-->
+  <!--      color: white;-->
+  <!--      font-size: 20px;-->
+  <!--    }-->
+
+  <!--    .post-content {-->
+  <!--      padding: 20px;-->
+  <!--    }-->
+
+  <!--    .post-content h3 {-->
+  <!--      font-size: 18px;-->
+  <!--      margin-bottom: 10px;-->
+  <!--      color: #2d3748;-->
+  <!--    }-->
+
+  <!--    .post-content p {-->
+  <!--      color: #718096;-->
+  <!--      font-size: 14px;-->
+  <!--      margin-bottom: 15px;-->
+  <!--    }-->
+
+  <!--    .post-meta {-->
+  <!--      display: flex;-->
+  <!--      justify-content: space-between;-->
+  <!--      color: #a0aec0;-->
+  <!--      font-size: 13px;-->
+  <!--    }-->
+
+  <!--    /* About Section */-->
+  <!--    .about-content {-->
+  <!--      background: white;-->
+  <!--      border-radius: 12px;-->
+  <!--      padding: 30px;-->
+  <!--      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);-->
+  <!--    }-->
+
+  <!--    .about-section {-->
+  <!--      margin-bottom: 25px;-->
+  <!--    }-->
+
+  <!--    .about-section h3 {-->
+  <!--      font-size: 18px;-->
+  <!--      margin-bottom: 15px;-->
+  <!--      color: #2d3748;-->
+  <!--      display: flex;-->
+  <!--      align-items: center;-->
+  <!--      gap: 10px;-->
+  <!--    }-->
+
+  <!--    .about-section p {-->
+  <!--      color: #4a5568;-->
+  <!--      line-height: 1.8;-->
+  <!--    }-->
+
+  <!--    /* Footer */-->
+  <!--    footer {-->
+  <!--      background: #2d3748;-->
+  <!--      color: white;-->
+  <!--      padding: 40px 0 20px;-->
+  <!--      margin-top: 50px;-->
+  <!--    }-->
+
+  <!--    .footer-content {-->
+  <!--      display: grid;-->
+  <!--      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));-->
+  <!--      gap: 30px;-->
+  <!--      margin-bottom: 30px;-->
+  <!--    }-->
+
+  <!--    .footer-column h3 {-->
+  <!--      font-size: 18px;-->
+  <!--      margin-bottom: 20px;-->
+  <!--      position: relative;-->
+  <!--      padding-bottom: 10px;-->
+  <!--    }-->
+
+  <!--    .footer-column h3::after {-->
+  <!--      content: '';-->
+  <!--      position: absolute;-->
+  <!--      left: 0;-->
+  <!--      bottom: 0;-->
+  <!--      width: 40px;-->
+  <!--      height: 3px;-->
+  <!--      background: #6a11cb;-->
+  <!--    }-->
+
+  <!--    .footer-column ul {-->
+  <!--      list-style: none;-->
+  <!--    }-->
+
+  <!--    .footer-column ul li {-->
+  <!--      margin-bottom: 10px;-->
+  <!--    }-->
+
+  <!--    .footer-column a {-->
+  <!--      color: #cbd5e0;-->
+  <!--      text-decoration: none;-->
+  <!--      transition: all 0.3s ease;-->
+  <!--    }-->
+
+  <!--    .footer-column a:hover {-->
+  <!--      color: white;-->
+  <!--      padding-left: 5px;-->
+  <!--    }-->
+
+  <!--    .copyright {-->
+  <!--      text-align: center;-->
+  <!--      padding-top: 20px;-->
+  <!--      border-top: 1px solid #4a5568;-->
+  <!--      color: #cbd5e0;-->
+  <!--      font-size: 14px;-->
+  <!--    }-->
+
+  <!--    /* Responsive Design */-->
+  <!--    @media (max-width: 900px) {-->
+  <!--      .header-content {-->
+  <!--        flex-direction: column;-->
+  <!--        gap: 15px;-->
+  <!--      }-->
+
+  <!--      nav ul {-->
+  <!--        gap: 15px;-->
+  <!--        flex-wrap: wrap;-->
+  <!--        justify-content: center;-->
+  <!--      }-->
+
+  <!--      .user-actions {-->
+  <!--        width: 100%;-->
+  <!--        justify-content: center;-->
+  <!--      }-->
+
+  <!--      .search-box {-->
+  <!--        width: 100%;-->
+  <!--        max-width: 300px;-->
+  <!--      }-->
+
+  <!--      .posts-grid {-->
+  <!--        grid-template-columns: 1fr;-->
+  <!--      }-->
+  <!--    }-->
+
+  <!--    @media (max-width: 600px) {-->
+  <!--      .profile-nav {-->
+  <!--        flex-wrap: wrap;-->
+  <!--      }-->
+
+  <!--      .nav-item {-->
+  <!--        padding: 10px 15px;-->
+  <!--      }-->
+  <!--    }-->
+  <!--  </style>-->
+
+  <style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Header Styles */
+  header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .logo i {
+    font-size: 28px;
+  }
+
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px 15px;
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px;
+    width: 180px;
+    outline: none;
+  }
+
+  .search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ff7043;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .logout-btn-header {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+
+  .logout-btn-header i {
+    margin-right: 6px;
+  }
+
+  .logout-btn-header:hover {
+    background: #e63946;
+    transform: translateY(-2px);
+  }
+
+  /* Profile Section */
+  .profile-section {
+    padding: 40px 0;
+  }
+
+  .profile-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .profile-info h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+    color: #2d3748;
+  }
+
+  .profile-info p {
+    color: #718096;
+    margin-bottom: 15px;
+  }
+
+  .followers-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 16px;
+    color: #4a5568;
+    margin-bottom: 20px;
+  }
+
+  .follow-btn {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .follow-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+
+  .profile-description {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: left;
+  }
+
+  .profile-description h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Profile Navigation */
+  .profile-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .nav-item {
+    padding: 15px 25px;
+    font-weight: 600;
+    color: #718096;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-item.active {
+    color: #2575fc;
+  }
+
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #2575fc;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .nav-item:hover {
+    color: #2575fc;
+  }
+
+  /* Content Sections */
+  .content-section {
+    display: none;
+  }
+
+  .content-section.active {
+    display: block;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .post-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
+
+  .post-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .post-image {
+    height: 200px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .post-content {
+    padding: 20px;
+  }
+
+  .post-content h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #2d3748;
+  }
+
+  .post-content p {
+    color: #718096;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #a0aec0;
+    font-size: 13px;
+  }
+
+  /* About Section */
+  .about-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .about-section {
+    margin-bottom: 25px;
+  }
+
+  .about-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .about-section p {
+    color: #4a5568;
+    line-height: 1.8;
+  }
+
+  /* Footer */
+  footer {
+    background: #2d3748;
+    color: white;
+    padding: 40px 0 20px;
+    margin-top: 50px;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .footer-column h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+  }
+
+  .footer-column h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background: #6a11cb;
+  }
+
+  .footer-column ul {
+    list-style: none;
+  }
+
+  .footer-column ul li {
+    margin-bottom: 10px;
+  }
+
+  .footer-column a {
+    color: #cbd5e0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .footer-column a:hover {
+    color: white;
+    padding-left: 5px;
+  }
+
+  .copyright {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #4a5568;
+    color: #cbd5e0;
+    font-size: 14px;
+  }
+
+
+  /* profile menu*/
+  .profile-card {
+    position: relative; /* Needed for dropdown positioning */
+  }
+
+  /* Menu Icon */
+  .profile-menu {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  .menu-icon {
+    font-size: 20px;
+    color: #718096;
+    transition: color 0.3s ease;
+  }
+
+  .menu-icon:hover {
+    color: #2575fc;
+  }
+
+  /* Dropdown Menu */
+  .dropdown-menu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: none;
+    flex-direction: column;
+    min-width: 140px;
+    z-index: 10;
+  }
+
+  .dropdown-item {
+    padding: 12px 15px;
+    border: none;
+    background: white;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .dropdown-item:hover {
+    background: #f5f5f5;
+  }
+
+  .dropdown-item.logout {
+    color: #e63946;
+    font-weight: 600;
+  }
+
+
+
+
+  /* Responsive Design */
+  @media (max-width: 900px) {
+    .header-content {
+      flex-direction: column;
+      gap: 15px;
     }
-    #map {
-      height: 550px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+
+    nav ul {
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .map-container {
-      margin: 40px auto;
-      max-width: 1100px;
+
+    .user-actions {
+      width: 100%;
+      justify-content: center;
     }
+
+    .search-box {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .profile-nav {
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      padding: 10px 15px;
+    }
+  }
   </style>
 </head>
 <body>
 
-<div class="container map-container">
-  <h2 class="text-center mb-4 fw-bold">🌍 Live Weather & Danger Map</h2>
-  <div id="map"></div>
-</div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Profile Section -->
+<section class="profile-section">
+
+  <div class="container">
+
+    <div class="profile-card">
+      <!-- Top right menu icon -->
+      <div class="profile-menu">
+        <i class="fas fa-ellipsis-v menu-icon"></i>
+        <div class="dropdown-menu">
+          <button class="dropdown-item">Edit Profile</button>
+          <button class="dropdown-item logout">Log Out</button>
+        </div>
+      </div>
+
+      <div class="profile-header">
+        <div class="profile-avatar">TC</div>
+        <div class="profile-info">
+          <h1>TechCorp International</h1>
+          <p>Technology & Software Development</p>
+          <div class="followers-count">
+            <i class="fas fa-users"></i>
+            <span>2.1K followers</span>
+          </div>
+        </div>
+        <button class="follow-btn">Follow</button>
+      </div>
+
+      <!-- Profile Navigation -->
+      <div class="profile-nav">
+        <div class="nav-item active" data-target="about">About</div>
+        <div class="nav-item" data-target="posts">Posts</div>
+        <div class="nav-item" data-target="jobs">Jobs</div>
+        <div class="nav-item" data-target="people">People</div>
+        <div class="nav-item" data-target="events">Events</div>
+      </div>
+    </div>
+
+
+
+
+    <!-- About Section -->
+    <div id="about" class="content-section active">
+      <div class="about-content">
+        <div class="about-section">
+          <h3><i class="fas fa-building"></i> Company Overview</h3>
+          <p>TechCorp International was founded in 2010 with a mission to revolutionize the tech industry. Today, we serve clients in over 30 countries with our innovative software solutions and consulting services.</p>
+        </div>
+
+        <div class="about-section">
+          <h3><i class="fas fa-bullseye"></i> Mission</h3>
+          <p>Our mission is to empower businesses through technology, providing them with the tools they need to succeed in a digital world. We believe in innovation, quality, and customer satisfaction.</p>
+        </div>
+
+        <div class="about-section">
+          <h3><i class="fas fa-eye"></i> Vision</h3>
+          <p>To be the global leader in transformative technology solutions, driving progress and innovation across industries while maintaining our commitment to ethical practices and social responsibility.</p>
+        </div>
+
+        <div class="about-section">
+          <h3><i class="fas fa-map-marker-alt"></i> Locations</h3>
+          <p>Headquartered in San Francisco, with offices in New York, London, Tokyo, and Sydney. Our global presence allows us to serve clients around the world with localized support.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div id="posts" class="content-section">
+      <div class="posts-grid">
+        <div class="post-card">
+          <div class="post-image">
+            <i class="fas fa-code"></i>
+          </div>
+          <div class="post-content">
+            <h3>New Product Launch</h3>
+            <p>We're excited to announce the launch of our newest product, designed to revolutionize workflow management for businesses of all sizes.</p>
+            <div class="post-meta">
+              <span><i class="far fa-calendar"></i> 2 days ago</span>
+              <span><i class="far fa-heart"></i> 124 likes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-image">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="post-content">
+            <h3>Team Building Event</h3>
+            <p>Our annual team building retreat was a huge success! We spent three days strengthening our bonds and planning for the future.</p>
+            <div class="post-meta">
+              <span><i class="far fa-calendar"></i> 1 week ago</span>
+              <span><i class="far fa-heart"></i> 89 likes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-card">
+          <div class="post-image">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="post-content">
+            <h3>Quarterly Results</h3>
+            <p>We're proud to share our outstanding Q2 results, with a 34% growth in revenue and expansion into three new markets.</p>
+            <div class="post-meta">
+              <span><i class="far fa-calendar"></i> 2 weeks ago</span>
+              <span><i class="far fa-heart"></i> 156 likes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other sections would go here -->
+    <div id="jobs" class="content-section">
+      <div class="about-content">
+        <h3>Job Openings</h3>
+        <p>No current job openings at this time. Please check back later for opportunities to join our team.</p>
+      </div>
+    </div>
+
+    <div id="people" class="content-section">
+      <div class="about-content">
+        <h3>Our Team</h3>
+        <p>Meet the talented individuals who make TechCorp International a leader in technology innovation.</p>
+      </div>
+    </div>
+
+    <div id="events" class="content-section">
+      <div class="about-content">
+        <h3>Upcoming Events</h3>
+        <p>We currently have no upcoming public events. Follow us to stay updated on future events and webinars.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>WorkHub</h3>
+        <p>Connect with professionals, find job opportunities, and grow your career.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Follow Us</h3>
+        <ul>
+          <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+          <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+          <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+          <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; 2023 WorkHub. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
 
 <script>
-  // 1️⃣ Initialize Map
-  const map = L.map('map').setView([7.8731, 80.7718], 7); // Default Sri Lanka
+  // Navigation tabs functionality
+  document.addEventListener('DOMContentLoaded', function () {
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
 
-  // 2️⃣ Base Layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
+    navItems.forEach(item => {
+      item.addEventListener('click', function () {
+        // Remove active class from all items
+        navItems.forEach(i => i.classList.remove('active'));
+        contentSections.forEach(s => s.classList.remove('active'));
 
-  // 3️⃣ Weather Layers (OpenWeatherMap)
-  const API_KEY = "YOUR_API_KEY"; // <<< put your OpenWeatherMap key here
+        // Add active class to clicked item
+        this.classList.add('active');
 
-  const rainLayer = L.tileLayer(
-          `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
-          { attribution: "Weather © OpenWeatherMap" }
-  );
-
-  const cloudsLayer = L.tileLayer(
-          `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
-          { attribution: "Weather © OpenWeatherMap" }
-  );
-
-  const tempLayer = L.tileLayer(
-          `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
-          { attribution: "Weather © OpenWeatherMap" }
-  );
-
-  // Add one default
-  rainLayer.addTo(map);
-
-  // Layer Control
-  const overlayMaps = {
-    "🌧 Rain": rainLayer,
-    "☁ Clouds": cloudsLayer,
-    "🌡 Temperature": tempLayer
-  };
-  L.control.layers(null, overlayMaps).addTo(map);
-
-  // 4️⃣ Fetch Danger Reports from Backend
-  async function loadReports() {
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      const res = await fetch("http://localhost:8080/auth/reports/all", {
-        headers: { "Authorization": `Bearer ${accessToken}` }
+        // Show corresponding content section
+        const target = this.getAttribute('data-target');
+        document.getElementById(target).classList.add('active');
       });
+    });
+  });
 
-      if (!res.ok) throw new Error("Failed to load reports");
 
-      const data = await res.json();
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuIcon = document.querySelector('.menu-icon');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
 
-      data.data.forEach(r => {
-        if (r.latitude && r.longitude) {
-          const marker = L.marker([r.latitude, r.longitude]).addTo(map);
-          marker.bindPopup(`
-            <b>⚠ ${r.type}</b><br>
-            ${r.description}<br>
-            <small><i>${r.reporterContact || "No contact"}</i></small>
-          `);
-        }
-      });
-    } catch (err) {
-      console.error(err);
-      alert("Error loading danger reports!");
-    }
-  }
+    menuIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdownMenu.style.display = dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
 
-  loadReports();
+    // Close dropdown if clicking outside
+    document.addEventListener('click', function() {
+      dropdownMenu.style.display = 'none';
+    });
+  });
+
+
 </script>
-
 </body>
 </html>

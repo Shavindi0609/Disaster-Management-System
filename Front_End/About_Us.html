@@ -459,21 +459,26 @@
       <div class="col-lg-6">
         <div class="bg-white p-4 rounded shadow-sm">
           <h4 class="mb-4">Send us a message</h4>
-          <form>
+
+          <!-- ✅ form name added -->
+          <form name="submit-to-google-sheet">
             <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Your Name">
+              <input type="text" name="Name" class="form-control" placeholder="Your Name" required>
             </div>
             <div class="mb-3">
-              <input type="email" class="form-control" placeholder="Your Email">
+              <input type="email" name="Email" class="form-control" placeholder="Your Email" required>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Subject">
+              <input type="text" name="Subject" class="form-control" placeholder="Subject" required>
             </div>
             <div class="mb-3">
-              <textarea class="form-control" rows="4" placeholder="Message"></textarea>
+              <textarea name="Message" class="form-control" rows="4" placeholder="Message" required></textarea>
             </div>
-            <button class="btn btn-primary w-100">Send Message</button>
+            <button type="submit" class="btn btn-primary w-100">Send Message</button>
           </form>
+
+          <!-- ✅ Success message placeholder -->
+          <span id="msg" class="text-success mt-2 d-block"></span>
         </div>
       </div>
     </div>
@@ -533,5 +538,23 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwvvg7y9yrbGZWbxJrOk1hvYP1egj3vwT4WZKG2oenGrGkXFxNgqFaClcKosoKyXj57/exec'
+  const form = document.forms['submit-to-google-sheet']
+  const msg = document.getElementById("msg")
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    fetch(scriptURL, {method: 'POST', body: new FormData(form)})
+            .then(response => {
+              msg.innerHTML = "Message sent successfully!"
+              setTimeout(function (){
+                msg.innerHTML = ""
+              },5000)
+              form.reset()
+            })
+            .catch(error => console.error('Error!', error.message))
+  })
+</script>
 </body>
 </html>
