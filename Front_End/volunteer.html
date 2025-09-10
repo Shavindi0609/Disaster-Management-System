@@ -139,10 +139,11 @@
             <td>${v.phone}</td>
             <td>${v.skills || '-'}</td>
             <td>
-                <button class="btn btn-sm ${v.active ? 'btn-success' : 'btn-secondary'} toggle-status-btn">
-                    ${v.active ? 'Active' : 'Inactive'}
-                </button>
-            </td>
+    <button class="btn btn-sm ${v.active ? 'btn-success' : 'btn-secondary'} toggle-status-btn">
+        ${v.active ? 'Active' : 'Inactive'}
+    </button>
+</td>
+
         `;
             table.appendChild(tr);
 

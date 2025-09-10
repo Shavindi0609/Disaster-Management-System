@@ -215,11 +215,35 @@
             });
 
         // 🔹 Fetch Volunteers count
-        fetch("http://localhost:8080/auth/volunteers/count")
+        // 🔹 Fetch Volunteers (active only) count and list
+        fetch("http://localhost:8080/auth/volunteers")
             .then(res => res.json())
             .then(data => {
-                document.getElementById("statVolunteers").textContent = data.data;
-            });
+                // Only active volunteers
+                const activeVolunteers = data.data.filter(v => v.active);
+
+                // Update stats card count
+                document.getElementById("statVolunteers").textContent = activeVolunteers.length;
+
+                // Render in volunteer list
+                const volunteerList = document.getElementById("volunteerList");
+                volunteerList.innerHTML = "";
+                activeVolunteers.forEach(v => {
+                    const card = document.createElement("div");
+                    card.className = "card mb-2";
+                    card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${v.name}</h5>
+                    <p>Email: ${v.email}</p>
+                    <p>Phone: ${v.phone}</p>
+                    <p>Skills: ${v.skills || '-'}</p>
+                </div>
+            `;
+                    volunteerList.appendChild(card);
+                });
+            })
+            .catch(err => console.error("Error fetching active volunteers:", err));
+
 
         // 🔹 Fetch Donors count
         fetch("http://localhost:8080/auth/donors/count")
@@ -336,20 +360,31 @@
         modal.style.display = 'block';
 
         // Load volunteers
-        // ✅ Correct
         const res = await fetch("http://localhost:8080/auth/volunteers");
         const data = await res.json();
         const volunteers = data.data;
 
+        // Only active volunteers
+        const activeVolunteers = volunteers.filter(v => v.active);
+
         const select = document.getElementById("volunteerSelect");
         select.innerHTML = "";
-        volunteers.forEach(v => {
+
+        if (activeVolunteers.length === 0) {
             const option = document.createElement("option");
-            option.value = v.id;
-            option.textContent = v.name + " (" + v.phone + ")";
+            option.textContent = "No active volunteers available";
+            option.disabled = true;
             select.appendChild(option);
-        });
+        } else {
+            activeVolunteers.forEach(v => {
+                const option = document.createElement("option");
+                option.value = v.id;
+                option.textContent = `${v.name} (${v.phone})`;
+                select.appendChild(option);
+            });
+        }
     }
+
 
     function closeAssignModal() {
         document.getElementById('assignModal').style.display = 'none';
