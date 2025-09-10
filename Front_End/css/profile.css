@@ -1,7 +1,8 @@
+
 :root {
     --main-dark: #066150;
     --main-light: #1D865C;
-    --text-dark: #000;
+    --text-dark: #222;
     --bg-light: #f4f6f8;
 }
 
@@ -20,22 +21,21 @@ body {
 /* Sidebar */
 .sidebar {
     width: 240px;
-    background: #066150; /* dark green */
+    background: linear-gradient(180deg, var(--main-dark), var(--main-light));
     color: #fff;
     padding: 20px;
-    min-height: 100vh;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.1);
 }
 
 .sidebar h2 {
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 
 .sidebar ul {
     padding-left: 0;
+    list-style: none;
 }
 
 .sidebar ul li {
@@ -57,38 +57,34 @@ body {
 
 .sidebar ul li a:hover,
 .sidebar ul li a.active {
-    background: #1D865C; /* lighter green hover */
-    transform: translateX(5px);
+    background: rgba(255,255,255,0.2);
+    transform: translateX(6px);
 }
-
-.sidebar ul li a i {
-    width: 20px; /* icon alignment */
-    text-align: center;
-}
-
 
 /* Main Content */
 #page-content {
     flex: 1;
+    padding: 40px;
 }
 
 #page-content h2 {
-    color: #333;
-    font-weight: 600;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 25px;
 }
 
 /* Profile Card */
 .profile-card {
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     padding: 30px;
     transition: all 0.3s ease;
 }
 
 .profile-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.2);
 }
 
 /* Profile Picture */
@@ -97,13 +93,13 @@ body {
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
 }
 
 /* User Name */
 .profile-card h4 {
     font-weight: 700;
-    color: #333;
+    color: var(--text-dark);
     margin-top: 15px;
 }
 
@@ -123,7 +119,6 @@ body {
     color: #555;
     font-weight: 600;
     padding: 8px 10px;
-    text-align: left;
     width: 30%;
 }
 
@@ -134,28 +129,69 @@ body {
 
 /* Buttons */
 .btn-dark {
-    background-color: #333;
-    color: #fff;
+    background: var(--main-dark);
+    border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    border: none;
     transition: all 0.3s ease;
 }
 
 .btn-dark:hover {
-    background-color: #555;
+    background: var(--main-light);
     transform: scale(1.05);
 }
 
 .btn-outline-dark {
-    border: 2px solid #333;
-    color: #333;
+    border: 2px solid var(--main-dark);
+    color: var(--main-dark);
     border-radius: 8px;
     padding: 8px 16px;
     transition: all 0.3s ease;
 }
 
 .btn-outline-dark:hover {
-    background-color: #333;
+    background: var(--main-dark);
     color: #fff;
 }
+
+/* Modal */
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    border-bottom: none;
+    background: var(--main-dark);
+    color: #fff;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+/* Social Media Links */
+.social-links a {
+    margin: 0 10px;
+    font-size: 22px;
+    color: #066150;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #1D865C;
+    transform: scale(1.2);
+}
+
+/* Delete Button */
+.btn-danger {
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    transform: scale(1.05);
+}
+

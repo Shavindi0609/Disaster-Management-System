@@ -104,6 +104,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+// Handle delete account
+deleteAccountBtn.addEventListener("click", async () => {
+    if (!confirm("🛑 Are you sure you want to delete your account? This cannot be undone.")) return;
+
+    try {
+        const res = await fetch(`http://localhost:8080/auth/users/${userId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            alert("✅ Your account has been deleted successfully!");
+            localStorage.removeItem("accessToken");
+            window.location.href = "../signUp.html";
+        } else {
+            alert(result.message || "❌ Failed to delete account.");
+        }
+    } catch (err) {
+        console.error("Delete account error:", err);
+        alert("🚨 Error deleting account.");
+    }
+});
+
 const links = document.querySelectorAll('.list-unstyled a');
 links.forEach(link => {
     if (link.href === window.location.href) {

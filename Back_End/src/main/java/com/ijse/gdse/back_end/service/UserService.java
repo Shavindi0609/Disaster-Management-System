@@ -51,12 +51,14 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-
-
-    // Delete user
     public void deleteUser(Long id) {
+        boolean exists = userRepository.existsById(id);
+        if (!exists) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
         userRepository.deleteById(id);
     }
+
 
     // Count users
     public long countUsers() {

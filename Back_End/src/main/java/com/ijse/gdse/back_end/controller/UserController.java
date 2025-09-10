@@ -6,6 +6,8 @@ import com.ijse.gdse.back_end.repository.UserRepository;
 import com.ijse.gdse.back_end.service.DonorService;
 import com.ijse.gdse.back_end.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +33,15 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse> deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
-        return ResponseEntity.ok(
-                new APIResponse(200, "User deleted successfully", null)
-        );
+        try {
+            userService.deleteUser(id);  // Service method use කරනවා
+            return ResponseEntity.ok(new APIResponse(200, "User deleted successfully", null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new APIResponse(404, e.getMessage(), id));
+        }
     }
+
 
     @GetMapping("/me")
     public ResponseEntity<APIResponse> getLoggedInUser(Authentication authentication) {
