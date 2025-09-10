@@ -10,4 +10,7 @@ public class VolunteerDTO {
     private String email;
     private String phone;
     private String skills;
+
+    private Boolean active; // ✅ Add this to support active/inactive toggle
+
 }

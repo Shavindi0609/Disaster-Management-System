@@ -8,15 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/volunteerdashboard.css"> <!-- External CSS file -->
 </head>
+
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light px-4">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-        <i class="fas fa-hands-helping fa-lg me-2" style="color: var(--main-dark)"></i>
-        <span>Volunteer Dashboard</span>
-    </a>
-</nav>
+<!-- Horizontal Navigation Bar -->
+<div class="sidebar">
+    <div class="sidebar-content">
+        <div class="brand">
+            <i class="fas fa-shield-alt"></i>
+            <h2>NDMRS</h2>
+        </div>
+        <ul class="list-unstyled">
+            <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="report.html" ><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="myReports.html"><i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="volunteer.html" class="active"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+            <li><a href="donation.html"><i class="fas fa-donate"></i> Donations</a></li>
+            <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+</div>
+
 
 <!-- Main Container -->
 <div class="container container-main">
@@ -82,6 +96,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Skills</th>
+                        <th>Status</th> <!-- New column -->
                     </tr>
                     </thead>
                     <tbody id="volunteerTable">
@@ -114,6 +129,7 @@
     function renderVolunteers(volunteers) {
         const table = document.getElementById("volunteerTable");
         table.innerHTML = "";
+
         volunteers.forEach((v, index) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -122,15 +138,56 @@
             <td>${v.email}</td>
             <td>${v.phone}</td>
             <td>${v.skills || '-'}</td>
+            <td>
+                <button class="btn btn-sm ${v.active ? 'btn-success' : 'btn-secondary'} toggle-status-btn">
+                    ${v.active ? 'Active' : 'Inactive'}
+                </button>
+            </td>
         `;
             table.appendChild(tr);
+
+            const statusBtn = tr.querySelector(".toggle-status-btn");
+
+            // Instant toggle click event
+            statusBtn.addEventListener("click", async () => {
+                try {
+                    // Optimistic UI update: change button instantly
+                    const newStatus = !v.active;
+                    v.active = newStatus;
+                    statusBtn.textContent = newStatus ? 'Active' : 'Inactive';
+                    statusBtn.classList.toggle('btn-success', newStatus);
+                    statusBtn.classList.toggle('btn-secondary', !newStatus);
+
+                    // Send PATCH request to backend
+                    const response = await fetch(`${apiUrl}/${v.id}/status`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ active: newStatus })
+                    });
+
+
+                    if(!response.ok) throw new Error("Failed to update status");
+
+                    // Update the active-volunteers count
+                    document.getElementById("active-volunteers").textContent = volunteers.filter(v => v.active).length;
+
+                } catch(err) {
+                    console.error(err);
+                    alert("Unable to update volunteer status.");
+                    // Revert UI if error
+                    v.active = !v.active;
+                    statusBtn.textContent = v.active ? 'Active' : 'Inactive';
+                    statusBtn.classList.toggle('btn-success', v.active);
+                    statusBtn.classList.toggle('btn-secondary', !v.active);
+                }
+            });
         });
 
         document.getElementById("total-volunteers").textContent = volunteers.length;
-        document.getElementById("active-volunteers").textContent = volunteers.filter(v => v.active !== false).length;
         document.getElementById("assigned-tasks").textContent = volunteers.filter(v => v.tasks && v.tasks.length > 0).length;
         document.getElementById("pending-requests").textContent = volunteers.filter(v => v.pending).length;
     }
+
 
     // Add new volunteer
     document.getElementById("addVolunteerForm").addEventListener("submit", async function(e){

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+import java.util.Map;
+
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/auth/volunteers")
 @RequiredArgsConstructor
@@ -98,6 +100,24 @@ public class VolunteerController {
                         200,
                         "Volunteer count fetched successfully",
                         volunteerService.countVolunteers()
+                )
+        );
+    }
+
+    // ✅ Toggle Active Status
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<APIResponse> toggleVolunteerStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Boolean> statusMap) {
+
+        Boolean active = statusMap.get("active");
+        VolunteerDTO updatedVolunteer = volunteerService.updateVolunteerStatus(id, active);
+
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteer status updated successfully",
+                        updatedVolunteer
                 )
         );
     }

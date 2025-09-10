@@ -62,4 +62,22 @@ public class VolunteerService {
     public long countVolunteers() {
         return volunteerRepository.count();
     }
+
+    public VolunteerDTO updateVolunteerStatus(Long id, Boolean active) {
+        Volunteer volunteer = volunteerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+        volunteer.setActive(active);
+        Volunteer updated = volunteerRepository.save(volunteer);
+
+        VolunteerDTO dto = new VolunteerDTO();
+        dto.setName(updated.getName());
+        dto.setEmail(updated.getEmail());
+        dto.setPhone(updated.getPhone());
+        dto.setSkills(updated.getSkills());
+        dto.setActive(updated.getActive()); // if you added active to DTO
+
+        return dto;
+    }
+
+
 }
