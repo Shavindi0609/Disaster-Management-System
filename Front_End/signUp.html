@@ -21,132 +21,110 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 </head>
-
 <body>
 
 <div class="container" id="container">
 
-    <!-- Sign Up Form -->
-
-    <div class="form-container sign-up-container">
-
-        <form action="#">
-
-            <h1>Create Account 🚀</h1>
-
-            <div class="social-container">
-
-                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-
-                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-
-                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-
-            </div>
-
-            <span>or use your email for registration</span>
-
-            <input type="text" placeholder="👤 Username" required />
-
-            <input type="email" placeholder="📧 Email" required/>
-
-            <input type="password" placeholder="🔒 Password" required/>
-
-            <button type="submit">Sign Up</button>
-
-        </form>
-
+    <!-- Tab Switcher -->
+    <div class="tab-switcher">
+        <button class="tab-btn active" onclick="showForm('user')">User</button>
+        <button class="tab-btn" onclick="showForm('volunteer')">Volunteer</button>
     </div>
 
-    <!-- Sign In Form -->
-
-    <div class="form-container sign-in-container">
-
+    <!-- Sign Up Form (User) -->
+    <div class="form-container sign-up-container form-user">
         <form action="#">
-
-            <h1>Sign In 👋</h1>
-
+            <h1>Create User Account 🚀</h1>
             <div class="social-container">
-
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-
                 <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-
             </div>
-
-            <span>or use your account</span>
-
-            <!-- Changed from username to email -->
-            <input type="email" id="loginEmail" placeholder="📧 Email" required/>
-
+            <span>or use your email for registration</span>
+            <input type="text" placeholder="👤 Username" required />
+            <input type="email" placeholder="📧 Email" required/>
             <input type="password" placeholder="🔒 Password" required/>
-
-            <a href="#" id="forgotPasswordLink">Forgot your password? 🤔</a>
-
-            <button type="submit">Sign In</button>
-
+            <button type="submit">Sign Up</button>
         </form>
+    </div>
 
+    <!-- Sign Up Form (Volunteer) -->
+    <div class="form-container sign-up-container form-volunteer" style="display:none;">
+        <form id="volunteerForm">
+            <h1>Create Volunteer Account 🙌</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your email for registration</span>
+            <input type="text" name="name" placeholder="🙋 Full Name" required />
+            <input type="email" name="email" placeholder="📧 Email" required/>
+            <input type="password" name="password" placeholder="🔒 Password" required/>
+            <input type="text" name="phone" placeholder="📱 Phone Number" required/>
+            <input type="text" name="skills" placeholder="💡 Skills (e.g. Teaching, First Aid)" />
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+
+    <!-- Sign In Form -->
+    <div class="form-container sign-in-container">
+        <form action="#">
+            <h1>Sign In 👋</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
+            <input type="email" id="loginEmail" placeholder="📧 Email" required/>
+            <input type="password" placeholder="🔒 Password" required/>
+            <a href="#" id="forgotPasswordLink">Forgot your password? 🤔</a>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+
+    <!-- Volunteer Login Form -->
+    <div class="form-container sign-in-container form-volunteer-login" style="display:none;">
+        <form id="volunteerLoginForm">
+            <h1>Volunteer Sign In 👋</h1>
+            <input type="email" name="email" placeholder="📧 Email" required />
+            <input type="password" name="password" placeholder="🔒 Password" required />
+            <button type="submit">Sign In</button>
+        </form>
     </div>
 
     <!-- Overlay Container -->
-
     <div class="overlay-container">
-
         <div class="overlay">
-
-            <!-- Overlay Left Panel (Shown when Sign In is active) -->
-
             <div class="overlay-panel overlay-left">
-
                 <h1>Welcome Back! 🎉</h1>
-
                 <p>To keep connected with us please login with your personal info</p>
-
                 <button class="ghost" id="signIn">Sign In</button>
-
             </div>
-
-            <!-- Overlay Right Panel (Shown when Sign Up is active) -->
-
             <div class="overlay-panel overlay-right">
-
                 <h1>Hello, Friend! ✨</h1>
-
                 <p>Enter your personal details and start your journey with us</p>
-
                 <button class="ghost" id="signUp">Sign Up</button>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-
-            <!-- Step 1: Enter Email -->
             <div id="step1">
                 <h2>Forgot Password 🔑</h2>
                 <input type="email" id="resetEmail" placeholder="📧 Enter your email" required>
                 <button id="sendOtpBtn">Send OTP</button>
             </div>
-
-            <!-- Step 2: Enter OTP -->
             <div id="step2" style="display:none;">
                 <h2>Verify OTP ✉️</h2>
                 <input type="text" id="otpCode" placeholder="Enter OTP" required>
                 <button id="verifyOtpBtn">Verify OTP</button>
             </div>
-
-            <!-- Step 3: Reset Password -->
             <div id="step3" style="display:none;">
                 <h2>Set New Password 🔒</h2>
                 <input type="password" id="newPassword" placeholder="New Password" required>
@@ -156,12 +134,27 @@
         </div>
     </div>
 
-
 </div>
+
+<script>
+    function showForm(type) {
+        document.querySelector(".form-user").style.display = (type === "user") ? "block" : "none";
+        document.querySelector(".form-volunteer").style.display = (type === "volunteer") ? "block" : "none";
+
+        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+        if (type === "user") {
+            document.querySelector(".tab-btn:nth-child(1)").classList.add("active");
+        } else {
+            document.querySelector(".tab-btn:nth-child(2)").classList.add("active");
+        }
+    }
+</script>
+
 
 
 <script src="js/signUp.js"></script>
 
 </body>
+
 
 </html>

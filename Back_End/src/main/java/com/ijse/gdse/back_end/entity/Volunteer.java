@@ -24,6 +24,6 @@ public class Volunteer {
     private String email;
     private String phone;
     private String skills;
-
-    private Boolean active = true; // ✅ Add this for active/inactive status
+    private String password;  // Password for login
+    private Boolean active = true;
 }

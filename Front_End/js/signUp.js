@@ -227,3 +227,116 @@ document.getElementById("resetPasswordBtn").addEventListener("click", async () =
         alert("🚨 Server error");
     }
 });
+
+// Volunteer Signup
+const volunteerForm = document.getElementById("volunteerForm");
+
+if (volunteerForm) {
+    volunteerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = volunteerForm.querySelector("input[name='name']").value.trim();
+        const email = volunteerForm.querySelector("input[name='email']").value.trim();
+        const password = volunteerForm.querySelector("input[name='password']").value;
+        const phone = volunteerForm.querySelector("input[name='phone']").value.trim();
+        const skills = volunteerForm.querySelector("input[name='skills']").value.trim();
+
+        if (!name || !email || !password || !phone) {
+            return alert("⚠️ කරුණාකර සියලු required fields පිරවන්න.");
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/auth/volunteers", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password, phone, skills })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("🎉 Volunteer ලියාපදිංචිය සාර්ථකයි!");
+
+                // Signup form hide කරන්න
+                volunteerForm.parentElement.style.display = "none";
+
+                // Volunteer login form show කරන්න
+                const volunteerLoginFormContainer = document.querySelector(".form-volunteer-login");
+                if (volunteerLoginFormContainer) volunteerLoginFormContainer.style.display = "block";
+            } else {
+                alert(result.message || "❌ Volunteer registration failed.");
+            }
+        } catch (err) {
+            console.error("Volunteer signup error:", err);
+            alert("🚨 Server error during volunteer registration.");
+        }
+    });
+}
+
+
+// Volunteer Login
+const volunteerLoginForm = document.getElementById("volunteerLoginForm");
+
+if (volunteerLoginForm) {
+    volunteerLoginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = volunteerLoginForm.querySelector("input[name='email']").value.trim();
+        const password = volunteerLoginForm.querySelector("input[name='password']").value;
+
+        if (!email || !password) {
+            return alert("⚠️ Please enter email and password.");
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/auth/volunteers/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            let result = {};
+            try {
+                result = await response.json(); // try parse
+            } catch {
+                // empty or non-json response
+                result = { message: response.statusText || "Server error" };
+            }
+
+            if (response.ok) {
+                const { accessToken, role, username, email } = result;
+
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("role", role);
+                localStorage.setItem("username", username);
+                localStorage.setItem("email", email);
+
+                alert("✅ Volunteer login successful!");
+                window.location.href = "volunteerDashboard.html";
+            } else {
+                alert(result.message || "❌ Invalid credentials.");
+            }
+        } catch (err) {
+            console.error("Volunteer login error:", err);
+            alert("🚨 Server error during volunteer login.");
+        }
+
+    });
+}
+
+
+function showForm(type) {
+    if(type === "user"){
+        document.querySelector(".form-user").style.display = "block";
+        document.querySelector(".form-volunteer").style.display = "none";
+        document.querySelector(".form-volunteer-login").style.display = "none";
+    } else {
+        document.querySelector(".form-user").style.display = "none";
+        document.querySelector(".form-volunteer").style.display = "block";
+        document.querySelector(".form-volunteer-login").style.display = "none"; // Login hidden initially
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    if(type === "user") document.querySelector(".tab-btn:nth-child(1)").classList.add("active");
+    else document.querySelector(".tab-btn:nth-child(2)").classList.add("active");
+}

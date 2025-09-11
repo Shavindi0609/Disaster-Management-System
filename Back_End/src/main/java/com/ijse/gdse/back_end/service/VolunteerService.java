@@ -5,6 +5,7 @@ import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,40 @@ public class VolunteerService {
 
 
     private final VolunteerRepository volunteerRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    // Register a new volunteer
+    public String registerVolunteer(VolunteerDTO dto) {
+        if (volunteerRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        Volunteer volunteer = Volunteer.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .skills(dto.getSkills())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .active(true)
+                .build();
+
+        volunteerRepository.save(volunteer);
+
+        return "Volunteer registered successfully";
+    }
+
+    // Authenticate volunteer
+    public Volunteer authenticateVolunteer(String email, String password, PasswordEncoder encoder) {
+        Volunteer volunteer = volunteerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email not found"));
+
+        if (!encoder.matches(password, volunteer.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        return volunteer;
+    }
+
 
     public Volunteer addVolunteer(VolunteerDTO volunteerDTO) {
         // DTO => Entity conversion
@@ -63,35 +98,35 @@ public class VolunteerService {
         return volunteerRepository.count();
     }
 
-    public VolunteerDTO updateVolunteerStatus(Long id, Boolean active) {
-        Volunteer volunteer = volunteerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-        volunteer.setActive(active);
-        Volunteer updated = volunteerRepository.save(volunteer);
-
-        VolunteerDTO dto = new VolunteerDTO();
-        dto.setName(updated.getName());
-        dto.setEmail(updated.getEmail());
-        dto.setPhone(updated.getPhone());
-        dto.setSkills(updated.getSkills());
-        dto.setActive(updated.getActive()); // if you added active to DTO
-
-        return dto;
-    }
-
-    // VolunteerService.java
-    public Optional<VolunteerDTO> getVolunteerByEmail(String email) {
-        Optional<Volunteer> volunteerOpt = volunteerRepository.findByEmail(email);
-        return volunteerOpt.map(v -> {
-            VolunteerDTO dto = new VolunteerDTO();
-            dto.setName(v.getName());
-            dto.setEmail(v.getEmail());
-            dto.setPhone(v.getPhone());
-            dto.setSkills(v.getSkills());
-            dto.setActive(v.getActive());
-            return dto;
-        });
-    }
+//    public VolunteerDTO updateVolunteerStatus(Long id, Boolean active) {
+//        Volunteer volunteer = volunteerRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+//        volunteer.setActive(active);
+//        Volunteer updated = volunteerRepository.save(volunteer);
+//
+//        VolunteerDTO dto = new VolunteerDTO();
+//        dto.setName(updated.getName());
+//        dto.setEmail(updated.getEmail());
+//        dto.setPhone(updated.getPhone());
+//        dto.setSkills(updated.getSkills());
+//        dto.setActive(updated.getActive()); // if you added active to DTO
+//
+//        return dto;
+//    }
+//
+//    // VolunteerService.java
+//    public Optional<VolunteerDTO> getVolunteerByEmail(String email) {
+//        Optional<Volunteer> volunteerOpt = volunteerRepository.findByEmail(email);
+//        return volunteerOpt.map(v -> {
+//            VolunteerDTO dto = new VolunteerDTO();
+//            dto.setName(v.getName());
+//            dto.setEmail(v.getEmail());
+//            dto.setPhone(v.getPhone());
+//            dto.setSkills(v.getSkills());
+//            dto.setActive(v.getActive());
+//            return dto;
+//        });
+//    }
 
 
 }

@@ -1,11 +1,16 @@
 package com.ijse.gdse.back_end.util;
 
+import com.ijse.gdse.back_end.entity.User;
+import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.repository.UserRepository;
+import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,41 +19,52 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final VolunteerRepository volunteerRepository;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwtToken;
-        final String username;
-        if (authHeader==null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwtToken = authHeader.substring(7);
-        username=jwtUtil.extractUsername(jwtToken);
-        if (username!=null && SecurityContextHolder.getContext()
-                .getAuthentication()==null) {
-            UserDetails userDetails=userDetailsService
-                    .loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwtToken)){
-                UsernamePasswordAuthenticationToken authToken
-                        =new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+
+        final String token = authHeader.substring(7);
+        final String email = jwtUtil.extractUsername(token);
+
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            Object principal = null;
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+            if (userRepository.findByEmail(email).isPresent()) {
+                User user = userRepository.findByEmail(email).get();
+                principal = user.getUsername();
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+            } else if (volunteerRepository.findByEmail(email).isPresent()) {
+                Volunteer volunteer = volunteerRepository.findByEmail(email).get();
+                principal = volunteer.getName();
+                authorities.add(new SimpleGrantedAuthority("ROLE_VOLUNTEER"));
+            }
+
+            if (principal != null && jwtUtil.validateToken(token)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(principal, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

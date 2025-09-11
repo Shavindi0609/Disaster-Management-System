@@ -618,3 +618,34 @@ input:focus {
     }
 
 }
+
+/* --- User / Volunteer Tab Switcher --- */
+.tab-switcher {
+    text-align: right;   /* Keep buttons on the right */
+    margin: 0 5px 25px 0; /* 👈 right margin reduce karala chuttak left ekata yanawa */
+    position: relative;
+    z-index: 10;
+}
+
+
+.tab-btn {
+    border: none;
+    background: #eee;
+    padding: 10px 25px;
+    margin-left: 10px; /* space between buttons */
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: #ddd;
+}
+
+.tab-btn.active {
+    background: #066150;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}

@@ -4,11 +4,15 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.dto.RegisterDTO;
 import com.ijse.gdse.back_end.dto.VolunteerDTO;
+import com.ijse.gdse.back_end.dto.VolunteerResponseDTO;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.service.VolunteerService;
+import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,18 +25,44 @@ import java.util.Map;
 public class VolunteerController {
 
     private final VolunteerService volunteerService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
+    // Signup
     @PostMapping
-    public ResponseEntity<APIResponse> addVolunteer(
-            @RequestBody VolunteerDTO volunteerDTO) {
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Volunteer Added Successfully",
-                        volunteerService.addVolunteer(volunteerDTO)
-                )
-        );
+    public ResponseEntity<?> registerVolunteer(@RequestBody VolunteerDTO dto) {
+        String msg = volunteerService.registerVolunteer(dto);
+        return ResponseEntity.ok(Map.of("message", msg)); // JSON object
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginVolunteer(@RequestBody VolunteerDTO dto) {
+        try {
+            Volunteer volunteer = volunteerService.authenticateVolunteer(dto.getEmail(), dto.getPassword(), passwordEncoder);
+            String token = jwtUtil.generateToken(volunteer.getEmail());
+
+            VolunteerResponseDTO response = new VolunteerResponseDTO(token, volunteer.getName(), "VOLUNTEER", volunteer.getEmail());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage())); // Always JSON
+        }
+    }
+
+
+
+//    @PostMapping
+//    public ResponseEntity<APIResponse> addVolunteer(
+//            @RequestBody VolunteerDTO volunteerDTO) {
+//        return ResponseEntity.ok(
+//                new APIResponse(
+//                        200,
+//                        "Volunteer Added Successfully",
+//                        volunteerService.addVolunteer(volunteerDTO)
+//                )
+//        );
+//    }
 
     // Get All Volunteers
     @GetMapping
@@ -104,34 +134,34 @@ public class VolunteerController {
         );
     }
 
-    // ✅ Toggle Active Status
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<APIResponse> toggleVolunteerStatus(
-            @PathVariable Long id,
-            @RequestBody Map<String, Boolean> statusMap) {
-
-        Boolean active = statusMap.get("active");
-        VolunteerDTO updatedVolunteer = volunteerService.updateVolunteerStatus(id, active);
-
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Volunteer status updated successfully",
-                        updatedVolunteer
-                )
-        );
-    }
-
-    @GetMapping(params = "email")
-    public ResponseEntity<APIResponse> getVolunteerByEmail(@RequestParam String email) {
-        return volunteerService.getVolunteerByEmail(email)
-                .map(volunteer -> ResponseEntity.ok(
-                        new APIResponse(200, "Volunteer fetched successfully", volunteer)
-                ))
-                .orElse(ResponseEntity.status(404).body(
-                        new APIResponse(404, "Volunteer not found", null)
-                ));
-    }
+//    // ✅ Toggle Active Status
+//    @PatchMapping("/{id}/status")
+//    public ResponseEntity<APIResponse> toggleVolunteerStatus(
+//            @PathVariable Long id,
+//            @RequestBody Map<String, Boolean> statusMap) {
+//
+//        Boolean active = statusMap.get("active");
+//        VolunteerDTO updatedVolunteer = volunteerService.updateVolunteerStatus(id, active);
+//
+//        return ResponseEntity.ok(
+//                new APIResponse(
+//                        200,
+//                        "Volunteer status updated successfully",
+//                        updatedVolunteer
+//                )
+//        );
+//    }
+//
+//    @GetMapping(params = "email")
+//    public ResponseEntity<APIResponse> getVolunteerByEmail(@RequestParam String email) {
+//        return volunteerService.getVolunteerByEmail(email)
+//                .map(volunteer -> ResponseEntity.ok(
+//                        new APIResponse(200, "Volunteer fetched successfully", volunteer)
+//                ))
+//                .orElse(ResponseEntity.status(404).body(
+//                        new APIResponse(404, "Volunteer not found", null)
+//                ));
+//    }
 
 
 }
