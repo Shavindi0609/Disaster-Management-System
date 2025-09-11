@@ -79,5 +79,19 @@ public class VolunteerService {
         return dto;
     }
 
+    // VolunteerService.java
+    public Optional<VolunteerDTO> getVolunteerByEmail(String email) {
+        Optional<Volunteer> volunteerOpt = volunteerRepository.findByEmail(email);
+        return volunteerOpt.map(v -> {
+            VolunteerDTO dto = new VolunteerDTO();
+            dto.setName(v.getName());
+            dto.setEmail(v.getEmail());
+            dto.setPhone(v.getPhone());
+            dto.setSkills(v.getSkills());
+            dto.setActive(v.getActive());
+            return dto;
+        });
+    }
+
 
 }

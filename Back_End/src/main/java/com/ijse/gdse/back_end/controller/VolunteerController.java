@@ -122,5 +122,17 @@ public class VolunteerController {
         );
     }
 
+    @GetMapping(params = "email")
+    public ResponseEntity<APIResponse> getVolunteerByEmail(@RequestParam String email) {
+        return volunteerService.getVolunteerByEmail(email)
+                .map(volunteer -> ResponseEntity.ok(
+                        new APIResponse(200, "Volunteer fetched successfully", volunteer)
+                ))
+                .orElse(ResponseEntity.status(404).body(
+                        new APIResponse(404, "Volunteer not found", null)
+                ));
+    }
+
+
 }
 

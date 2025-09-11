@@ -6,13 +6,11 @@
     <title>Volunteer Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/volunteerdashboard.css"> <!-- External CSS file -->
+    <link rel="stylesheet" href="css/volunteer.css">
 </head>
-
-
 <body>
 
-<!-- Horizontal Navigation Bar -->
+<!-- Sidebar -->
 <div class="sidebar">
     <div class="sidebar-content">
         <div class="brand">
@@ -21,16 +19,16 @@
         </div>
         <ul class="list-unstyled">
             <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="report.html" ><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
+            <li><a href="report.html"><i class="fas fa-exclamation-triangle"></i> Report Disaster</a></li>
             <li><a href="myReports.html"><i class="fas fa-file-alt"></i> My Reports</a></li>
             <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
             <li><a href="volunteer.html" class="active"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
             <li><a href="donation.html"><i class="fas fa-donate"></i> Donations</a></li>
             <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
+        <a href="#" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log In as a Volunteer</a>
     </div>
 </div>
-
 
 <!-- Main Container -->
 <div class="container container-main">
@@ -68,7 +66,7 @@
     </div>
 
     <div class="row mt-4">
-        <!-- Left: Add Volunteer -->
+        <!-- Add Volunteer Form -->
         <div class="col-lg-4">
             <div class="card-volunteer">
                 <h5>Add New Volunteer</h5>
@@ -77,14 +75,14 @@
                     <input type="email" class="form-control" id="volunteerEmail" placeholder="Email" required>
                     <input type="text" class="form-control" id="volunteerPhone" placeholder="Phone" required>
                     <input type="text" class="form-control" id="volunteerSkills" placeholder="Skills (First Aid, Driving...)">
-                    <div class="button-row">
-                        <button type="submit" class="btn btn-primary">Add Volunteer</button>
+                    <div class="button-row mt-2">
+                        <button type="submit" class="btn btn-primary w-100">Add Volunteer</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Right: Volunteer List -->
+        <!-- Volunteer List -->
         <div class="col-lg-8">
             <div class="card-dashboard">
                 <h5>Existing Volunteers</h5>
@@ -96,12 +94,10 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Skills</th>
-                        <th>Status</th> <!-- New column -->
+                        <th>Status</th>
                     </tr>
                     </thead>
-                    <tbody id="volunteerTable">
-                    <!-- Volunteers will be dynamically added here -->
-                    </tbody>
+                    <tbody id="volunteerTable"></tbody>
                 </table>
             </div>
         </div>
@@ -110,76 +106,67 @@
 </div>
 
 <script>
-    const apiUrl = "http://localhost:8080/auth/volunteers"; // Update with your backend endpoint
+    const apiUrl = "http://localhost:8080/auth/volunteers";
 
-    // Fetch volunteers from backend
+    // Load volunteers
     async function loadVolunteers() {
         try {
-            const response = await fetch(apiUrl);
-            if(!response.ok) throw new Error("Failed to fetch volunteers");
-            const data = await response.json();
+            const res = await fetch(apiUrl);
+            if (!res.ok) throw new Error("Failed to fetch volunteers");
+            const data = await res.json();
             const volunteers = data.data || [];
             renderVolunteers(volunteers);
-        } catch(err) {
+        } catch (err) {
             console.error(err);
             alert("Unable to load volunteers.");
         }
     }
 
+    // Render volunteers table
     function renderVolunteers(volunteers) {
         const table = document.getElementById("volunteerTable");
         table.innerHTML = "";
 
-        volunteers.forEach((v, index) => {
+        volunteers.forEach((v, idx) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-            <td>${index+1}</td>
+            <td>${idx + 1}</td>
             <td>${v.name}</td>
             <td>${v.email}</td>
             <td>${v.phone}</td>
             <td>${v.skills || '-'}</td>
             <td>
-    <button class="btn btn-sm ${v.active ? 'btn-success' : 'btn-secondary'} toggle-status-btn">
-        ${v.active ? 'Active' : 'Inactive'}
-    </button>
-</td>
-
+                <button class="btn btn-sm ${v.active ? 'btn-success' : 'btn-secondary'} toggle-status-btn">
+                    ${v.active ? 'Active' : 'Inactive'}
+                </button>
+            </td>
         `;
             table.appendChild(tr);
 
-            const statusBtn = tr.querySelector(".toggle-status-btn");
-
-            // Instant toggle click event
-            statusBtn.addEventListener("click", async () => {
+            const btn = tr.querySelector(".toggle-status-btn");
+            btn.addEventListener("click", async () => {
                 try {
-                    // Optimistic UI update: change button instantly
                     const newStatus = !v.active;
                     v.active = newStatus;
-                    statusBtn.textContent = newStatus ? 'Active' : 'Inactive';
-                    statusBtn.classList.toggle('btn-success', newStatus);
-                    statusBtn.classList.toggle('btn-secondary', !newStatus);
+                    btn.textContent = newStatus ? 'Active' : 'Inactive';
+                    btn.classList.toggle('btn-success', newStatus);
+                    btn.classList.toggle('btn-secondary', !newStatus);
 
-                    // Send PATCH request to backend
-                    const response = await fetch(`${apiUrl}/${v.id}/status`, {
+                    const res = await fetch(`${apiUrl}/${v.id}/status`, {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ active: newStatus })
                     });
+                    if (!res.ok) throw new Error("Failed to update status");
 
-
-                    if(!response.ok) throw new Error("Failed to update status");
-
-                    // Update the active-volunteers count
                     document.getElementById("active-volunteers").textContent = volunteers.filter(v => v.active).length;
-
-                } catch(err) {
+                } catch (err) {
                     console.error(err);
                     alert("Unable to update volunteer status.");
-                    // Revert UI if error
                     v.active = !v.active;
-                    statusBtn.textContent = v.active ? 'Active' : 'Inactive';
-                    statusBtn.classList.toggle('btn-success', v.active);
-                    statusBtn.classList.toggle('btn-secondary', !v.active);
+                    btn.textContent = v.active ? 'Active' : 'Inactive';
+                    btn.classList.toggle('btn-success', v.active);
+                    btn.classList.toggle('btn-secondary', !v.active);
                 }
             });
         });
@@ -189,9 +176,8 @@
         document.getElementById("pending-requests").textContent = volunteers.filter(v => v.pending).length;
     }
 
-
     // Add new volunteer
-    document.getElementById("addVolunteerForm").addEventListener("submit", async function(e){
+    document.getElementById("addVolunteerForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const volunteer = {
             name: document.getElementById("volunteerName").value,
@@ -204,17 +190,36 @@
         };
 
         try {
-            const response = await fetch(apiUrl, {
+            const res = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(volunteer)
             });
-            if(!response.ok) throw new Error("Failed to add volunteer");
+            if (!res.ok) throw new Error("Failed to add volunteer");
             document.getElementById("addVolunteerForm").reset();
-            loadVolunteers(); // Reload the table
-        } catch(err) {
+            loadVolunteers();
+        } catch (err) {
             console.error(err);
             alert("Unable to add volunteer.");
+        }
+    });
+
+    // Volunteer login
+    document.getElementById("volunteerLoginBtn").addEventListener("click", async () => {
+        const email = prompt("Please enter your volunteer email:");
+        if (!email) return alert("Email is required!");
+
+        try {
+            const res = await fetch(`${apiUrl}?email=${encodeURIComponent(email)}`);
+            if (!res.ok) throw new Error("Volunteer not found");
+            const data = await res.json();
+            if (!data.data) return alert("No volunteer found with this email.");
+
+            localStorage.setItem("loggedInVolunteer", JSON.stringify(data.data));
+            window.location.href = "volunteerDashboard.html";
+        } catch (err) {
+            console.error(err);
+            alert("Error logging in. Please try again.");
         }
     });
 
