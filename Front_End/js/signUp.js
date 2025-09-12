@@ -392,3 +392,119 @@ function showLoginForm(type) {
     }
 }
 
+// =====================
+// Volunteer Forgot Password Modal Logic
+// =====================
+const volunteerModal = document.getElementById("volunteerForgotPasswordModal");
+const volunteerForgotLink = document.getElementById("forgotPasswordLink1"); // ✅ FIXED
+const volunteerCloseBtn = volunteerModal?.querySelector(".close");
+
+
+// Open modal with auto-fill email
+volunteerForgotLink?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const loginEmail = document.querySelector("#volunteerLoginForm input[name='email']")?.value.trim();
+    if (loginEmail) {
+        document.getElementById("volunteerResetEmail").value = loginEmail;
+    }
+    volunteerModal.style.display = "flex";
+});
+
+// Close modal
+volunteerCloseBtn?.addEventListener("click", () => volunteerModal.style.display = "none");
+
+// Close if click outside
+window.addEventListener("click", (e) => {
+    if (e.target === volunteerModal) volunteerModal.style.display = "none";
+});
+
+// =====================
+// Step 1: Send OTP
+// =====================
+document.getElementById("volunteerSendOtpBtn")?.addEventListener("click", async () => {
+    const email = document.getElementById("volunteerResetEmail").value.trim();
+    if (!email) return alert("⚠️ Please enter your email");
+
+    try {
+        const res = await fetch("http://localhost:8080/auth/password/volunteers/send-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+        const result = await res.json();
+
+        if (res.ok) {
+            alert("✅ OTP sent to your email");
+            document.getElementById("volunteerStep1").style.display = "none";
+            document.getElementById("volunteerStep2").style.display = "block";
+        } else {
+            alert(result.message || "❌ Failed to send OTP");
+        }
+    } catch (err) {
+        alert("🚨 Server error"); console.error(err);
+    }
+});
+
+// =====================
+// Step 2: Verify OTP
+// =====================
+document.getElementById("volunteerVerifyOtpBtn")?.addEventListener("click", async () => {
+    const email = document.getElementById("volunteerResetEmail").value.trim();
+    const otp = document.getElementById("volunteerOtpCode").value.trim();
+
+    if (!otp) return alert("⚠️ Please enter OTP");
+
+    try {
+        const res = await fetch("http://localhost:8080/auth/password/volunteers/verify-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, otp })
+        });
+        const result = await res.json();
+
+        if (res.ok) {
+            alert("✅ OTP verified");
+            document.getElementById("volunteerStep2").style.display = "none";
+            document.getElementById("volunteerStep3").style.display = "block";
+        } else {
+            alert(result.message || "❌ Invalid OTP");
+        }
+    } catch (err) {
+        alert("🚨 Server error"); console.error(err);
+    }
+});
+
+// =====================
+// Step 3: Reset Password
+// =====================
+document.getElementById("volunteerResetPasswordBtn")?.addEventListener("click", async () => {
+    const email = document.getElementById("volunteerResetEmail").value.trim();
+    const newPassword = document.getElementById("volunteerNewPassword").value;
+    const confirmPassword = document.getElementById("volunteerConfirmPassword").value;
+
+    if (!newPassword || !confirmPassword) return alert("⚠️ Please fill both fields");
+    if (newPassword !== confirmPassword) return alert("⚠️ Passwords do not match");
+
+    try {
+        const res = await fetch("http://localhost:8080/auth/password/volunteers/reset", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, newPassword })
+        });
+        const result = await res.json();
+
+        if (res.ok) {
+            alert("✅ Password reset successful! Please login again.");
+            volunteerModal.style.display = "none";
+
+            // Reset modal to step 1
+            document.getElementById("volunteerStep1").style.display = "block";
+            document.getElementById("volunteerStep2").style.display = "none";
+            document.getElementById("volunteerStep3").style.display = "none";
+        } else {
+            alert(result.message || "❌ Failed to reset password");
+        }
+    } catch (err) {
+        alert("🚨 Server error"); console.error(err);
+    }
+});

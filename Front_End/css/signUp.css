@@ -203,6 +203,7 @@ input:focus {
 
 .container {
 
+
     background-color: #fff;
 
     border-radius: 10px;
@@ -217,7 +218,7 @@ input:focus {
 
     max-width: 100%;
 
-    min-height: 520px; /* Slightly taller */
+    min-height: 580px; /* Slightly taller */
 
 }
 
@@ -485,7 +486,7 @@ input:focus {
 
 .social-container {
 
-    margin: 20px 0;
+    margin: 0px 0;
 
 }
 

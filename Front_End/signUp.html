@@ -51,14 +51,14 @@
     <!-- Sign Up Form (Volunteer) -->
     <div class="form-container sign-up-container form-volunteer" style="display:none;">
         <form id="volunteerForm">
-            <h1>Create Volunteer Account 🙌</h1>
+            <h1>Create Volunteer</h1>
             <div class="social-container">
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
                 <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
             </div>
-            <span>or use your email for registration</span>
-            <input type="text" name="name" placeholder="🙋 Full Name" required />
+<!--            <span>or use your email for registration</span>-->
+            <input type="text" name="name" placeholder="🙋 Name" required />
             <input type="email" name="email" placeholder="📧 Email" required/>
             <input type="password" name="password" placeholder="🔒 Password" required/>
             <input type="text" name="phone" placeholder="📱 Phone Number" required/>
@@ -77,7 +77,7 @@
     <div class="form-container sign-in-container form-user-login">
         <form id="userLoginForm">
             <h1>User Sign In</h1>
-<!--            <h1>👋</h1>-->
+            <h1>👋</h1>
             <div class="social-container">
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
@@ -94,7 +94,7 @@
     <!-- Volunteer Login Form -->
     <div class="form-container sign-in-container form-volunteer-login" style="display:none;">
         <form id="volunteerLoginForm">
-            <h1>Volunteer Sign In</h1>
+            <h1>Volunteer Sign In 👋</h1>
             <div class="social-container">
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
@@ -147,6 +147,36 @@
             </div>
         </div>
     </div>
+
+    <!-- Volunteer Forgot Password Modal -->
+    <div id="volunteerForgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <!-- Step 1 -->
+            <div id="volunteerStep1">
+                <h2>Volunteer Forgot Password 🔑</h2>
+                <input type="email" id="volunteerResetEmail" placeholder="📧 Enter your email" required>
+                <button id="volunteerSendOtpBtn">Send OTP</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="volunteerStep2" style="display:none;">
+                <h2>Verify OTP ✉️</h2>
+                <input type="text" id="volunteerOtpCode" placeholder="Enter OTP" required>
+                <button id="volunteerVerifyOtpBtn">Verify OTP</button>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="volunteerStep3" style="display:none;">
+                <h2>Set New Password 🔒</h2>
+                <input type="password" id="volunteerNewPassword" placeholder="New Password" required>
+                <input type="password" id="volunteerConfirmPassword" placeholder="Confirm Password" required>
+                <button id="volunteerResetPasswordBtn">Reset Password</button>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
