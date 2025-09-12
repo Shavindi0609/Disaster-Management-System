@@ -67,19 +67,25 @@
         </form>
     </div>
 
+    <!-- Tab Switcher for Login -->
+    <div class="tab-switcher signin-switcher">
+        <button class="tab-btn-login active" onclick="showLoginForm('user')">User Login</button>
+        <button class="tab-btn-login" onclick="showLoginForm('volunteer')">Volunteer Login</button>
+    </div>
 
-    <!-- Sign In Form -->
-    <div class="form-container sign-in-container">
-        <form action="#">
-            <h1>Sign In 👋</h1>
+    <!-- User Login Form -->
+    <div class="form-container sign-in-container form-user-login">
+        <form id="userLoginForm">
+            <h1>User Sign In</h1>
+<!--            <h1>👋</h1>-->
             <div class="social-container">
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
                 <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your account</span>
-            <input type="email" id="loginEmail" placeholder="📧 Email" required/>
-            <input type="password" placeholder="🔒 Password" required/>
+            <input type="email" id="userLoginEmail" placeholder="📧 Email" required/>
+            <input type="password" id="userLoginPassword" placeholder="🔒 Password" required/>
             <a href="#" id="forgotPasswordLink">Forgot your password? 🤔</a>
             <button type="submit">Sign In</button>
         </form>
@@ -88,12 +94,20 @@
     <!-- Volunteer Login Form -->
     <div class="form-container sign-in-container form-volunteer-login" style="display:none;">
         <form id="volunteerLoginForm">
-            <h1>Volunteer Sign In 👋</h1>
+            <h1>Volunteer Sign In</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
             <input type="email" name="email" placeholder="📧 Email" required />
             <input type="password" name="password" placeholder="🔒 Password" required />
+            <a href="#" id="forgotPasswordLink1">Forgot your password? 🤔</a>
             <button type="submit">Sign In</button>
         </form>
     </div>
+
 
     <!-- Overlay Container -->
     <div class="overlay-container">

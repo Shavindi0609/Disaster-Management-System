@@ -135,7 +135,7 @@ const closeBtn = modal.querySelector(".close");
 // Open modal with auto-fill email
 forgotLink.addEventListener("click", (e) => {
     e.preventDefault();
-    const loginEmail = document.getElementById("loginEmail").value.trim();
+    const loginEmail = document.getElementById("userLoginEmail").value.trim();
     if (loginEmail) {
         document.getElementById("resetEmail").value = loginEmail; // auto-fill login email
     }
@@ -155,7 +155,7 @@ window.addEventListener("click", (e) => {
 // Step 1: Send OTP
 document.getElementById("sendOtpBtn").addEventListener("click", async () => {
     const email = document.getElementById("resetEmail").value.trim();
-    if (!email) return alert("Please enter your email");
+    if (!email) return alert("⚠️ Please enter your email");
 
     try {
         const res = await fetch("http://localhost:8080/auth/password/send-otp", {
@@ -164,22 +164,28 @@ document.getElementById("sendOtpBtn").addEventListener("click", async () => {
             body: JSON.stringify({ email })
         });
 
+        const result = await res.json();
+
         if (res.ok) {
             alert("✅ OTP sent to your email");
             document.getElementById("step1").style.display = "none";
             document.getElementById("step2").style.display = "block";
         } else {
-            alert("❌ Failed to send OTP");
+            alert(result.message || "❌ Failed to send OTP");
         }
     } catch (err) {
         alert("🚨 Server error");
+        console.error(err);
     }
 });
+
 
 // Step 2: Verify OTP
 document.getElementById("verifyOtpBtn").addEventListener("click", async () => {
     const email = document.getElementById("resetEmail").value.trim();
     const otp = document.getElementById("otpCode").value.trim();
+
+    if (!otp) return alert("⚠️ Please enter OTP");
 
     try {
         const res = await fetch("http://localhost:8080/auth/password/verify-otp", {
@@ -188,17 +194,21 @@ document.getElementById("verifyOtpBtn").addEventListener("click", async () => {
             body: JSON.stringify({ email, otp })
         });
 
+        const result = await res.json();
+
         if (res.ok) {
             alert("✅ OTP verified");
             document.getElementById("step2").style.display = "none";
             document.getElementById("step3").style.display = "block";
         } else {
-            alert("❌ Invalid OTP");
+            alert(result.message || "❌ Invalid OTP");
         }
     } catch (err) {
         alert("🚨 Server error");
+        console.error(err);
     }
 });
+
 
 // Step 3: Reset Password
 document.getElementById("resetPasswordBtn").addEventListener("click", async () => {
@@ -206,9 +216,8 @@ document.getElementById("resetPasswordBtn").addEventListener("click", async () =
     const newPassword = document.getElementById("newPassword").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
-    if (newPassword !== confirmPassword) {
-        return alert("⚠️ Passwords do not match");
-    }
+    if (!newPassword || !confirmPassword) return alert("⚠️ Please fill both fields");
+    if (newPassword !== confirmPassword) return alert("⚠️ Passwords do not match");
 
     try {
         const res = await fetch("http://localhost:8080/auth/password/reset", {
@@ -217,14 +226,22 @@ document.getElementById("resetPasswordBtn").addEventListener("click", async () =
             body: JSON.stringify({ email, newPassword })
         });
 
+        const result = await res.json();
+
         if (res.ok) {
             alert("✅ Password reset successful! Please login again.");
             modal.style.display = "none";
+
+            // Reset modal to step 1
+            document.getElementById("step1").style.display = "block";
+            document.getElementById("step2").style.display = "none";
+            document.getElementById("step3").style.display = "none";
         } else {
-            alert("❌ Failed to reset password");
+            alert(result.message || "❌ Failed to reset password");
         }
     } catch (err) {
         alert("🚨 Server error");
+        console.error(err);
     }
 });
 
@@ -257,15 +274,28 @@ if (volunteerForm) {
             if (response.ok) {
                 alert("🎉 Volunteer ලියාපදිංචිය සාර්ථකයි!");
 
-                // Signup form hide කරන්න
+                // Volunteer signup form hide කරන්න
                 volunteerForm.parentElement.style.display = "none";
 
                 // Volunteer login form show කරන්න
                 const volunteerLoginFormContainer = document.querySelector(".form-volunteer-login");
                 if (volunteerLoginFormContainer) volunteerLoginFormContainer.style.display = "block";
+
+                // 👇 User signUp/signIn system එකේ වගේ panel switch කරන්න
+                const container = document.getElementById("container");
+                if (container) {
+                    container.classList.remove("right-panel-active");
+                    console.log("Volunteer signup → switched to login panel");
+                }
+
+                // Optional: Email auto-fill
+                const loginEmailInput = document.querySelector("#volunteerLoginForm input[name='email']");
+                if (loginEmailInput) loginEmailInput.value = email;
+
             } else {
                 alert(result.message || "❌ Volunteer registration failed.");
             }
+
         } catch (err) {
             console.error("Volunteer signup error:", err);
             alert("🚨 Server error during volunteer registration.");
@@ -340,3 +370,25 @@ function showForm(type) {
     if(type === "user") document.querySelector(".tab-btn:nth-child(1)").classList.add("active");
     else document.querySelector(".tab-btn:nth-child(2)").classList.add("active");
 }
+
+function showLoginForm(type) {
+    const userLogin = document.querySelector(".form-user-login");
+    const volunteerLogin = document.querySelector(".form-volunteer-login");
+
+    if (type === "user") {
+        userLogin.style.display = "block";
+        volunteerLogin.style.display = "none";
+    } else {
+        userLogin.style.display = "none";
+        volunteerLogin.style.display = "block";
+    }
+
+    // button active class update
+    document.querySelectorAll(".signin-switcher .tab-btn-login").forEach(btn => btn.classList.remove("active"));
+    if (type === "user") {
+        document.querySelectorAll(".signin-switcher .tab-btn-login")[0].classList.add("active");
+    } else {
+        document.querySelectorAll(".signin-switcher .tab-btn-login")[1].classList.add("active");
+    }
+}
+

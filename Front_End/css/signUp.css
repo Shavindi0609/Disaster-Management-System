@@ -649,3 +649,45 @@ input:focus {
     color: #fff;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
+/* Login Tab Switcher */
+/* Login Tab Switcher (User / Volunteer Login Buttons) */
+.signin-switcher {
+    position: absolute;      /* 👈 fixed positioning inside form */
+    top: 0px;              /* 👈 adjust udata yanawa */
+    left: 25%;              /* 👈 center align */
+    transform: translateX(-50%);
+    display: inline-flex;
+    background: #f1f1f1;
+    border-radius: 30px;
+    padding: 2px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 20;  /* overlay nisa hidden une nam denna */
+}
+
+
+
+/* Buttons inside */
+.tab-btn-login {
+    border: none;
+    background: transparent;
+    padding: 10px 30px;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    color: #333;
+}
+
+/* Hover */
+.tab-btn-login:hover {
+    background: #ddd;
+}
+
+/* Active State */
+.tab-btn-login.active {
+    background: #066150;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}

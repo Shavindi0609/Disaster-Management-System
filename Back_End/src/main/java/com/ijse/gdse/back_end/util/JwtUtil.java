@@ -17,15 +17,15 @@ public class JwtUtil {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    public String generateToken(String username){
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)  // <-- subject = email
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(
-                        System.currentTimeMillis() + expiration))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes())
-                        , SignatureAlgorithm.HS256).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
     }
+
 
     public String extractUsername(String token){
         return Jwts.parserBuilder()

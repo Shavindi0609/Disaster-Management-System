@@ -50,13 +50,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (userRepository.findByEmail(email).isPresent()) {
                 User user = userRepository.findByEmail(email).get();
-                principal = user.getUsername();
+                principal = user.getEmail();  // <-- FIX: email use කරන්න
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
             } else if (volunteerRepository.findByEmail(email).isPresent()) {
                 Volunteer volunteer = volunteerRepository.findByEmail(email).get();
-                principal = volunteer.getName();
+                principal = volunteer.getEmail();  // <-- FIX: email use කරන්න
                 authorities.add(new SimpleGrantedAuthority("ROLE_VOLUNTEER"));
             }
+
 
             if (principal != null && jwtUtil.validateToken(token)) {
                 UsernamePasswordAuthenticationToken authToken =
