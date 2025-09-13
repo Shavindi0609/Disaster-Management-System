@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/auth/donors")
+@RequestMapping("/api/donors")
 @RequiredArgsConstructor
 public class DonorController {
 

@@ -8,7 +8,7 @@ function addVolunteer(event) {
         skills: document.getElementById("volunteerSkills").value
     };
 
-    fetch("http://localhost:8080/auth/volunteers", {
+    fetch("http://localhost:8080/api/volunteers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(volunteer)

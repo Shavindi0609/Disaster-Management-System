@@ -32,7 +32,7 @@
 };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/donations', {
+            const response = await fetch('http://localhost:8080/api/donations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

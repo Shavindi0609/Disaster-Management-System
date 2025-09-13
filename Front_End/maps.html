@@ -215,7 +215,7 @@
 
     async function loadDisasters(filter = "all") {
       try {
-        const res = await fetch("http://localhost:8080/auth/reports/today");
+        const res = await fetch("http://localhost:8080/api/reports/today");
         const data = await res.json();
         const reports = data.data || [];
 

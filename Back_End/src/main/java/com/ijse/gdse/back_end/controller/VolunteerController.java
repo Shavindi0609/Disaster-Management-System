@@ -19,50 +19,26 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
-@RequestMapping("/auth/volunteers")
+@RequestMapping("/api/volunteers")
 @RequiredArgsConstructor
 
 public class VolunteerController {
 
     private final VolunteerService volunteerService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
-    // Signup
+
+
     @PostMapping
-    public ResponseEntity<?> registerVolunteer(@RequestBody VolunteerDTO dto) {
-        String msg = volunteerService.registerVolunteer(dto);
-        return ResponseEntity.ok(Map.of("message", msg)); // JSON object
+    public ResponseEntity<APIResponse> addVolunteer(
+            @RequestBody VolunteerDTO volunteerDTO) {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Volunteer Added Successfully",
+                        volunteerService.addVolunteer(volunteerDTO)
+                )
+        );
     }
-
-
-    @PostMapping("/login")
-    public ResponseEntity<?> loginVolunteer(@RequestBody VolunteerDTO dto) {
-        try {
-            Volunteer volunteer = volunteerService.authenticateVolunteer(dto.getEmail(), dto.getPassword(), passwordEncoder);
-            String token = jwtUtil.generateToken(volunteer.getEmail());
-
-            VolunteerResponseDTO response = new VolunteerResponseDTO(token, volunteer.getName(), "VOLUNTEER", volunteer.getEmail());
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", e.getMessage())); // Always JSON
-        }
-    }
-
-
-
-//    @PostMapping
-//    public ResponseEntity<APIResponse> addVolunteer(
-//            @RequestBody VolunteerDTO volunteerDTO) {
-//        return ResponseEntity.ok(
-//                new APIResponse(
-//                        200,
-//                        "Volunteer Added Successfully",
-//                        volunteerService.addVolunteer(volunteerDTO)
-//                )
-//        );
-//    }
 
     // Get All Volunteers
     @GetMapping

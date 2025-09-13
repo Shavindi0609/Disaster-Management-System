@@ -9,6 +9,7 @@ import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
-@RequestMapping("/auth/reports")
+@RequestMapping("/api/reports")
 @RequiredArgsConstructor
 public class ReportController {
 
@@ -29,7 +30,7 @@ public class ReportController {
     // ================= Add Report =================
     @PostMapping
     public ResponseEntity<APIResponse> addReport(
-            @RequestHeader("Authorization") String authHeader,
+            Authentication authentication,
             @RequestParam String type,
             @RequestParam String description,
             @RequestParam(required = false) String reporterContact,
@@ -37,15 +38,14 @@ public class ReportController {
             @RequestParam Double longitude,
             @RequestParam(required = false) MultipartFile photo
     ) throws IOException {
+        String email = authentication.getName(); // JWT එකෙන් email ස්වයංක්‍රීයව ලබා ගනී
 
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
-
-        Report savedReport = reportService.addReportByUser(email, type, description, reporterContact, latitude, longitude, photo);
+        Report savedReport = reportService.addReportByUser(
+                email, type, description, reporterContact, latitude, longitude, photo
+        );
 
         return ResponseEntity.ok(new APIResponse(200, "Report Added Successfully", savedReport));
     }
-
     // ================= All Reports (Admin) =================
     @GetMapping("/all")
     public ResponseEntity<APIResponse> getAllReports() {

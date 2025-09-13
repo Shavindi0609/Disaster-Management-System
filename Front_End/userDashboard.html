@@ -153,7 +153,7 @@
         let allMarkers = [];
 
         function loadDisasters(filter = "all") {
-            fetch("http://localhost:8080/auth/reports/today", {
+            fetch("http://localhost:8080/api/reports/today", {
                 headers: { "Authorization": `Bearer ${accessToken}` }
             })
                 .then(res => res.json())
@@ -188,7 +188,7 @@
         });
 
         // Load user reports count
-        fetch("http://localhost:8080/auth/reports/my", {
+        fetch("http://localhost:8080/api/reports/my", {
             headers: { "Authorization": `Bearer ${accessToken}` }
         })
             .then(res => res.json())

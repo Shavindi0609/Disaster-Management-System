@@ -208,7 +208,7 @@
 
 
         // 🔹 Fetch Today's Reports
-        fetch("http://localhost:8080/auth/reports/today")
+        fetch("http://localhost:8080/api/reports/today")
             .then(res => res.json())
             .then(data => {
                 document.getElementById("statTodayDisasters").textContent = data.data.length;
@@ -216,7 +216,7 @@
 
         // 🔹 Fetch Volunteers count
         // 🔹 Fetch Volunteers (active only) count and list
-        fetch("http://localhost:8080/auth/volunteers")
+        fetch("http://localhost:8080/api/volunteers")
             .then(res => res.json())
             .then(data => {
                 // Only active volunteers
@@ -246,20 +246,20 @@
 
 
         // 🔹 Fetch Donors count
-        fetch("http://localhost:8080/auth/donors/count")
+        fetch("http://localhost:8080/api/donors/count")
             .then(res => res.json())
             .then(data => {
                 document.getElementById("statDonors").textContent = data.data;
             });
 
         // 🔹 Donations amount (ඇත්තටම DB එකේ තියෙනවා නම් backend එකෙන් API එකක් හදන්න)
-        fetch("http://localhost:8080/auth/donations/total")
+        fetch("http://localhost:8080/api/donations/total")
             .then(res => res.json())
             .then(data => {
                 document.getElementById("statDonations").textContent = "$" + data.data;
             });
 
-        fetch("http://localhost:8080/auth/donations/monthly")
+        fetch("http://localhost:8080/api/donations/monthly")
             .then(res => res.json())
             .then(data => {
                 const months = Object.keys(data.data);
@@ -310,7 +310,7 @@
         reportMarkers = [];
 
         try {
-            const res = await fetch("http://localhost:8080/auth/reports/all");
+            const res = await fetch("http://localhost:8080/api/reports/all");
             const data = await res.json();
             const reports = data.data;
 
@@ -360,7 +360,7 @@
         modal.style.display = 'block';
 
         // Load volunteers
-        const res = await fetch("http://localhost:8080/auth/volunteers");
+        const res = await fetch("http://localhost:8080/api/volunteers");
         const data = await res.json();
         const volunteers = data.data;
 
@@ -395,7 +395,7 @@
         const token = localStorage.getItem("accessToken");
 
         try {
-            const res = await fetch(`http://localhost:8080/auth/reports/${currentReportId}/assign/${volunteerId}`, {
+            const res = await fetch(`http://localhost:8080/api/reports/${currentReportId}/assign/${volunteerId}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -426,7 +426,7 @@
 
 
     // Load today's reports on small map
-    fetch("http://localhost:8080/auth/reports/today")
+    fetch("http://localhost:8080/api/reports/today")
         .then(res => res.json())
         .then(data => {
             const reports = data.data;
@@ -453,7 +453,7 @@
 
     async function loadAdminDisasters(filter = "all") {
         try {
-            const res = await fetch("http://localhost:8080/auth/reports/today");
+            const res = await fetch("http://localhost:8080/api/reports/today");
             const data = await res.json();
             const reports = data.data || [];
 

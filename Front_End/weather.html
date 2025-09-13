@@ -30,7 +30,7 @@
         if(!city) { alert("Enter a city"); return; }
 
         try {
-            const response = await fetch(`http://localhost:8080/auth/weather?city=${city}`);
+            const response = await fetch(`http://localhost:8080/api/weather?city=${city}`);
             if(!response.ok) {
                 document.getElementById("result").innerHTML = "<p style='color:red'>❌ Error fetching data</p>";
                 return;

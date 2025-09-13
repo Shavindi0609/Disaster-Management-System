@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch("http://localhost:8080/auth/login", {
+                const response = await fetch("http://localhost:8080/auth/login-user", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password }) // ✅ send email to backend
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/auth/register", {
+            const response = await fetch("http://localhost:8080/auth/register-user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -263,7 +263,7 @@ if (volunteerForm) {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/auth/volunteers", {
+            const response = await fetch("http://localhost:8080/auth/register-volunteer", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password, phone, skills })
@@ -319,7 +319,7 @@ if (volunteerLoginForm) {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/auth/volunteers/login", {
+            const response = await fetch("http://localhost:8080/auth/volunteers/login-volunteer", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })

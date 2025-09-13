@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8080/auth";
+const BASE = "http://localhost:8080/api";
 
 /* -------------------- Page Navigation -------------------- */
 function showPage(pageId, el) {
@@ -92,7 +92,7 @@ async function deleteDonor(id) {
 
 /* -------------------- Users -------------------- */
 function loadUsers() {
-    fetch("http://localhost:8080/auth/users")
+    fetch("http://localhost:8080/api/users")
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById("userList");
@@ -112,7 +112,7 @@ function loadUsers() {
 
 function deleteUser(id) {
     if (confirm("Are you sure you want to delete this user?")) {
-        fetch(`http://localhost:8080/auth/users/${id}`, {
+        fetch(`http://localhost:8080/api/users/${id}`, {
             method: "DELETE"
         })
             .then(res => res.json())
@@ -130,14 +130,14 @@ function openEditModal(type, id, name, email, field1="", field2="") {
 
     let html = `<input type="hidden" id="editId" value="${id}">`;
 
-    if (type === "employee") {
-        title.innerText = "Edit Employee";
-        html += `
-            <label>Name</label><input type="text" id="editName" value="${name}" required>
-            <label>Email</label><input type="email" id="editEmail" value="${email}" required>
-            <label>Position</label><input type="text" id="editField" value="${field1}" required>
-            <button type="submit">Save</button>`;
-    }
+    // if (type === "employee") {
+    //     title.innerText = "Edit Employee";
+    //     html += `
+    //         <label>Name</label><input type="text" id="editName" value="${name}" required>
+    //         <label>Email</label><input type="email" id="editEmail" value="${email}" required>
+    //         <label>Position</label><input type="text" id="editField" value="${field1}" required>
+    //         <button type="submit">Save</button>`;
+    // }
 
     if (type === "volunteer") {
         title.innerText = "Edit Volunteer";
@@ -163,18 +163,18 @@ function openEditModal(type, id, name, email, field1="", field2="") {
         e.preventDefault();
         const id = document.getElementById("editId").value;
         let updated = {};
-
-        if (type === "employee") {
-            updated = {
-                name: editName.value,
-                email: editEmail.value,
-                position: editField.value
-            };
-            await fetch(`${BASE}/employees/${id}`, {
-                method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(updated)
-            });
-            loadEmployees();
-        }
+        //
+        // if (type === "employee") {
+        //     updated = {
+        //         name: editName.value,
+        //         email: editEmail.value,
+        //         position: editField.value
+        //     };
+        //     await fetch(`${BASE}/employees/${id}`, {
+        //         method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(updated)
+        //     });
+        //     loadEmployees();
+        // }
 
         if (type === "volunteer") {
             updated = {
@@ -229,4 +229,4 @@ function closeModal() {
 }
 
 /* -------------------- Default -------------------- */
-loadEmployees();
+

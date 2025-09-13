@@ -13,7 +13,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/auth/donations")
+@RequestMapping("/api/donations")
 @RequiredArgsConstructor
 public class DonationController {
 

@@ -12,7 +12,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
-@RequestMapping("/auth/weather")
+@RequestMapping("/api/weather")
 @RequiredArgsConstructor
 public class WeatherController {
 

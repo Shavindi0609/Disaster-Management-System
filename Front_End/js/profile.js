@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         // Fetch user profile
-        const response = await fetch("http://localhost:8080/auth/users/me", {
+        const response = await fetch("http://localhost:8080/api/users/me", {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token,
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            const res = await fetch(`http://localhost:8080/auth/users/${userId}`, {
+            const res = await fetch(`http://localhost:8080/api/users/${userId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -109,7 +109,7 @@ deleteAccountBtn.addEventListener("click", async () => {
     if (!confirm("🛑 Are you sure you want to delete your account? This cannot be undone.")) return;
 
     try {
-        const res = await fetch(`http://localhost:8080/auth/users/${userId}`, {
+        const res = await fetch(`http://localhost:8080/api/users/${userId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

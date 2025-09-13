@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth/password")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:63342") // frontend URL
+@CrossOrigin // frontend URL
 public class PasswordResetController {
 
     private final UserRepository userRepository;

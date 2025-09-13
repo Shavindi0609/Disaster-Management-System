@@ -246,7 +246,7 @@
         const accessToken = localStorage.getItem("accessToken");
 
         try {
-            const response = await fetch('http://localhost:8080/auth/reports', {
+            const response = await fetch('http://localhost:8080/api/reports', {
                 method: 'POST',
                 headers: {
                     "Authorization": `Bearer ${accessToken}` // ✅ Send token
