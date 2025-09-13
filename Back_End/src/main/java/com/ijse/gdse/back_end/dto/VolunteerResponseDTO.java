@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class VolunteerResponseDTO {
+
     private String accessToken;
     private String username;
     private String role;

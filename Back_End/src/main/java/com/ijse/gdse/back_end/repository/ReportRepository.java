@@ -13,6 +13,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
      List<Report> findByEmail(String email);
 
-    List<Report> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+     List<Report> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+     List<Report> findByAssignedVolunteer_Id(Long volunteerId);
 
 }

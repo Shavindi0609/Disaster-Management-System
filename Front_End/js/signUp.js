@@ -319,7 +319,7 @@ if (volunteerLoginForm) {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/auth/volunteers/login-volunteer", {
+            const response = await fetch("http://localhost:8080/auth/login-volunteer", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -335,6 +335,7 @@ if (volunteerLoginForm) {
 
             if (response.ok) {
                 const { accessToken, role, username, email } = result;
+
 
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("role", role);

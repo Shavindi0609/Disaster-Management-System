@@ -27,29 +27,29 @@ public class ReportService {
 
     private final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 
-    // Report add without user (existing)
-    public Report addReport(String type, String description, String reporterContact,
-                            Double latitude, Double longitude, MultipartFile photo) throws IOException {
-
-        Report report = new Report();
-        report.setType(type);
-        report.setDescription(description);
-        report.setReporterContact(reporterContact);
-        report.setLatitude(latitude);
-        report.setLongitude(longitude);
-
-        if (photo != null && !photo.isEmpty()) {
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
-
-            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
-            File file = new File(uploadDir, fileName);
-            photo.transferTo(file);
-            report.setPhotoPath(file.getAbsolutePath());
-        }
-
-        return reportRepository.save(report);
-    }
+//    // Report add without user (existing)
+//    public Report addReport(String type, String description, String reporterContact,
+//                            Double latitude, Double longitude, MultipartFile photo) throws IOException {
+//
+//        Report report = new Report();
+//        report.setType(type);
+//        report.setDescription(description);
+//        report.setReporterContact(reporterContact);
+//        report.setLatitude(latitude);
+//        report.setLongitude(longitude);
+//
+//        if (photo != null && !photo.isEmpty()) {
+//            File uploadDir = new File(UPLOAD_DIR);
+//            if (!uploadDir.exists()) uploadDir.mkdirs();
+//
+//            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+//            File file = new File(uploadDir, fileName);
+//            photo.transferTo(file);
+//            report.setPhotoPath(file.getAbsolutePath());
+//        }
+//
+//        return reportRepository.save(report);
+//    }
 
     // Report add with user (when logged in)
     public Report addReportByUser(String email, String type, String description,
@@ -107,6 +107,10 @@ public class ReportService {
                 today.atStartOfDay(),
                 today.plusDays(1).atStartOfDay()
         );
+    }
+
+    public List<Report> getReportsByVolunteer(Long volunteerId) {
+        return reportRepository.findByAssignedVolunteer_Id(volunteerId);
     }
 
 }

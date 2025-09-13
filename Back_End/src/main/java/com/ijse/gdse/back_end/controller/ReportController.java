@@ -102,6 +102,17 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Today's reports fetched", todayReports));
     }
 
+    // 🔹 Get reports assigned to a volunteer
+    @GetMapping("/volunteer/{volunteerId}")
+    public ResponseEntity<APIResponse> getReportsByVolunteer(@PathVariable Long volunteerId) {
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Reports for volunteer fetched successfully",
+                        reportService.getReportsByVolunteer(volunteerId)
+                )
+        );
+    }
 
 
 }
