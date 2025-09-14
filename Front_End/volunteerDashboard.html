@@ -201,6 +201,35 @@
   </div>
 </section>
 
+<!-- Response Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Submit Response</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="responseForm">
+          <input type="hidden" id="reportIdInput">
+          <div class="mb-3">
+            <label for="statusUpdate" class="form-label fw-bold">Your Status</label>
+            <textarea class="form-control" id="statusUpdate" rows="3"
+                      placeholder="E.g. Reached location, distributed relief..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="photoUpload" class="form-label fw-bold">Upload Photo (optional)</label>
+            <input class="form-control" type="file" id="photoUpload" accept="image/*">
+          </div>
+          <button type="submit" class="btn btn-success w-100 rounded-pill">
+            ✅ Submit Response
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
 <footer>
   <p>© 2025 NDMS Volunteer Dashboard | Supporting Community Preparedness</p>
@@ -222,7 +251,7 @@
     try {
       // 🔹 Get volunteer by email to find their ID
       const volRes = await fetch(`http://localhost:8080/api/volunteers?email=${encodeURIComponent(email)}`, {
-        headers: { "Authorization": `Bearer ${token}` }
+        headers: {"Authorization": `Bearer ${token}`}
       });
 
       if (!volRes.ok) throw new Error("Failed to fetch volunteer details");
@@ -238,7 +267,7 @@
 
       // 🔹 Fetch assigned reports for this volunteer
       const reportRes = await fetch(`http://localhost:8080/api/reports/volunteer/${volunteerId}`, {
-        headers: { "Authorization": `Bearer ${token}` }
+        headers: {"Authorization": `Bearer ${token}`}
       });
 
       if (!reportRes.ok) throw new Error("Failed to fetch assigned reports");
@@ -262,19 +291,31 @@
 
           // Insert the report info + a container for the map
           div.innerHTML = `
-    <div class="card-body">
-      <h5>${r.type}</h5>
-      <p>${r.description}</p>
-      <p><b>Reporter:</b> ${r.reporterContact || "N/A"}</p>
-      <p><b>Date:</b> ${formattedDate}</p>
-      <p><b>Assigned by Admin</b></p>
-      <div id="map-${r.id}" class="report-map"></div>
-    </div>
-  `;
+ <!-- Inside each report card -->
+<div class="card-body">
+  <h5>${r.type}</h5>
+  <p>${r.description}</p>
+  <p><b>Reporter:</b> ${r.reporterContact || "N/A"}</p>
+  <p><b>Date:</b> ${formattedDate}</p>
+  <p><b>Assigned by Admin</b></p>
+  <div id="map-${r.id}" class="report-map"></div>
+  <button class="btn btn-success btn-sm mt-3"
+          data-bs-toggle="modal"
+          data-bs-target="#responseModal"
+          onclick="openResponseModal(${r.id})">
+    📍 Mark as Responded
+  </button>
+</div>
+
+
+          `;
           container.appendChild(div);
 
           // Initialize the small map for this report
-          const map = L.map(`map-${r.id}`, { zoomControl: false, dragging: false }).setView([r.latitude, r.longitude], 13);
+          const map = L.map(`map-${r.id}`, {
+            zoomControl: false,
+            dragging: false
+          }).setView([r.latitude, r.longitude], 13);
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
           }).addTo(map);
@@ -290,7 +331,57 @@
       document.getElementById("assignedReports").innerHTML = `<p class="text-danger">Error loading reports: ${err.message}</p>`;
     }
   });
+
+  let selectedReportId = null;
+
+  function openResponseModal(reportId) {
+    selectedReportId = reportId;
+    document.getElementById("reportIdInput").value = reportId;
+  }
+
+  document.getElementById("responseForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("accessToken");
+    const reportId = selectedReportId;
+    const statusUpdate = document.getElementById("statusUpdate").value;
+    const photoFile = document.getElementById("photoUpload").files[0];
+
+    if (!statusUpdate.trim()) {
+      alert("⚠️ Please enter a status update!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("statusUpdate", statusUpdate);
+    formData.append("respondedAt", new Date().toISOString());
+    if (photoFile) {
+      formData.append("photo", photoFile);
+    }
+
+    try {
+      const res = await fetch(`http://localhost:8080/api/reports/${reportId}/respond`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      if (!res.ok) throw new Error("Failed to submit response");
+
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById("responseModal"));
+      modal.hide();
+
+      alert("✅ Response submitted successfully!");
+      location.reload();
+    } catch (err) {
+      console.error("Error:", err);
+      alert("❌ Error submitting response: " + err.message);
+    }
+  });
+
 </script>
+
 
 </body>
 </html>

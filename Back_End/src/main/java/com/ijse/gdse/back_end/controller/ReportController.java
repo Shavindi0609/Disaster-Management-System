@@ -3,12 +3,15 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.entity.Report;
+import com.ijse.gdse.back_end.entity.ReportResponse;
 import com.ijse.gdse.back_end.service.EmailService;
+import com.ijse.gdse.back_end.service.ReportResponseService;
 import com.ijse.gdse.back_end.service.ReportService;
 import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +29,8 @@ public class ReportController {
     private final JwtUtil jwtUtil;
     @Autowired
     private EmailService emailService;
+
+    private final ReportResponseService reportResponseService;
 
     // ================= Add Report =================
     @PostMapping
@@ -113,6 +118,23 @@ public class ReportController {
                 )
         );
     }
+
+    @PostMapping("/{reportId}/respond")
+    public ResponseEntity<APIResponse> respondToReport(
+            @PathVariable Long reportId,
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam String statusUpdate,
+            @RequestParam(required = false) MultipartFile photo
+    ) throws IOException {
+
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtUtil.extractUsername(token);
+
+        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
+
+        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
+    }
+
 
 
 }

@@ -36,11 +36,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/**",
-                                "/auth/password/**",
-                                "/api/**" // ✅ make /api/** endpoints require authentication
-                        ).permitAll() // temporarily allow all for testing CORS
+                        // open endpoints
+                        .requestMatchers("/auth/**", "/auth/password/**").permitAll()
+                        // volunteer-only endpoint
+//                        .requestMatchers("/api/reports/*/respond").hasRole("VOLUNTEER")
+                        // all other endpoints require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
