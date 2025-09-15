@@ -10,6 +10,81 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
+
+    :root {
+      --main-dark: #066150;
+      --main-light: #1D865C;
+      --accent-color: #FF6B35;
+      --bg-light: #f8f9fa;
+    }
+
+    /* General Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-light);
+      margin: 0;
+    }
+
+    /* Sidebar - Horizontal Version */
+    .sidebar {
+      background: linear-gradient(90deg, var(--main-dark), var(--main-light));
+      color: #fff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+
+    .sidebar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .sidebar ul {
+      display: flex;
+      gap: 15px;
+      padding-left: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin: 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: rgba(255,255,255,0.2);
+    }
+
+
     .report-map {
       height: 150px;       /* small map */
       width: 100%;
@@ -27,18 +102,18 @@
       font-family: Arial, sans-serif;
     }
 
-    .navbar {
-      background-color: var(--main-dark) !important;
+    /* Orange login button in sidebar */
+    .sidebar .btn-login {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: #fff;
     }
 
-    .navbar-brand span,
-    .nav-link {
-      color: #fff !important;
+    .sidebar .btn-login:hover {
+      background-color: #e55a2b;
+      border-color: var(--accent-color);
     }
 
-    .nav-link:hover {
-      color: var(--accent-color) !important;
-    }
 
     .dashboard-header {
       background-color: var(--main-light);
@@ -117,27 +192,25 @@
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="images/disaster-logo.webp" alt="Logo" height="50" class="me-2">
-      <span>NDMS Volunteer</span>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">My Tasks</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
-      </ul>
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-content">
+    <div class="brand">
+      <i class="fas fa-shield-alt"></i>
+      <h2>NDMRS</h2>
     </div>
+    <ul class="list-unstyled">
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="volunteerMyReports.html"><i class="fas fa-exclamation-triangle"></i> My Report Disaster</a></li>
+      <li><a href="myReports.html"><i class="fas fa-file-alt"></i> My Reports</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="volunteer.html" class="active"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+      <li><a href="donation.html"><i class="fas fa-donate"></i> Donations</a></li>
+      <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+    <a href="#" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log In as a Volunteer</a>
   </div>
-</nav>
+</div>
 
 <!-- Dashboard Header -->
 <section class="dashboard-header">
@@ -192,43 +265,43 @@
       </div>
     </div>
 
-    <!-- volunteerDashboard.html snippet -->
-    <div class="container mt-4">
-      <h2>My Assigned Reports</h2>
-      <div id="assignedReports" class="mt-3"></div>
-    </div>
+<!--    &lt;!&ndash; volunteerDashboard.html snippet &ndash;&gt;-->
+<!--    <div class="container mt-4">-->
+<!--      <h2>My Assigned Reports</h2>-->
+<!--      <div id="assignedReports" class="mt-3"></div>-->
+<!--    </div>-->
 
   </div>
 </section>
 
-<!-- Response Modal -->
-<div class="modal fade" id="responseModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content rounded-3 shadow">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">Submit Response</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="responseForm">
-          <input type="hidden" id="reportIdInput">
-          <div class="mb-3">
-            <label for="statusUpdate" class="form-label fw-bold">Your Status</label>
-            <textarea class="form-control" id="statusUpdate" rows="3"
-                      placeholder="E.g. Reached location, distributed relief..."></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="photoUpload" class="form-label fw-bold">Upload Photo (optional)</label>
-            <input class="form-control" type="file" id="photoUpload" accept="image/*">
-          </div>
-          <button type="submit" class="btn btn-success w-100 rounded-pill">
-            ✅ Submit Response
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+<!--&lt;!&ndash; Response Modal &ndash;&gt;-->
+<!--<div class="modal fade" id="responseModal" tabindex="-1">-->
+<!--  <div class="modal-dialog">-->
+<!--    <div class="modal-content rounded-3 shadow">-->
+<!--      <div class="modal-header bg-success text-white">-->
+<!--        <h5 class="modal-title">Submit Response</h5>-->
+<!--        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <form id="responseForm">-->
+<!--          <input type="hidden" id="reportIdInput">-->
+<!--          <div class="mb-3">-->
+<!--            <label for="statusUpdate" class="form-label fw-bold">Your Status</label>-->
+<!--            <textarea class="form-control" id="statusUpdate" rows="3"-->
+<!--                      placeholder="E.g. Reached location, distributed relief..."></textarea>-->
+<!--          </div>-->
+<!--          <div class="mb-3">-->
+<!--            <label for="photoUpload" class="form-label fw-bold">Upload Photo (optional)</label>-->
+<!--            <input class="form-control" type="file" id="photoUpload" accept="image/*">-->
+<!--          </div>-->
+<!--          <button type="submit" class="btn btn-success w-100 rounded-pill">-->
+<!--            ✅ Submit Response-->
+<!--          </button>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
 <!-- Footer -->
 <footer>
