@@ -28,13 +28,188 @@
             font-family: Arial, sans-serif;
         }
 
+        :root {
+            --main-dark: #066150;
+            --main-light: #1D865C;
+            --accent-color: #FF6B35;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar - Horizontal Version */
+        .sidebar {
+            background: linear-gradient(90deg, var(--main-dark), var(--main-light));
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .sidebar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .sidebar ul {
+            display: flex;
+            gap: 15px;
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Orange login button in sidebar */
+        .sidebar .btn-login {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .sidebar .btn-login:hover {
+            background-color: #e55a2b;
+            border-color: var(--accent-color);
+        }
+
+        /* Section Headings */
+        h2 {
+            color: var(--main-dark);
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* Card Styling */
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        }
+
+        /* Report Info Section */
+        .card-body h5 {
+            color: var(--main-dark);
+            font-weight: bold;
+        }
+
+        .card-body p {
+            font-size: 14px;
+            color: #444;
+        }
+
+        /* Map Styling */
+        .report-map {
+            height: 180px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid var(--main-light);
+        }
+
+        /* Buttons */
+        .btn-success {
+            background-color: var(--main-light);
+            border: none;
+            border-radius: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-success:hover {
+            background-color: var(--main-dark);
+            transform: scale(1.05);
+        }
+
+        /* Response Section */
+        .text-muted {
+            font-style: italic;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            background-color: var(--main-dark) !important;
+        }
+
+        .modal-header .modal-title {
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
 
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-content">
+        <div class="brand">
+            <i class="fas fa-shield-alt"></i>
+            <h2>NDMRS</h2>
+        </div>
+        <ul class="list-unstyled">
+            <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="volunteerMyReports.html"><i class="fas fa-exclamation-triangle"></i> My Report Disaster</a></li>
+            <li><a href="myReports.html"><i class="fas fa-file-alt"></i> My Reports</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="volunteer.html" class="active"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
+            <li><a href="donation.html"><i class="fas fa-donate"></i> Donations</a></li>
+            <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+        <a href="#" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log In as a Volunteer</a>
+    </div>
+</div>
+
 <!-- volunteerDashboard.html snippet -->
 <div class="container mt-4">
-    <h2>My Assigned Reports</h2>
+    <h2>My Assigned Reports (<span id="assignedCount">0</span>)</h2>
     <div id="assignedReports" class="mt-3"></div>
 
     <h2 class="mt-5">📌 My Responses</h2>
@@ -101,6 +276,13 @@
             });
             const reportData = await reportRes.json();
             const reports = reportData.data || [];
+
+            // 🟢 Count assigned reports
+            const assignedCount = reports.length;
+            console.log("Assigned Reports Count:", assignedCount);
+
+            // Show count somewhere in UI
+            document.getElementById("assignedCount").innerText = assignedCount;
 
             // Fetch responses
             const respRes = await fetch(`http://localhost:8080/api/responses/volunteer/${volunteerId}`, {
@@ -203,9 +385,10 @@
         try {
             const res = await fetch(`http://localhost:8080/api/reports/${reportId}/respond`, {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}` },
+                headers: { "Authorization": `Bearer ${token}` }, // do NOT set Content-Type
                 body: formData
             });
+
 
             if (!res.ok) throw new Error("Failed to submit response");
 
@@ -218,6 +401,8 @@
             alert("❌ Error submitting response: " + err.message);
         }
     });
+
+
 </script>
 </body>
 </html>

@@ -137,4 +137,10 @@ public class ReportController {
 
 
 
+    @GetMapping("/volunteer/{volunteerId}/count")
+    public ResponseEntity<APIResponse> getReportCountByVolunteer(@PathVariable Long volunteerId) {
+        long count = reportService.getReportsByVolunteer(volunteerId).size();
+        return ResponseEntity.ok(new APIResponse(200, "Report count fetched successfully", count));
+    }
+
 }
