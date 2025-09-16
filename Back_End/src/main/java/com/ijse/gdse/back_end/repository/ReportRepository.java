@@ -2,6 +2,8 @@ package com.ijse.gdse.back_end.repository;
 
 import com.ijse.gdse.back_end.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,4 +21,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
      List<Report> findByAssignedVolunteer_Id(Long volunteerId);
 
+     // Last week reports
+     List<Report> findByCreatedAtAfter(LocalDateTime dateTime);
 }

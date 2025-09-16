@@ -1,6 +1,7 @@
 package com.ijse.gdse.back_end.controller;
 
 import com.ijse.gdse.back_end.dto.APIResponse;
+import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.ReportResponse;
@@ -142,5 +143,12 @@ public class ReportController {
         long count = reportService.getReportsByVolunteer(volunteerId).size();
         return ResponseEntity.ok(new APIResponse(200, "Report count fetched successfully", count));
     }
+
+    @GetMapping("/last-week")
+    public ResponseEntity<APIResponse> getLastWeekReports() {
+        List<LastWeekReportDTO> reports = reportService.getLastWeekReports();
+        return ResponseEntity.ok(new APIResponse(200, "Last week reports fetched", reports));
+    }
+
 
 }

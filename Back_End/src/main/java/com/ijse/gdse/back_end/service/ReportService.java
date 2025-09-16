@@ -1,5 +1,6 @@
 package com.ijse.gdse.back_end.service;
 
+import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
@@ -112,6 +113,25 @@ public class ReportService {
 
     public List<Report> getReportsByVolunteer(Long volunteerId) {
         return reportRepository.findByAssignedVolunteer_Id(volunteerId);
+    }
+
+    // Last week reports
+    public List<LastWeekReportDTO> getLastWeekReports() {
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+        List<Report> reports = reportRepository.findByCreatedAtAfter(sevenDaysAgo);
+
+        return reports.stream()
+                .map(r -> new LastWeekReportDTO(
+                        r.getId(),
+                        r.getType(),
+                        r.getDescription(),
+                        r.getLatitude(),
+                        r.getLongitude(),
+                        r.getReporterContact(),
+                        r.getPhotoPath(),
+                        r.getCreatedAt().toLocalDate()
+                ))
+                .toList();
     }
 
 

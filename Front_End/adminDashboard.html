@@ -30,6 +30,10 @@
             <i class="fa fa-chart-line"></i> Reports</a></li>
         <li><a href="dashboard.html" id="logoutLink">
             <i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        <!-- Sidebar එකේ add කරන්න -->
+        <li><a href="#" onclick="showWeekDisastersPage()">
+            <i class="fa fa-calendar-week"></i> Last 7 Days
+        </a></li>
     </ul>
 </div>
 
@@ -187,6 +191,14 @@
         </div>
     </div>
 
+    <!-- Main Content එකේ අලුත් page එක -->
+    <div id="weekDisasters" class="page">
+        <div class="card">
+            <h3>Disasters in Last 7 Days</h3>
+            <div id="weekMap" style="height: 400px; margin-bottom: 20px;"></div>
+            <div class="card-container" id="weekReportsList"></div>
+        </div>
+    </div>
 </div>
 
 
@@ -292,6 +304,10 @@
 <script>
     let reportsMap;
     let reportMarkers = [];
+
+    let weekMap;
+    let weekMarkers = [];
+
 
     async function loadReports() {
         const reportsContainer = document.getElementById('reportsList');
@@ -529,7 +545,79 @@
         // වැඩ කරන්න token තිබ්බොත් dashboard load කරන්න
     });
 
+    async function loadWeekDisasters() {
+        const container = document.getElementById("weekReportsList");
+        container.innerHTML = "";
+
+        // Initialize the map if it doesn't exist
+        if (!weekMap) {
+            weekMap = L.map("weekMap").setView([7.8731, 80.7718], 7);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(weekMap);
+        } else {
+            weekMap.invalidateSize();
+        }
+
+        // Clear previous markers
+        weekMarkers.forEach(m => weekMap.removeLayer(m));
+        weekMarkers = [];
+
+        try {
+            const res = await fetch("http://localhost:8080/api/reports/last-week");
+            const data = await res.json();
+            const reports = data.data || [];
+
+            if (reports.length === 0) {
+                container.innerHTML = "<p>No disasters reported in the last 7 days.</p>";
+                return;
+            }
+
+            reports.forEach(r => {
+                if (r.latitude && r.longitude) {
+                    const color = r.type === "Flood" ? "blue" :
+                        r.type === "Fire" ? "red" :
+                            r.type === "Landslide" ? "orange" :
+                                "green";
+
+                    const marker = L.circleMarker([r.latitude, r.longitude], {
+                        radius: 8,
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: 0.7
+                    }).addTo(weekMap)
+                        .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+                    weekMarkers.push(marker);
+                }
+
+                // Create report card
+                const card = document.createElement("div");
+                card.className = "card mb-3";
+                card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${r.type}</h5>
+                    <p class="card-text">${r.description || ""}</p>
+                    <p><b>Contact:</b> ${r.reporterContact || 'N/A'}</p>
+                    <p><b>Date:</b> ${r.date || '-'}</p>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error("Error loading disasters for the last 7 days:", err);
+            container.innerHTML = "<p>Error loading disasters.</p>";
+        }
+    }
+
+
+    function showWeekDisastersPage() {
+        showPage('weekDisasters');
+        loadWeekDisasters();
+    }
+
 </script>
+
 
 
 </body>
