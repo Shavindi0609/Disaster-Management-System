@@ -3,6 +3,7 @@ package com.ijse.gdse.back_end.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ public class LastWeekReportDTO {
     private Double latitude;
     private Double longitude;
     private String reporterContact;
-    private String photoPath;
+    private String photoBase64; // already base64 string
     private LocalDate date; // createdAt converted to LocalDate
+    private VolunteerDTO assignedVolunteer; // 🔹 add this
 }

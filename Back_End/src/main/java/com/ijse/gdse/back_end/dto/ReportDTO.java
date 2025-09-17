@@ -11,5 +11,5 @@ public class ReportDTO {
     private String reporterContact;
     private Double latitude;
     private Double longitude;
-    private MultipartFile photo;
+    private MultipartFile photo; // incoming file
 }

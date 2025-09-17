@@ -22,7 +22,12 @@ public class Report {
     private Double latitude;
     private Double longitude;
 
-    private String photoPath; // store file path
+//    private String photoPath; // store file path
+
+    // ✅ Store image as binary in DB
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] photo;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -34,6 +34,7 @@
         <li><a href="#" onclick="showWeekDisastersPage()">
             <i class="fa fa-calendar-week"></i> Last 7 Days
         </a></li>
+
     </ul>
 </div>
 
@@ -308,6 +309,9 @@
     let weekMap;
     let weekMarkers = [];
 
+    let currentReportId; // assign modal එක open කරද්දි set වෙන variable
+
+
 
     async function loadReports() {
         const reportsContainer = document.getElementById('reportsList');
@@ -418,19 +422,25 @@
                 }
             });
 
-            if (res.ok) {
-                const updatedReport = await res.json(); // backend returns updated report object
+
+                if (res.ok) {
+                    const updatedReport = await res.json();
+                    console.log("📌 Updated report from backend:", updatedReport); // 👀 බලන්න assignedVolunteer එනවද
+
                 alert("Volunteer assigned successfully!");
                 closeAssignModal();
 
-                // 🔹 Fix: Select the correct card-body element
-                const cardBody = document.querySelector(`.card-body[data-report-id='${currentReportId}']`);
-                if (cardBody) {
-                    const volunteerField = cardBody.querySelector(".assigned-volunteer");
-                    volunteerField.textContent = updatedReport.assignedVolunteer
-                        ? updatedReport.assignedVolunteer.name
-                        : "Not Assigned";
-                }
+                // 🔹 DOM එකේ ඇති සියලු cards update කරන්න
+                const allCards = document.querySelectorAll(`.card-body[data-report-id='${currentReportId}']`);
+                allCards.forEach(card => {
+                    const volunteerSpan = card.querySelector(".assigned-volunteer");
+                    if (volunteerSpan) {
+                        volunteerSpan.textContent = updatedReport.assignedVolunteer
+                            ? updatedReport.assignedVolunteer.name
+                            : "Not Assigned";
+                    }
+                });
+
             } else {
                 alert("Failed to assign volunteer.");
             }
@@ -549,7 +559,7 @@
         const container = document.getElementById("weekReportsList");
         container.innerHTML = "";
 
-        // Initialize the map if it doesn't exist
+        // Map initialize කරලා නැත්නම් initialize කරන්න
         if (!weekMap) {
             weekMap = L.map("weekMap").setView([7.8731, 80.7718], 7);
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -574,6 +584,7 @@
             }
 
             reports.forEach(r => {
+                // Map marker
                 if (r.latitude && r.longitude) {
                     const color = r.type === "Flood" ? "blue" :
                         r.type === "Fire" ? "red" :
@@ -590,19 +601,34 @@
                     weekMarkers.push(marker);
                 }
 
-                // Create report card
+                // Report card
                 const card = document.createElement("div");
                 card.className = "card mb-3";
+
+                let photoHTML = '';
+                if (r.photoBase64) {
+                    photoHTML = `<img src="data:image/jpeg;base64,${r.photoBase64}" style="width:150px; display:block; margin-bottom:10px;">`;
+                }
+
+
                 card.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${r.type}</h5>
-                    <p class="card-text">${r.description || ""}</p>
-                    <p><b>Contact:</b> ${r.reporterContact || 'N/A'}</p>
-                    <p><b>Date:</b> ${r.date || '-'}</p>
-                </div>
-            `;
+        <div class="card-body" data-report-id="${r.id}">
+            <h5 class="card-title">${r.type}</h5>
+            ${photoHTML}
+            <p class="card-text">${r.description || ""}</p>
+            <p><b>Contact:</b> ${r.reporterContact || 'N/A'}</p>
+            <p><b>Date:</b> ${r.date || '-'}</p>
+            <p><b>Assigned Volunteer:</b>
+                <span class="assigned-volunteer">
+                    ${r.assignedVolunteer ? r.assignedVolunteer.name : 'Not Assigned'}
+                </span>
+            </p>
+            <button class="btn btn-primary" onclick="openAssignModal(${r.id})">Assign Volunteer</button>
+        </div>
+    `;
                 container.appendChild(card);
             });
+
 
         } catch (err) {
             console.error("Error loading disasters for the last 7 days:", err);
@@ -610,11 +636,11 @@
         }
     }
 
-
     function showWeekDisastersPage() {
         showPage('weekDisasters');
         loadWeekDisasters();
     }
+
 
 </script>
 

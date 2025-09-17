@@ -2,6 +2,7 @@ package com.ijse.gdse.back_end.service;
 
 import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
 import com.ijse.gdse.back_end.dto.ReportDTO;
+import com.ijse.gdse.back_end.dto.VolunteerDTO;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.repository.ReportRepository;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -65,17 +67,13 @@ public class ReportService {
         report.setEmail(email);
 
         if (photo != null && !photo.isEmpty()) {
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
-
-            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
-            File file = new File(uploadDir, fileName);
-            photo.transferTo(file);
-            report.setPhotoPath(file.getAbsolutePath());
+            // ✅ convert file → byte[] and save in DB
+            report.setPhoto(photo.getBytes());
         }
 
         return reportRepository.save(report);
     }
+
 
     // Fetch all reports (Admin)
     public List<Report> getAllReports() {
@@ -115,24 +113,42 @@ public class ReportService {
         return reportRepository.findByAssignedVolunteer_Id(volunteerId);
     }
 
-    // Last week reports
+
     public List<LastWeekReportDTO> getLastWeekReports() {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
         List<Report> reports = reportRepository.findByCreatedAtAfter(sevenDaysAgo);
 
         return reports.stream()
-                .map(r -> new LastWeekReportDTO(
-                        r.getId(),
-                        r.getType(),
-                        r.getDescription(),
-                        r.getLatitude(),
-                        r.getLongitude(),
-                        r.getReporterContact(),
-                        r.getPhotoPath(),
-                        r.getCreatedAt().toLocalDate()
-                ))
+                .map(r -> {
+                    String photoBase64 = null;
+                    if (r.getPhoto() != null) {
+                        photoBase64 = Base64.getEncoder().encodeToString(r.getPhoto());
+                    }
+
+                    VolunteerDTO volunteerDTO = null;
+                    if (r.getAssignedVolunteer() != null) {
+                        volunteerDTO = new VolunteerDTO();
+                        volunteerDTO.setName(r.getAssignedVolunteer().getName());
+                        volunteerDTO.setEmail(r.getAssignedVolunteer().getEmail());
+                        volunteerDTO.setPhone(r.getAssignedVolunteer().getPhone());
+                        volunteerDTO.setSkills(r.getAssignedVolunteer().getSkills());
+                    }
+
+                    return new LastWeekReportDTO(
+                            r.getId(),
+                            r.getType(),
+                            r.getDescription(),
+                            r.getLatitude(),
+                            r.getLongitude(),
+                            r.getReporterContact(),
+                            photoBase64,
+                            r.getCreatedAt().toLocalDate(),
+                            volunteerDTO
+                    );
+                })
                 .toList();
     }
+
 
 
 }
