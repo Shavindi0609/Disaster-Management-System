@@ -39,4 +39,5 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "assigned_volunteer_id")
     private Volunteer assignedVolunteer;
+
 }
