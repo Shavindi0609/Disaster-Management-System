@@ -351,10 +351,12 @@
 
     async function submitAllocation() {
         const amount = parseFloat(document.getElementById("allocateAmount").value);
-        if (!amount || amount <= 0) {
-            alert("Please enter a valid allocation amount.");
-            return;
-        }
+        if (!amount || amount <= 0) return alert("Enter valid amount");
+
+        // 🔹 frontend check total balance
+        const totalBalanceResp = await fetchWithToken("http://localhost:8080/api/donations/total");
+        const totalAvailable = totalBalanceResp.data;
+        if (amount > totalAvailable) return alert("Not enough funds available!");
 
         try {
             const updatedReport = await fetchWithToken(
@@ -362,14 +364,14 @@
                 { method: "PUT" }
             );
 
-            alert("Donation allocated successfully!");
+            alert("✅ Donation allocated successfully!");
             closeAllocateModal();
 
-            // 🔹 Update Total Donations card (re-fetch from backend)
+            // Update total donations
             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
             document.getElementById("statDonations").textContent = "$" + total.data;
 
-            // 🔹 Update report card UI
+            // Update report card
             const reportCard = document.querySelector(`.card-body[data-report-id='${currentAllocateReportId}']`);
             if (reportCard) {
                 let allocatedRow = reportCard.querySelector(".allocated-donation");
@@ -380,12 +382,12 @@
                 }
                 allocatedRow.innerHTML = `<b>Allocated Donations:</b> $${updatedReport.allocatedDonationAmount}`;
             }
-
         } catch (err) {
-            console.error("Error allocating donation:", err);
-            alert("Error allocating donation. Check console for details.");
+            console.error(err);
+            alert(err.message || "Error allocating donation.");
         }
     }
+
 
     // ------------------- DONATIONS -------------------
 //     function openDonationModal(reportId) {

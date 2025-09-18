@@ -168,28 +168,54 @@ public class ReportService {
     // Admin allocates some donation amount to a report
     @Transactional
     public Report allocateDonationToReport(Long reportId, double amount) {
+        // 1️⃣ Report එක හොයාගන්න
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
-        // 🔹 Calculate total donated by donors
-        double totalDonations = donationRepository.getTotalDonations();
-
-        // 🔹 Calculate already allocated for all reports
-        double totalAllocated = reportRepository.findAll()
-                .stream()
-                .mapToDouble(Report::getAllocatedDonationAmount)
-                .sum();
-
-        double available = totalDonations - totalAllocated;
-
-        if (amount > available) {
-            throw new RuntimeException("Not enough available donations! Available balance: " + available);
+        // 2️⃣ Total available balance ගන්න
+        double totalAvailable = donationRepository.getTotalBalance();
+        if (amount > totalAvailable) {
+            throw new RuntimeException("Not enough funds to allocate");
         }
 
-        // Increase allocated donation for this report
+        // 3️⃣ Allocate amount to report
         report.setAllocatedDonationAmount(report.getAllocatedDonationAmount() + amount);
+        reportRepository.save(report);
 
-        return reportRepository.save(report);
+        // 4️⃣ Deduct from donations (FIFO: oldest first)
+        List<Donation> donations = donationRepository.findDonationsWithBalance(); // order by createdAt asc
+        double remaining = amount;
+
+        for (Donation d : donations) {
+            if (remaining <= 0) break;
+
+            double deduct = Math.min(d.getBalance(), remaining);
+            d.setBalance(d.getBalance() - deduct);
+            donationRepository.save(d);
+            remaining -= deduct;
+        }
+
+        // 5️⃣ Audit log: negative donation record
+        Donation allocationRecord = new Donation();
+        allocationRecord.setDonationAmount(-amount);
+        allocationRecord.setBalance(0);
+        allocationRecord.setName("System Allocation");
+        allocationRecord.setEmail("system@allocation");
+        allocationRecord.setCompany("N/A");
+        allocationRecord.setPaymentMethod("N/A");
+        allocationRecord.setReport(report); // optional link
+        allocationRecord.setCreatedAt(LocalDateTime.now());
+        allocationRecord.setCardName("N/A");
+        allocationRecord.setCardNumber("N/A");
+        allocationRecord.setExpiry("N/A");
+        allocationRecord.setCvv("N/A");
+        allocationRecord.setReceiveUpdates(false);
+
+        donationRepository.save(allocationRecord);
+
+        return report;
     }
+
+
 
 }

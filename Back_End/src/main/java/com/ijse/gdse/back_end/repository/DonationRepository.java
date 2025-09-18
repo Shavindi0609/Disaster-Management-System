@@ -23,4 +23,12 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     )
     List<Object[]> getMonthlyDonationTotals();
 
+    // 1️⃣ Total balance ගන්න
+    @Query("SELECT COALESCE(SUM(d.balance), 0) FROM Donation d")
+    double getTotalBalance();
+
+    // 2️⃣ Balance තියෙන donations list (oldest first)
+    @Query("SELECT d FROM Donation d WHERE d.balance > 0 ORDER BY d.createdAt ASC")
+    List<Donation> findDonationsWithBalance();
+
 }

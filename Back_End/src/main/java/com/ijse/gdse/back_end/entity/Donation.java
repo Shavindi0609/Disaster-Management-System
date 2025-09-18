@@ -41,4 +41,16 @@ public class Donation {
     @JoinColumn(name = "report_id", nullable = true)
     private Report report;
 
+    private double balance;
+
+    // 🔹 Add this field
+    private String description;
+
+    @PrePersist
+    public void prePersist() {
+        if (balance == 0) {
+            balance = donationAmount;
+        }
+    }
+
 }
