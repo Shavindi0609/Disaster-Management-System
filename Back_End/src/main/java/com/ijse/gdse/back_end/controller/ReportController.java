@@ -154,18 +154,28 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Last week reports fetched", reports));
     }
 
-    @PostMapping("/{reportId}/donations")
-    public ResponseEntity<APIResponse> addDonationToReport(
-            @PathVariable Long reportId,
-            @RequestBody DonationDTO dto
-    ) {
-        Donation donation = donationService.addDonationToReport(reportId, dto);
+//    @PostMapping("/{reportId}/donations")
+//    public ResponseEntity<APIResponse> addDonationToReport(
+//            @PathVariable Long reportId,
+//            @RequestBody DonationDTO dto
+//    ) {
+//        Donation donation = donationService.addDonationToReport(reportId, dto);
+//
+//        return ResponseEntity.ok(new APIResponse(
+//                200,
+//                "Donation added successfully",
+//                donation
+//        ));
+//    }
 
-        return ResponseEntity.ok(new APIResponse(
-                200,
-                "Donation added successfully",
-                donation
-        ));
+    // Allocate donations to a report (by admin)
+    @PutMapping("/{reportId}/allocate")
+    public ResponseEntity<Report> allocateDonation(
+            @PathVariable Long reportId,
+            @RequestParam double amount) {
+
+        Report updated = reportService.allocateDonationToReport(reportId, amount);
+        return ResponseEntity.ok(updated);
     }
 
 

@@ -151,4 +151,14 @@ public class ReportService {
                 .toList();
     }
 
+    // Admin allocates some donation amount to a report
+    public Report allocateDonationToReport(Long reportId, double amount) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        // Increase allocated donation
+        report.setAllocatedDonationAmount(report.getAllocatedDonationAmount() + amount);
+
+        return reportRepository.save(report);
+    }
 }

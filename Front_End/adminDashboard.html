@@ -177,14 +177,25 @@
         </div>
     </div>
 
-    <div id="donationModal" class="modal">
+<!--    <div id="donationModal" class="modal">-->
+<!--        <div class="modal-content">-->
+<!--            <span class="close" onclick="closeDonationModal()">&times;</span>-->
+<!--            <h2>Add Donation to Report</h2>-->
+<!--            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">-->
+<!--            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Allocate Donation Modal -->
+    <div id="allocateModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeDonationModal()">&times;</span>
-            <h2>Add Donation to Report</h2>
-            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">
-            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>
+            <span class="close" onclick="closeAllocateModal()">&times;</span>
+            <h2>Allocate Donation to Report</h2>
+            <input type="number" id="allocateAmount" placeholder="Enter allocation amount" class="form-control mb-2">
+            <button class="btn btn-warning" onclick="submitAllocation()">Allocate</button>
         </div>
     </div>
+
 
     <!-- Main Content එකේ අලුත් page එක -->
     <div id="weekDisasters" class="page">
@@ -325,39 +336,86 @@
     let adminMap, adminMarkers = [];
     let currentReportId, currentDonationReportId;
 
-    // ------------------- DONATIONS -------------------
-    function openDonationModal(reportId) {
-        currentDonationReportId = reportId;
-        document.getElementById("donationAmount").value = '';
-        document.getElementById("donationModal").style.display = 'block';
+    // let currentAllocateReportId;
+    let currentAllocateReportId;
+
+    function openAllocateModal(reportId) {
+        currentAllocateReportId = reportId;
+        document.getElementById("allocateAmount").value = '';
+        document.getElementById("allocateModal").style.display = 'block';
     }
-    function closeDonationModal() {
-        document.getElementById("donationModal").style.display = 'none';
+
+    function closeAllocateModal() {
+        document.getElementById("allocateModal").style.display = 'none';
     }
-    async function submitDonation() {
-        const amount = parseFloat(document.getElementById("donationAmount").value);
-        if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
+
+    async function submitAllocation() {
+        const amount = parseFloat(document.getElementById("allocateAmount").value);
+        if (!amount || amount <= 0) {
+            alert("Please enter a valid allocation amount.");
+            return;
+        }
 
         try {
-            const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
-                method: "POST",
-                body: JSON.stringify({ donationAmount: amount })
-            });
+            const updatedReport = await fetchWithToken(
+                `http://localhost:8080/api/reports/${currentAllocateReportId}/allocate?amount=${amount}`,
+                { method: "PUT" }
+            );
 
-// res already JSON
-            alert("Donation added successfully!");
-            closeDonationModal();
+            alert("Donation allocated successfully!");
+            closeAllocateModal();
 
-// Update dashboard total donations
-            const total = await fetchWithToken("http://localhost:8080/api/donations/total");
-            document.getElementById("statDonations").textContent = "$" + total.data;
-
+            // Optionally update UI (e.g., show allocated amount in report card)
+            const reportCard = document.querySelector(`.card-body[data-report-id='${currentAllocateReportId}']`);
+            if (reportCard) {
+                let allocatedRow = reportCard.querySelector(".allocated-donation");
+                if (!allocatedRow) {
+                    allocatedRow = document.createElement("p");
+                    allocatedRow.classList.add("allocated-donation");
+                    reportCard.appendChild(allocatedRow);
+                }
+                allocatedRow.innerHTML = `<b>Allocated Donations:</b> $${updatedReport.allocatedDonationAmount}`;
+            }
 
         } catch (err) {
-            console.error("Error adding donation:", err);
-            alert("Error adding donation. Check console for details.");
+            console.error("Error allocating donation:", err);
+            alert("Error allocating donation. Check console for details.");
         }
     }
+
+    // ------------------- DONATIONS -------------------
+//     function openDonationModal(reportId) {
+//         currentDonationReportId = reportId;
+//         document.getElementById("donationAmount").value = '';
+//         document.getElementById("donationModal").style.display = 'block';
+//     }
+//     function closeDonationModal() {
+//         document.getElementById("donationModal").style.display = 'none';
+//     }
+//     async function submitDonation() {
+//         const amount = parseFloat(document.getElementById("donationAmount").value);
+//         if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
+//
+//         try {
+//             const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
+//                 method: "POST",
+//                 body: JSON.stringify({ donationAmount: amount })
+//             });
+//
+// // res already JSON
+//             alert("Donation added successfully!");
+//             closeDonationModal();
+//
+// // Update dashboard total donations
+//             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
+//             document.getElementById("statDonations").textContent = "$" + total.data;
+//
+//
+//         } catch (err) {
+//             console.error("Error adding donation:", err);
+//             alert("Error adding donation. Check console for details.");
+//         }
+//     }
 
 
     // ------------------- REPORTS -------------------
@@ -389,7 +447,8 @@
                     <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
                     <p><b>Assigned Volunteer:</b> <span class="assigned-volunteer">${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</span></p>
                     <button class="btn btn-primary" onclick="openAssignModal(${report.id})">Assign Volunteer</button>
-                    <button class="btn btn-success" onclick="openDonationModal(${report.id})">Assign Donation</button>
+                    <button class="btn btn-warning" onclick="openAllocateModal(${report.id})">Allocate Donation</button>
+
                 </div>`;
                 container.appendChild(card);
             });

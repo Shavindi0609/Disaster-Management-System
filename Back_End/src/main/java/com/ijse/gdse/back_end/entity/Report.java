@@ -47,6 +47,9 @@ public class Report {
     @JsonIgnore
     private List<Donation> donations;
 
+    // 🔹 NEW FIELD to track how much admin allocated
+    private double allocatedDonationAmount;
+
 //    // 🔹 Add donation list
 //    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Donation> donations;
