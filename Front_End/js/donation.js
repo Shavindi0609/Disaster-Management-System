@@ -40,8 +40,13 @@
                 body: JSON.stringify(donationDTO)
             });
 
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Server Error');
+            }
+
             const data = await response.json();
-            alert(data.message); // Show response message
+            alert(data.message || "Donation submitted!");
 
             // ✅ Reset fields after successful donation
             document.querySelector('input[placeholder="Your Name"]').value = '';
@@ -60,7 +65,7 @@
 
         } catch (error) {
             console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
+            alert('Something went wrong: ' + error.message);
         }
 
     });

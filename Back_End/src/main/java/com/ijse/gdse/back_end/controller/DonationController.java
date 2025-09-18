@@ -50,4 +50,14 @@ public class DonationController {
         return ResponseEntity.ok(new APIResponse(200, "Monthly donations fetched successfully", monthlyTotals));
     }
 
+    // Add donation to a report
+    @PostMapping("/{reportId}/donations")
+    public ResponseEntity<?> addDonation(@PathVariable Long reportId, @RequestBody Donation donation) {
+        try {
+            Donation savedDonation = donationService.addDonationToReport(reportId, donation);
+            return ResponseEntity.ok(savedDonation);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

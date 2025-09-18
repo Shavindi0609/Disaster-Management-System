@@ -109,25 +109,8 @@
             </div>
         </div>
 
-
     </div>
 
-<!--    &lt;!&ndash; Employees Page &ndash;&gt;-->
-<!--    <div id="employees" class="page">-->
-<!--        <div class="card">-->
-<!--            <h3>Add Employee</h3>-->
-<!--            <form id="addEmployeeForm">-->
-<!--                <div class="form-group"><label>Name</label><input type="text" id="empName" required></div>-->
-<!--                <div class="form-group"><label>Email</label><input type="email" id="empEmail" required></div>-->
-<!--                <div class="form-group"><label>Position</label><input type="text" id="empPosition" required></div>-->
-<!--                <button type="submit">Add Employee</button>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--        <div class="card">-->
-<!--            <h3>Employee List</h3>-->
-<!--            <div class="card-container" id="employeeList"></div>-->
-<!--        </div>-->
-<!--    </div>-->
 
     <!-- Volunteers Page -->
     <div id="volunteers" class="page">
@@ -190,6 +173,16 @@
             <h2>Assign Volunteer</h2>
             <select id="volunteerSelect" class="form-select"></select>
             <button class="btn btn-success mt-2" onclick="assignVolunteer()">Assign</button>
+
+        </div>
+    </div>
+
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDonationModal()">&times;</span>
+            <h2>Add Donation to Report</h2>
+            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">
+            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>
         </div>
     </div>
 
@@ -217,29 +210,43 @@
 <script src="js/admin.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
+        // 🔹 Centralized fetch with token
+        function fetchWithToken(url, options = {}) {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                alert("⚠️ Session expired. Please login again.");
+                localStorage.clear();
+                window.location.href = "login.html";
+                return Promise.reject("No token found");
+            }
+
+            options.headers = {
+                ...options.headers,
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            };
+
+            return fetch(url, options).then(res => res.json());
+        }
 
         // 🔹 Fetch Today's Reports
-        fetch("http://localhost:8080/api/reports/today")
-            .then(res => res.json())
+        fetchWithToken("http://localhost:8080/api/reports/today")
             .then(data => {
                 document.getElementById("statTodayDisasters").textContent = data.data.length;
-            });
+            })
+            .catch(err => console.error("Error fetching today's reports:", err));
 
-        // 🔹 Fetch Volunteers count
-        // 🔹 Fetch Volunteers (active only) count and list
-        fetch("http://localhost:8080/api/volunteers")
-            .then(res => res.json())
+        // 🔹 Fetch Volunteers count & list
+        fetchWithToken("http://localhost:8080/api/volunteers")
             .then(data => {
-                // Only active volunteers
                 const activeVolunteers = data.data.filter(v => v.active);
-
-                // Update stats card count
                 document.getElementById("statVolunteers").textContent = activeVolunteers.length;
 
-                // Render in volunteer list
                 const volunteerList = document.getElementById("volunteerList");
                 volunteerList.innerHTML = "";
                 activeVolunteers.forEach(v => {
@@ -251,30 +258,28 @@
                     <p>Email: ${v.email}</p>
                     <p>Phone: ${v.phone}</p>
                     <p>Skills: ${v.skills || '-'}</p>
-                </div>
-            `;
+                </div>`;
                     volunteerList.appendChild(card);
                 });
             })
-            .catch(err => console.error("Error fetching active volunteers:", err));
-
+            .catch(err => console.error("Error fetching volunteers:", err));
 
         // 🔹 Fetch Donors count
-        fetch("http://localhost:8080/api/donors/count")
-            .then(res => res.json())
+        fetchWithToken("http://localhost:8080/api/donors/count")
             .then(data => {
                 document.getElementById("statDonors").textContent = data.data;
-            });
+            })
+            .catch(err => console.error("Error fetching donors count:", err));
 
-        // 🔹 Donations amount (ඇත්තටම DB එකේ තියෙනවා නම් backend එකෙන් API එකක් හදන්න)
-        fetch("http://localhost:8080/api/donations/total")
-            .then(res => res.json())
+        // 🔹 Fetch Donations total
+        fetchWithToken("http://localhost:8080/api/donations/total")
             .then(data => {
                 document.getElementById("statDonations").textContent = "$" + data.data;
-            });
+            })
+            .catch(err => console.error("Error fetching total donations:", err));
 
-        fetch("http://localhost:8080/api/donations/monthly")
-            .then(res => res.json())
+        // 🔹 Fetch Donations monthly for chart
+        fetchWithToken("http://localhost:8080/api/donations/monthly")
             .then(data => {
                 const months = Object.keys(data.data);
                 const amounts = Object.values(data.data);
@@ -295,54 +300,70 @@
                     },
                     options: {
                         responsive: true,
-                        plugins: {legend: {display: false}}
+                        plugins: { legend: { display: false } }
                     }
                 });
-            });
+            })
+            .catch(err => console.error("Error fetching monthly donations:", err));
+
     });
-</script>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-    let reportsMap;
-    let reportMarkers = [];
+    // ------------------- MAPS AND REPORT FUNCTIONS -------------------
+    let reportsMap, reportMarkers = [];
+    let weekMap, weekMarkers = [];
+    let adminMap, adminMarkers = [];
+    let currentReportId, currentDonationReportId;
 
-    let weekMap;
-    let weekMarkers = [];
+    // ------------------- DONATIONS -------------------
+    function openDonationModal(reportId) {
+        currentDonationReportId = reportId;
+        document.getElementById("donationAmount").value = '';
+        document.getElementById("donationModal").style.display = 'block';
+    }
+    function closeDonationModal() {
+        document.getElementById("donationModal").style.display = 'none';
+    }
+    async function submitDonation() {
+        const amount = parseFloat(document.getElementById("donationAmount").value);
+        if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
 
-    let currentReportId; // assign modal එක open කරද්දි set වෙන variable
+        try {
+            const res = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donate`, {
+                method: "POST",
+                body: JSON.stringify({ amount })
+            });
+            if (res) {
+                alert("Donation added successfully!");
+                closeDonationModal();
+                // Update dashboard total
+                const total = await fetchWithToken("http://localhost:8080/api/donations/total");
+                document.getElementById("statDonations").textContent = "$" + total.data;
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error adding donation.");
+        }
+    }
 
-
-
+    // ------------------- REPORTS -------------------
     async function loadReports() {
-        const reportsContainer = document.getElementById('reportsList');
-        reportsContainer.innerHTML = "";
-
-        // Map එක initialize වෙන්නේ once විතරයි
+        const container = document.getElementById('reportsList');
+        container.innerHTML = "";
         if (!reportsMap) {
             reportsMap = L.map('reportsMap').setView([7.8731, 80.7718], 7);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(reportsMap);
-        }
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(reportsMap);
+        } else reportsMap.invalidateSize();
 
-        // Clear previous markers
         reportMarkers.forEach(m => reportsMap.removeLayer(m));
         reportMarkers = [];
 
         try {
-            const res = await fetch("http://localhost:8080/api/reports/all");
-            const data = await res.json();
-            const reports = data.data;
-
-            reports.forEach(report => {
-                // Map marker
-                const marker = L.marker([report.latitude, report.longitude])
-                    .addTo(reportsMap)
+            const data = await fetchWithToken("http://localhost:8080/api/reports/all");
+            data.data.forEach(report => {
+                const marker = L.marker([report.latitude, report.longitude]).addTo(reportsMap)
                     .bindPopup(`<b>${report.type}</b><br>${report.description}`);
                 reportMarkers.push(marker);
 
-                // Report card
                 const card = document.createElement('div');
                 card.className = 'card mb-3';
                 card.innerHTML = `
@@ -351,43 +372,27 @@
                     <p class="card-text">${report.description}</p>
                     <p><b>Contact:</b> ${report.reporterContact || 'N/A'}</p>
                     <p><b>Location:</b> ${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}</p>
-                    <p><b>Assigned Volunteer:</b>
-                        <span class="assigned-volunteer">
-                            ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}
-                        </span>
-                    </p>
+                    <p><b>Assigned Volunteer:</b> <span class="assigned-volunteer">${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</span></p>
                     <button class="btn btn-primary" onclick="openAssignModal(${report.id})">Assign Volunteer</button>
-                </div>
-            `;
-                reportsContainer.appendChild(card);
+                    <button class="btn btn-success" onclick="openDonationModal(${report.id})">Assign Donation</button>
+                </div>`;
+                container.appendChild(card);
             });
-
         } catch (err) {
-            console.error("Error fetching reports:", err);
-            reportsContainer.innerHTML = "<p>Error loading reports.</p>";
+            console.error(err);
+            container.innerHTML = "<p>Error loading reports.</p>";
         }
     }
+    function showReportsPage() { showPage('reports'); loadReports(); }
 
-
-    function showReportsPage() {
-        showPage('reports');
-        loadReports();
-    }
-
-    // 🔹 Modal functions
+    // ------------------- ASSIGN VOLUNTEER -------------------
     async function openAssignModal(reportId) {
         currentReportId = reportId;
         const modal = document.getElementById('assignModal');
         modal.style.display = 'block';
 
-        // Load volunteers
-        const res = await fetch("http://localhost:8080/api/volunteers");
-        const data = await res.json();
-        const volunteers = data.data;
-
-        // Only active volunteers
-        const activeVolunteers = volunteers.filter(v => v.active);
-
+        const data = await fetchWithToken("http://localhost:8080/api/volunteers");
+        const activeVolunteers = data.data.filter(v => v.active);
         const select = document.getElementById("volunteerSelect");
         select.innerHTML = "";
 
@@ -405,245 +410,103 @@
             });
         }
     }
-
-
-    function closeAssignModal() {
-        document.getElementById('assignModal').style.display = 'none';
-    }
+    function closeAssignModal() { document.getElementById('assignModal').style.display = 'none'; }
 
     async function assignVolunteer() {
         const volunteerId = document.getElementById("volunteerSelect").value;
-        const token = localStorage.getItem("accessToken");
-
         try {
-            const res = await fetch(`http://localhost:8080/api/reports/${currentReportId}/assign/${volunteerId}`, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-
-                if (res.ok) {
-                    const updatedReport = await res.json();
-                    console.log("📌 Updated report from backend:", updatedReport); // 👀 බලන්න assignedVolunteer එනවද
-
+            const updatedReport = await fetchWithToken(`http://localhost:8080/api/reports/${currentReportId}/assign/${volunteerId}`, { method: "PUT" });
+            if (updatedReport) {
                 alert("Volunteer assigned successfully!");
                 closeAssignModal();
-
-                // 🔹 DOM එකේ ඇති සියලු cards update කරන්න
                 const allCards = document.querySelectorAll(`.card-body[data-report-id='${currentReportId}']`);
                 allCards.forEach(card => {
                     const volunteerSpan = card.querySelector(".assigned-volunteer");
-                    if (volunteerSpan) {
-                        volunteerSpan.textContent = updatedReport.assignedVolunteer
-                            ? updatedReport.assignedVolunteer.name
-                            : "Not Assigned";
-                    }
+                    if (volunteerSpan) volunteerSpan.textContent = updatedReport.assignedVolunteer ? updatedReport.assignedVolunteer.name : "Not Assigned";
                 });
-
-            } else {
-                alert("Failed to assign volunteer.");
             }
-        } catch (err) {
-            console.error("Error assigning volunteer:", err);
-            alert("An error occurred while assigning volunteer.");
-        }
+        } catch (err) { console.error(err); alert("Error assigning volunteer."); }
     }
 
-
-    // Load today's reports on small map
-    fetch("http://localhost:8080/api/reports/today")
-        .then(res => res.json())
-        .then(data => {
-            const reports = data.data;
-
-            const map = L.map("todayMap").setView([7.8731, 80.7718], 7);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors"
-            }).addTo(map);
-
-            reports.forEach(r => {
-                L.marker([r.latitude, r.longitude])
-                    .addTo(map)
-                    .bindPopup(`<b>${r.type}</b><br>${r.description}`);
-            });
-        });
-
-    // Initialize small admin dashboard map
-    const adminMap = L.map("adminTodayMap").setView([7.8731, 80.7718], 7);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(adminMap);
-
-    let adminMarkers = [];
-
+    // ------------------- ADMIN MAP -------------------
     async function loadAdminDisasters(filter = "all") {
-        try {
-            const res = await fetch("http://localhost:8080/api/reports/today");
-            const data = await res.json();
-            const reports = data.data || [];
+        if (!adminMap) {
+            adminMap = L.map("adminTodayMap").setView([7.8731, 80.7718], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(adminMap);
+            adminMarkers = [];
+        }
 
-            // Clear previous markers
+        try {
+            const data = await fetchWithToken("http://localhost:8080/api/reports/today");
             adminMarkers.forEach(m => adminMap.removeLayer(m));
             adminMarkers = [];
 
-            reports.forEach(r => {
+            data.data.forEach(r => {
                 if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
-                    const color = r.type === "Flood" ? "blue" :
-                        r.type === "Fire" ? "red" :
-                            r.type === "Landslide" ? "orange" :
-                                "green";
-
-                    const marker = L.circleMarker([r.latitude, r.longitude], {
-                        radius: 8,
-                        color: color,
-                        fillColor: color,
-                        fillOpacity: 0.7
-                    }).addTo(adminMap)
+                    const color = r.type === "Flood" ? "blue" : r.type === "Fire" ? "red" : r.type === "Landslide" ? "orange" : "green";
+                    const marker = L.circleMarker([r.latitude, r.longitude], { radius: 8, color, fillColor: color, fillOpacity: 0.7 }).addTo(adminMap)
                         .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
-
                     adminMarkers.push(marker);
                 }
             });
-        } catch (err) {
-            console.error("Error loading admin disasters:", err);
-        }
+        } catch (err) { console.error(err); }
     }
-
-    // Load all disasters by default
+    document.getElementById("adminFilterType").addEventListener("change", e => loadAdminDisasters(e.target.value));
     loadAdminDisasters();
 
-    // Filter dropdown
-    document.getElementById("adminFilterType").addEventListener("change", e => {
-        loadAdminDisasters(e.target.value);
-    });
-
-    // Logout
-    document.getElementById("logoutLink").addEventListener("click", e => {
-        e.preventDefault();
-        localStorage.clear(); // Clear user session
-        window.location.href = "dashboard.html"; // Redirect to dashboard instead of sign-in
-    });
-
-    // document.addEventListener("DOMContentLoaded", () => {
-    //     const accessToken = localStorage.getItem("accessToken");
-    //     const username = localStorage.getItem("username");
-    //     const role = localStorage.getItem("role");
-    //
-    //     if (!accessToken) {
-    //         alert("⚠️ Login වෙලා නැති නිසා page එකට access කරන්න බැහැ.");
-    //         window.location.href = "signIn.html";
-    //         return;
-    //     }
-    //
-    //     // username සහ role display කරන්න
-    //     document.getElementById("username").textContent = username;
-    //     console.log("User role:", role);
-    // });
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            // Token නැත්තම් auto logout (localStorage clear + redirect)
-            localStorage.clear();
-            alert("⚠️ Session expired. Please login again.");
-            window.location.href = "signUp.html";
-            return;
-        }
-
-        // වැඩ කරන්න token තිබ්බොත් dashboard load කරන්න
-    });
-
+    // ------------------- WEEK DISASTERS -------------------
     async function loadWeekDisasters() {
         const container = document.getElementById("weekReportsList");
         container.innerHTML = "";
 
-        // Map initialize කරලා නැත්නම් initialize කරන්න
         if (!weekMap) {
             weekMap = L.map("weekMap").setView([7.8731, 80.7718], 7);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors"
-            }).addTo(weekMap);
-        } else {
-            weekMap.invalidateSize();
-        }
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(weekMap);
+            weekMarkers = [];
+        } else weekMap.invalidateSize();
 
-        // Clear previous markers
         weekMarkers.forEach(m => weekMap.removeLayer(m));
         weekMarkers = [];
 
         try {
-            const res = await fetch("http://localhost:8080/api/reports/last-week");
-            const data = await res.json();
-            const reports = data.data || [];
+            const data = await fetchWithToken("http://localhost:8080/api/reports/last-week");
+            if (!data.data.length) { container.innerHTML = "<p>No disasters reported in the last 7 days.</p>"; return; }
 
-            if (reports.length === 0) {
-                container.innerHTML = "<p>No disasters reported in the last 7 days.</p>";
-                return;
-            }
-
-            reports.forEach(r => {
-                // Map marker
+            data.data.forEach(r => {
                 if (r.latitude && r.longitude) {
-                    const color = r.type === "Flood" ? "blue" :
-                        r.type === "Fire" ? "red" :
-                            r.type === "Landslide" ? "orange" :
-                                "green";
-
-                    const marker = L.circleMarker([r.latitude, r.longitude], {
-                        radius: 8,
-                        color: color,
-                        fillColor: color,
-                        fillOpacity: 0.7
-                    }).addTo(weekMap)
+                    const color = r.type === "Flood" ? "blue" : r.type === "Fire" ? "red" : r.type === "Landslide" ? "orange" : "green";
+                    const marker = L.circleMarker([r.latitude, r.longitude], { radius: 8, color, fillColor: color, fillOpacity: 0.7 }).addTo(weekMap)
                         .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
                     weekMarkers.push(marker);
                 }
 
-                // Report card
                 const card = document.createElement("div");
                 card.className = "card mb-3";
-
-                let photoHTML = '';
-                if (r.photoBase64) {
-                    photoHTML = `<img src="data:image/jpeg;base64,${r.photoBase64}" style="width:150px; display:block; margin-bottom:10px;">`;
-                }
-
-
+                let photoHTML = r.photoBase64 ? `<img src="data:image/jpeg;base64,${r.photoBase64}" style="width:150px; display:block; margin-bottom:10px;">` : '';
                 card.innerHTML = `
-        <div class="card-body" data-report-id="${r.id}">
-            <h5 class="card-title">${r.type}</h5>
-            ${photoHTML}
-            <p class="card-text">${r.description || ""}</p>
-            <p><b>Contact:</b> ${r.reporterContact || 'N/A'}</p>
-            <p><b>Date:</b> ${r.date || '-'}</p>
-            <p><b>Assigned Volunteer:</b>
-                <span class="assigned-volunteer">
-                    ${r.assignedVolunteer ? r.assignedVolunteer.name : 'Not Assigned'}
-                </span>
-            </p>
-            <button class="btn btn-primary" onclick="openAssignModal(${r.id})">Assign Volunteer</button>
-        </div>
-    `;
+                <div class="card-body" data-report-id="${r.id}">
+                    <h5 class="card-title">${r.type}</h5>
+                    ${photoHTML}
+                    <p class="card-text">${r.description || ""}</p>
+                    <p><b>Contact:</b> ${r.reporterContact || 'N/A'}</p>
+                    <p><b>Date:</b> ${r.date || '-'}</p>
+                    <p><b>Assigned Volunteer:</b> <span class="assigned-volunteer">${r.assignedVolunteer ? r.assignedVolunteer.name : 'Not Assigned'}</span></p>
+                    <button class="btn btn-primary" onclick="openAssignModal(${r.id})">Assign Volunteer</button>
+                </div>`;
                 container.appendChild(card);
             });
-
-
-        } catch (err) {
-            console.error("Error loading disasters for the last 7 days:", err);
-            container.innerHTML = "<p>Error loading disasters.</p>";
-        }
+        } catch (err) { console.error(err); container.innerHTML = "<p>Error loading disasters.</p>"; }
     }
+    function showWeekDisastersPage() { showPage('weekDisasters'); loadWeekDisasters(); }
 
-    function showWeekDisastersPage() {
-        showPage('weekDisasters');
-        loadWeekDisasters();
-    }
-
-
+    // ------------------- LOGOUT -------------------
+    document.getElementById("logoutLink").addEventListener("click", e => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = "dashboard.html";
+    });
 </script>
+
 
 
 

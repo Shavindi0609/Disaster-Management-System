@@ -36,4 +36,9 @@ public class Donation {
     // 🔹 createdAt field එක auto set වෙනවා save වෙද්දි
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "report_id", nullable = true)
+    private Report report;
+
 }

@@ -3,9 +3,13 @@ package com.ijse.gdse.back_end.service;
 
 import com.ijse.gdse.back_end.dto.DonationDTO;
 import com.ijse.gdse.back_end.entity.Donation;
+import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.repository.DonationRepository;
+import com.ijse.gdse.back_end.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +19,7 @@ import java.util.Map;
 public class DonationService {
 
     private final DonationRepository donationRepository;
+    private final ReportRepository reportRepository;
 
     public Donation addDonation(DonationDTO donationDTO) {
         // DTO => Entity conversion
@@ -60,5 +65,35 @@ public class DonationService {
         }
 
         return monthlyTotals;
+    }
+
+//    public Donation addDonationToReport(Long reportId, DonationDTO dto) {
+//        Report report = reportRepository.findById(reportId)
+//                .orElseThrow(() -> new RuntimeException("Report not found"));
+//
+//        Donation donation = Donation.builder()
+//                .donationAmount(dto.getDonationAmount())
+//                .paymentMethod("Admin Assigned") // හෝ dto.paymentMethod
+//                .report(report)
+//                .build();
+//
+//        return donationRepository.save(donation);
+//    }
+
+    @Transactional
+    public Donation addDonationToReport(Long reportId, Donation donation) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found with id: " + reportId));
+
+        // Link donation to report
+        donation.setReport(report);
+
+        // Save donation
+        Donation savedDonation = donationRepository.save(donation);
+
+        // Optional: update report total if you have a field, otherwise use getTotalDonations() method
+        // double total = report.getTotalDonations();
+
+        return savedDonation;
     }
 }

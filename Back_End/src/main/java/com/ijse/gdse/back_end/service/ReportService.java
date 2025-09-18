@@ -1,8 +1,10 @@
 package com.ijse.gdse.back_end.service;
 
+import com.ijse.gdse.back_end.dto.DonationDTO;
 import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
 import com.ijse.gdse.back_end.dto.ReportDTO;
 import com.ijse.gdse.back_end.dto.VolunteerDTO;
+import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.repository.ReportRepository;
@@ -148,7 +150,5 @@ public class ReportService {
                 })
                 .toList();
     }
-
-
 
 }

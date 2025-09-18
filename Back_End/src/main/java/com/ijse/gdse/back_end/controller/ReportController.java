@@ -1,10 +1,13 @@
 package com.ijse.gdse.back_end.controller;
 
 import com.ijse.gdse.back_end.dto.APIResponse;
+import com.ijse.gdse.back_end.dto.DonationDTO;
 import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
 import com.ijse.gdse.back_end.dto.ReportDTO;
+import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.ReportResponse;
+import com.ijse.gdse.back_end.service.DonationService;
 import com.ijse.gdse.back_end.service.EmailService;
 import com.ijse.gdse.back_end.service.ReportResponseService;
 import com.ijse.gdse.back_end.service.ReportService;
@@ -32,6 +35,7 @@ public class ReportController {
     private EmailService emailService;
 
     private final ReportResponseService reportResponseService;
+    private final DonationService donationService;
 
     // ================= Add Report =================
     @PostMapping
@@ -149,6 +153,22 @@ public class ReportController {
         List<LastWeekReportDTO> reports = reportService.getLastWeekReports();
         return ResponseEntity.ok(new APIResponse(200, "Last week reports fetched", reports));
     }
+
+//    @PostMapping("/{reportId}/donations")
+//    public ResponseEntity<APIResponse> addDonationToReport(
+//            @PathVariable Long reportId,
+//            @RequestBody DonationDTO dto
+//    ) {
+//        Donation donation = donationService.addDonationToReport(reportId, dto);
+//
+//        return ResponseEntity.ok(new APIResponse(
+//                200,
+//                "Donation added successfully",
+//                donation
+//        ));
+//    }
+
+
 
 
 }
