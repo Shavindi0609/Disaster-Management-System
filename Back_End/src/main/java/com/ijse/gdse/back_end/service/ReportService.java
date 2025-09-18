@@ -168,22 +168,22 @@ public class ReportService {
     // Admin allocates some donation amount to a report
     @Transactional
     public Report allocateDonationToReport(Long reportId, double amount) {
-        // 1️⃣ Report එක හොයාගන්න
+        // 1️⃣ Find the report
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
-        // 2️⃣ Total available balance ගන්න
+        // 2️⃣ Get total available donation balance
         double totalAvailable = donationRepository.getTotalBalance();
         if (amount > totalAvailable) {
             throw new RuntimeException("Not enough funds to allocate");
         }
 
-        // 3️⃣ Allocate amount to report
+        // 3️⃣ Allocate to report
         report.setAllocatedDonationAmount(report.getAllocatedDonationAmount() + amount);
         reportRepository.save(report);
 
-        // 4️⃣ Deduct from donations (FIFO: oldest first)
-        List<Donation> donations = donationRepository.findDonationsWithBalance(); // order by createdAt asc
+        // 4️⃣ Deduct from donations (FIFO)
+        List<Donation> donations = donationRepository.findDonationsWithBalance(); // oldest first
         double remaining = amount;
 
         for (Donation d : donations) {
@@ -195,27 +195,21 @@ public class ReportService {
             remaining -= deduct;
         }
 
-        // 5️⃣ Audit log: negative donation record
+        // 5️⃣ Optional audit/log entry (no negative amount!)
         Donation allocationRecord = new Donation();
-        allocationRecord.setDonationAmount(-amount);
+        allocationRecord.setDonationAmount(0); // info only
         allocationRecord.setBalance(0);
         allocationRecord.setName("System Allocation");
         allocationRecord.setEmail("system@allocation");
         allocationRecord.setCompany("N/A");
         allocationRecord.setPaymentMethod("N/A");
-        allocationRecord.setReport(report); // optional link
+        allocationRecord.setReport(report);
         allocationRecord.setCreatedAt(LocalDateTime.now());
-        allocationRecord.setCardName("N/A");
-        allocationRecord.setCardNumber("N/A");
-        allocationRecord.setExpiry("N/A");
-        allocationRecord.setCvv("N/A");
-        allocationRecord.setReceiveUpdates(false);
 
         donationRepository.save(allocationRecord);
 
         return report;
     }
-
 
 
 }
