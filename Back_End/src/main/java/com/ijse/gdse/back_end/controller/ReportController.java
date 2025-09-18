@@ -154,19 +154,19 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Last week reports fetched", reports));
     }
 
-//    @PostMapping("/{reportId}/donations")
-//    public ResponseEntity<APIResponse> addDonationToReport(
-//            @PathVariable Long reportId,
-//            @RequestBody DonationDTO dto
-//    ) {
-//        Donation donation = donationService.addDonationToReport(reportId, dto);
-//
-//        return ResponseEntity.ok(new APIResponse(
-//                200,
-//                "Donation added successfully",
-//                donation
-//        ));
-//    }
+    @PostMapping("/{reportId}/donations")
+    public ResponseEntity<APIResponse> addDonationToReport(
+            @PathVariable Long reportId,
+            @RequestBody DonationDTO dto
+    ) {
+        Donation donation = donationService.addDonationToReport(reportId, dto);
+
+        return ResponseEntity.ok(new APIResponse(
+                200,
+                "Donation added successfully",
+                donation
+        ));
+    }
 
 
 

@@ -231,7 +231,18 @@
                 "Content-Type": "application/json"
             };
 
-            return fetch(url, options).then(res => res.json());
+            return fetch(url, options).then(res => {
+                if (!res.ok) {
+                    if (res.status === 401 || res.status === 403) {
+                        alert("Session expired or forbidden. Please login again.");
+                        localStorage.clear();
+                        window.location.href = "login.html";
+                    }
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+                return res.json();
+            });
+
         }
 
         // 🔹 Fetch Today's Reports
@@ -328,22 +339,26 @@
         if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
 
         try {
-            const res = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donate`, {
+            const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
                 method: "POST",
-                body: JSON.stringify({ amount })
+                body: JSON.stringify({ donationAmount: amount })
             });
-            if (res) {
-                alert("Donation added successfully!");
-                closeDonationModal();
-                // Update dashboard total
-                const total = await fetchWithToken("http://localhost:8080/api/donations/total");
-                document.getElementById("statDonations").textContent = "$" + total.data;
-            }
+
+// res already JSON
+            alert("Donation added successfully!");
+            closeDonationModal();
+
+// Update dashboard total donations
+            const total = await fetchWithToken("http://localhost:8080/api/donations/total");
+            document.getElementById("statDonations").textContent = "$" + total.data;
+
+
         } catch (err) {
-            console.error(err);
-            alert("Error adding donation.");
+            console.error("Error adding donation:", err);
+            alert("Error adding donation. Check console for details.");
         }
     }
+
 
     // ------------------- REPORTS -------------------
     async function loadReports() {

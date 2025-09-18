@@ -80,20 +80,32 @@ public class DonationService {
 //        return donationRepository.save(donation);
 //    }
 
-    @Transactional
-    public Donation addDonationToReport(Long reportId, Donation donation) {
+    public Donation addDonationToReport(Long reportId, DonationDTO dto) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found with id: " + reportId));
+                .orElseThrow(() -> new RuntimeException("Report not found"));
 
-        // Link donation to report
-        donation.setReport(report);
+        Donation donation = Donation.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .company(dto.getCompany())
+                .donationAmount(dto.getDonationAmount())
+                .paymentMethod(dto.getPaymentMethod())
+                .cardNumber(dto.getCardNumber())
+                .cardName(dto.getCardName())
+                .expiry(dto.getExpiry())
+                .cvv(dto.getCvv())
+                .receiveUpdates(dto.isReceiveUpdates())
+                .report(report) // attach to report
+                .build();
 
-        // Save donation
-        Donation savedDonation = donationRepository.save(donation);
-
-        // Optional: update report total if you have a field, otherwise use getTotalDonations() method
-        // double total = report.getTotalDonations();
-
-        return savedDonation;
+        return donationRepository.save(donation);
     }
+
+//    // Get total donations across all reports
+//    public double getTotalDonations() {
+//        return donationRepository.findAll()
+//                .stream()
+//                .mapToDouble(Donation::getDonationAmount)
+//                .sum();
+//    }
 }

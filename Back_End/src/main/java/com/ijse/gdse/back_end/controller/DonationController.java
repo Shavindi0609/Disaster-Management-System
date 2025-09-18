@@ -50,14 +50,18 @@ public class DonationController {
         return ResponseEntity.ok(new APIResponse(200, "Monthly donations fetched successfully", monthlyTotals));
     }
 
-    // Add donation to a report
-    @PostMapping("/{reportId}/donations")
-    public ResponseEntity<?> addDonation(@PathVariable Long reportId, @RequestBody Donation donation) {
-        try {
-            Donation savedDonation = donationService.addDonationToReport(reportId, donation);
-            return ResponseEntity.ok(savedDonation);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    // Add donation to a specific report
+//    @PostMapping("/{reportId}/donations")
+//    public ResponseEntity<?> addDonation(@PathVariable Long reportId,
+//                                         @RequestBody Donation donation) {
+//        Donation saved = donationService.addDonationToReport(reportId, donation);
+//        return ResponseEntity.ok(saved);
+//    }
+
+//    // Get total donations (for dashboard)
+//    @GetMapping("/donations/total")
+//    public ResponseEntity<Double> getTotalDonations() {
+//        return ResponseEntity.ok(donationService.getTotalDonations());
+//    }
+
 }
