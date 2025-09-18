@@ -7,10 +7,12 @@ import com.ijse.gdse.back_end.dto.VolunteerDTO;
 import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.repository.DonationRepository;
 import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,6 +32,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final VolunteerRepository volunteerRepository;
+    private final DonationRepository donationRepository;
 
     private final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 
@@ -150,15 +153,43 @@ public class ReportService {
                 })
                 .toList();
     }
+//
+//    // Admin allocates some donation amount to a report
+//    public Report allocateDonationToReport(Long reportId, double amount) {
+//        Report report = reportRepository.findById(reportId)
+//                .orElseThrow(() -> new RuntimeException("Report not found"));
+//
+//        // Increase allocated donation
+//        report.setAllocatedDonationAmount(report.getAllocatedDonationAmount() + amount);
+//
+//        return reportRepository.save(report);
+//    }
 
     // Admin allocates some donation amount to a report
+    @Transactional
     public Report allocateDonationToReport(Long reportId, double amount) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
-        // Increase allocated donation
+        // 🔹 Calculate total donated by donors
+        double totalDonations = donationRepository.getTotalDonations();
+
+        // 🔹 Calculate already allocated for all reports
+        double totalAllocated = reportRepository.findAll()
+                .stream()
+                .mapToDouble(Report::getAllocatedDonationAmount)
+                .sum();
+
+        double available = totalDonations - totalAllocated;
+
+        if (amount > available) {
+            throw new RuntimeException("Not enough available donations! Available balance: " + available);
+        }
+
+        // Increase allocated donation for this report
         report.setAllocatedDonationAmount(report.getAllocatedDonationAmount() + amount);
 
         return reportRepository.save(report);
     }
+
 }

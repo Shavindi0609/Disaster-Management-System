@@ -80,26 +80,26 @@ public class DonationService {
 //        return donationRepository.save(donation);
 //    }
 
-    public Donation addDonationToReport(Long reportId, DonationDTO dto) {
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
-
-        Donation donation = Donation.builder()
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .company(dto.getCompany())
-                .donationAmount(dto.getDonationAmount())
-                .paymentMethod(dto.getPaymentMethod())
-                .cardNumber(dto.getCardNumber())
-                .cardName(dto.getCardName())
-                .expiry(dto.getExpiry())
-                .cvv(dto.getCvv())
-                .receiveUpdates(dto.isReceiveUpdates())
-                .report(report) // attach to report
-                .build();
-
-        return donationRepository.save(donation);
-    }
+//    public Donation addDonationToReport(Long reportId, DonationDTO dto) {
+//        Report report = reportRepository.findById(reportId)
+//                .orElseThrow(() -> new RuntimeException("Report not found"));
+//
+//        Donation donation = Donation.builder()
+//                .name(dto.getName())
+//                .email(dto.getEmail())
+//                .company(dto.getCompany())
+//                .donationAmount(dto.getDonationAmount())
+//                .paymentMethod(dto.getPaymentMethod())
+//                .cardNumber(dto.getCardNumber())
+//                .cardName(dto.getCardName())
+//                .expiry(dto.getExpiry())
+//                .cvv(dto.getCvv())
+//                .receiveUpdates(dto.isReceiveUpdates())
+//                .report(report) // attach to report
+//                .build();
+//
+//        return donationRepository.save(donation);
+//    }
 
 //    // Get total donations across all reports
 //    public double getTotalDonations() {
