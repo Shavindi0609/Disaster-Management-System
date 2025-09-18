@@ -48,7 +48,8 @@ public class Donation {
 
     @PrePersist
     public void prePersist() {
-        if (balance == 0) {
+        // Only set balance if it was never manually set
+        if (balance <= 0) {
             balance = donationAmount;
         }
     }

@@ -108,4 +108,11 @@ public class DonationService {
 //                .mapToDouble(Donation::getDonationAmount)
 //                .sum();
 //    }
+
+    public double getAvailableBalance() {
+        Double total = donationRepository.getTotalBalance();
+        return total != null ? total : 0.0;
+    }
+
 }
+

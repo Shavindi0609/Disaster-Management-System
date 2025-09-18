@@ -44,6 +44,14 @@ public class DonationController {
         );
     }
 
+    @GetMapping("/available-balance")
+    public ResponseEntity<APIResponse> getAvailableBalance() {
+        double balance = donationService.getAvailableBalance();
+        return ResponseEntity.ok(new APIResponse(200, "Available balance fetched successfully", balance));
+    }
+
+
+
     @GetMapping("/monthly")
     public ResponseEntity<APIResponse> getMonthlyDonations() {
         Map<String, Double> monthlyTotals = donationService.getMonthlyDonations();

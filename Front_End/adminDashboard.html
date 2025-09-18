@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +32,7 @@
         <li><a href="#" onclick="showReportsPage()">
             <i class="fa fa-chart-line"></i> All Reports</a></li>
         <li><a href="adminResponses.html">
-                <i class="fa fa-file-alt"></i> All Reports & Responses</a></li>
+            <i class="fa fa-file-alt"></i> All Reports & Responses</a></li>
         <li><a href="dashboard.html" id="logoutLink">
             <i class="fas fa-sign-out-alt"></i> Logout</a></li>
 
@@ -50,10 +51,10 @@
     <!-- Dashboard Page -->
     <div id="dashboard" class="page active">
         <div class="stats-grid">
-<!--            <div class="stat-card">-->
-<!--                <h2 id="statEmployees">0</h2>-->
-<!--                <p>Employees</p>-->
-<!--            </div>-->
+            <!--            <div class="stat-card">-->
+            <!--                <h2 id="statEmployees">0</h2>-->
+            <!--                <p>Employees</p>-->
+            <!--            </div>-->
 
             <div class="stat-card">
                 <h2 id="statTodayDisasters">0</h2>
@@ -68,10 +69,18 @@
                 <h2 id="statDonors">0</h2>
                 <p>Donors</p>
             </div>
+
             <div class="stat-card">
-                <h2 id="statDonations">$0</h2>
+                <h2 id="statDonations">$0 / $0</h2>
                 <p>Total Donations</p>
             </div>
+
+            <div class="stat-card">
+                <h2 id="statAvailableBalance">$0</h2>
+                <p>Available Balance</p>
+            </div>
+
+
         </div>
 
         <!-- Dashboard row with map bigger on left -->
@@ -177,14 +186,14 @@
         </div>
     </div>
 
-<!--    <div id="donationModal" class="modal">-->
-<!--        <div class="modal-content">-->
-<!--            <span class="close" onclick="closeDonationModal()">&times;</span>-->
-<!--            <h2>Add Donation to Report</h2>-->
-<!--            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">-->
-<!--            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--    <div id="donationModal" class="modal">-->
+    <!--        <div class="modal-content">-->
+    <!--            <span class="close" onclick="closeDonationModal()">&times;</span>-->
+    <!--            <h2>Add Donation to Report</h2>-->
+    <!--            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">-->
+    <!--            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <!-- Allocate Donation Modal -->
     <div id="allocateModal" class="modal">
@@ -366,6 +375,12 @@
 
             alert("✅ Donation allocated successfully!");
             closeAllocateModal();
+            // Update total donations and available balance after allocation
+            // After allocating donation
+            updateDonationsStats();
+            updateAvailableBalance();
+
+
 
             // Update total donations
             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
@@ -390,38 +405,38 @@
 
 
     // ------------------- DONATIONS -------------------
-//     function openDonationModal(reportId) {
-//         currentDonationReportId = reportId;
-//         document.getElementById("donationAmount").value = '';
-//         document.getElementById("donationModal").style.display = 'block';
-//     }
-//     function closeDonationModal() {
-//         document.getElementById("donationModal").style.display = 'none';
-//     }
-//     async function submitDonation() {
-//         const amount = parseFloat(document.getElementById("donationAmount").value);
-//         if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
-//
-//         try {
-//             const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
-//                 method: "POST",
-//                 body: JSON.stringify({ donationAmount: amount })
-//             });
-//
-// // res already JSON
-//             alert("Donation added successfully!");
-//             closeDonationModal();
-//
-// // Update dashboard total donations
-//             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
-//             document.getElementById("statDonations").textContent = "$" + total.data;
-//
-//
-//         } catch (err) {
-//             console.error("Error adding donation:", err);
-//             alert("Error adding donation. Check console for details.");
-//         }
-//     }
+    //     function openDonationModal(reportId) {
+    //         currentDonationReportId = reportId;
+    //         document.getElementById("donationAmount").value = '';
+    //         document.getElementById("donationModal").style.display = 'block';
+    //     }
+    //     function closeDonationModal() {
+    //         document.getElementById("donationModal").style.display = 'none';
+    //     }
+    //     async function submitDonation() {
+    //         const amount = parseFloat(document.getElementById("donationAmount").value);
+    //         if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
+    //
+    //         try {
+    //             const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
+    //                 method: "POST",
+    //                 body: JSON.stringify({ donationAmount: amount })
+    //             });
+    //
+    // // res already JSON
+    //             alert("Donation added successfully!");
+    //             closeDonationModal();
+    //
+    // // Update dashboard total donations
+    //             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
+    //             document.getElementById("statDonations").textContent = "$" + total.data;
+    //
+    //
+    //         } catch (err) {
+    //             console.error("Error adding donation:", err);
+    //             alert("Error adding donation. Check console for details.");
+    //         }
+    //     }
 
 
     // ------------------- REPORTS -------------------
@@ -588,6 +603,46 @@
         localStorage.clear();
         window.location.href = "dashboard.html";
     });
+
+
+    async function updateDonationsStats() {
+        try {
+            const response = await fetchWithToken("http://localhost:8080/api/donations/total"); // singular
+            const total = response.data; // assuming it returns number
+
+            // If your API provides both totalDonated and availableBalance separately, adjust accordingly
+            document.getElementById("statDonations").textContent = `$${total.toFixed(2)} / $${total.toFixed(2)}`;
+        } catch (err) {
+            console.error("Error fetching donations stats:", err);
+            document.getElementById("statDonations").textContent = "$0 / $0";
+        }
+    }
+
+
+    // Call on page load
+    updateDonationsStats();
+
+
+    // 🔹 Update available balance
+    async function updateAvailableBalance() {
+        try {
+            const data = await fetchWithToken("http://localhost:8080/api/donations/available-balance");
+            document.getElementById("statAvailableBalance").textContent = `$${data.data.toFixed(2)}`;
+
+
+        } catch (err) {
+            console.error("Error fetching available balance:", err);
+            document.getElementById("statAvailableBalance").textContent = "$0";
+        }
+    }
+
+    // Call on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        updateAvailableBalance();
+    });
+
+
+
 </script>
 
 

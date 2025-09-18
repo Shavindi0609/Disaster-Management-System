@@ -196,17 +196,17 @@ public class ReportService {
         }
 
         // 5️⃣ Optional audit/log entry (no negative amount!)
-        Donation allocationRecord = new Donation();
-        allocationRecord.setDonationAmount(0); // info only
-        allocationRecord.setBalance(0);
-        allocationRecord.setName("System Allocation");
-        allocationRecord.setEmail("system@allocation");
-        allocationRecord.setCompany("N/A");
-        allocationRecord.setPaymentMethod("N/A");
-        allocationRecord.setReport(report);
-        allocationRecord.setCreatedAt(LocalDateTime.now());
+//        Donation allocationRecord = new Donation();
+//        allocationRecord.setDonationAmount(0); // info only
+//        allocationRecord.setBalance(0);
+//        allocationRecord.setName("System Allocation");
+//        allocationRecord.setEmail("system@allocation");
+//        allocationRecord.setCompany("N/A");
+//        allocationRecord.setPaymentMethod("N/A");
+//        allocationRecord.setReport(report);
+//        allocationRecord.setCreatedAt(LocalDateTime.now());
 
-        donationRepository.save(allocationRecord);
+//        donationRepository.save(allocationRecord);
 
         return report;
     }
