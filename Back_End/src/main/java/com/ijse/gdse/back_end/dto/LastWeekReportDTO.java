@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +19,6 @@ public class LastWeekReportDTO {
     private Double longitude;
     private String reporterContact;
     private String photoBase64; // already base64 string
-    private LocalDate date; // createdAt converted to LocalDate
+    private LocalDateTime createdAt; // createdAt converted to LocalDate
     private VolunteerDTO assignedVolunteer; // 🔹 add this
 }

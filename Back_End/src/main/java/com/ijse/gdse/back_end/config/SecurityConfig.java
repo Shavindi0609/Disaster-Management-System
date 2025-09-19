@@ -38,8 +38,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
-                                "/auth/password/**"// ✅ make /api/** endpoints require authentication
-                        ).permitAll() // temporarily allow all for testing CORS
+                                "/auth/password/**",
+                                "api/reports"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

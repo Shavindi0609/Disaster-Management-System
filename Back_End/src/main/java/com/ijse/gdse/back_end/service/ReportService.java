@@ -1,9 +1,6 @@
 package com.ijse.gdse.back_end.service;
 
-import com.ijse.gdse.back_end.dto.DonationDTO;
-import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
-import com.ijse.gdse.back_end.dto.ReportDTO;
-import com.ijse.gdse.back_end.dto.VolunteerDTO;
+import com.ijse.gdse.back_end.dto.*;
 import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
@@ -80,10 +77,29 @@ public class ReportService {
     }
 
 
-    // Fetch all reports (Admin)
-    public List<Report> getAllReports() {
-        return reportRepository.findAll();
+    public List<ReportDTO> getAllReports() {
+        List<Report> reports = reportRepository.findAll();
+
+        return reports.stream().map(r -> {
+            ReportDTO dto = new ReportDTO();
+            dto.setId(r.getId());
+            dto.setType(r.getType());
+            dto.setDescription(r.getDescription());
+            dto.setReporterContact(r.getReporterContact());
+            dto.setLatitude(r.getLatitude());
+            dto.setLongitude(r.getLongitude());
+            dto.setAllocatedDonationAmount(r.getAllocatedDonationAmount());
+            dto.setCreatedAt(r.getCreatedAt().toString());
+            dto.setAssignedVolunteerName(r.getAssignedVolunteer() != null ? r.getAssignedVolunteer().getName() : "Not Assigned");
+
+            if (r.getPhoto() != null) {
+                dto.setPhotoBase64(Base64.getEncoder().encodeToString(r.getPhoto()));
+            }
+
+            return dto;
+        }).toList();
     }
+
 
     // Fetch user reports
     public List<Report> getReportsByEmail(String email) {
@@ -147,7 +163,7 @@ public class ReportService {
                             r.getLongitude(),
                             r.getReporterContact(),
                             photoBase64,
-                            r.getCreatedAt().toLocalDate(),
+                            r.getCreatedAt(),
                             volunteerDTO
                     );
                 })

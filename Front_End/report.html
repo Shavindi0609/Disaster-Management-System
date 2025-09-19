@@ -227,9 +227,32 @@
         marker = L.marker([lat, lng]).addTo(map);
     });
 
-    // Handle form submit
-    const form = document.getElementById('reportForm');
-    form.addEventListener('submit', async (e) => {
+    // Report Form submit
+    const reportForm = document.getElementById('reportForm');
+
+    async function fetchWithToken(url, options = {}) {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            alert("⚠️ Session expired. Please login again.");
+            localStorage.clear();
+            window.location.href = "login.html";
+            return Promise.reject("No token found");
+        }
+
+        options.headers = {
+            ...options.headers,
+            "Authorization": `Bearer ${token}`
+        };
+
+        const res = await fetch(url, options);
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`HTTP ${res.status}: ${text}`);
+        }
+        return res.json();
+    }
+
+    reportForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -242,34 +265,23 @@
         const photoInput = document.getElementById('photo');
         if(photoInput.files.length > 0) formData.append('photo', photoInput.files[0]);
 
-        // ✅ Get JWT token from localStorage
-        const accessToken = localStorage.getItem("accessToken");
-
         try {
-            const response = await fetch('http://localhost:8080/api/reports', {
+            const result = await fetchWithToken('http://localhost:8080/api/reports', {
                 method: 'POST',
-                headers: {
-                    "Authorization": `Bearer ${accessToken}` // ✅ Send token
-                },
                 body: formData
             });
 
-            if(response.ok){
-                const result = await response.json();
-                alert(result.message);
-                form.reset();
-                if(marker) map.removeLayer(marker);
-            } else {
-                console.error("Failed with status", response.status, response.statusText);
-                const text = await response.text();
-                alert("Failed to submit report: " + response.status + "\n" + text);
-            }
+            alert(result.message || "Report submitted successfully!");
+            reportForm.reset();
+            const marker = L.marker([0,0]); // Remove marker if needed
+            if(marker) marker.remove();
 
         } catch (error) {
-            alert("Error submitting report. Please try again.");
-            console.error(error);
+            console.error('Error:', error);
+            alert("Failed to submit report: " + error.message);
         }
     });
+
 
 </script>
 

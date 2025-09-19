@@ -59,9 +59,10 @@ public class ReportController {
     // ================= All Reports (Admin) =================
     @GetMapping("/all")
     public ResponseEntity<APIResponse> getAllReports() {
-        List<Report> reports = reportService.getAllReports();
+        List<ReportDTO> reports = reportService.getAllReports();
         return ResponseEntity.ok(new APIResponse(200, "Reports fetched successfully", reports));
     }
+
 
     // ================= My Reports (User) =================
     @GetMapping("/my")

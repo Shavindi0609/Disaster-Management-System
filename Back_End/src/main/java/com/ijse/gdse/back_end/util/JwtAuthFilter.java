@@ -58,12 +58,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 authorities.add(new SimpleGrantedAuthority("ROLE_VOLUNTEER"));
             }
 
-
             if (principal != null && jwtUtil.validateToken(token)) {
+                // Add default role if none assigned
+                if (authorities.isEmpty()) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+                }
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(principal, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+
+
+//            if (principal != null && jwtUtil.validateToken(token)) {
+//                UsernamePasswordAuthenticationToken authToken =
+//                        new UsernamePasswordAuthenticationToken(principal, null, authorities);
+//                SecurityContextHolder.getContext().setAuthentication(authToken);
+//            }
         }
 
         filterChain.doFilter(request, response);
