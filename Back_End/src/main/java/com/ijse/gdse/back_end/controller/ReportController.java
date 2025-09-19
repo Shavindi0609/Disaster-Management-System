@@ -214,6 +214,78 @@ public class ReportController {
         return ResponseEntity.ok(updated);
     }
 
+    // ================= Update Report =================
+    @PutMapping("/{reportId}")
+    public ResponseEntity<APIResponse> updateReport(
+            @PathVariable Long reportId,
+            Authentication authentication,
+            @RequestParam String type,
+            @RequestParam String description,
+            @RequestParam(required = false) String reporterContact,
+            @RequestParam Double latitude,
+            @RequestParam Double longitude,
+            @RequestParam(required = false) MultipartFile photo
+    ) throws IOException {
+        String email = authentication.getName();
+
+        Report updatedReport = reportService.updateReport(
+                reportId, email, type, description, reporterContact, latitude, longitude, photo
+        );
+
+        return ResponseEntity.ok(new APIResponse(200, "Report updated successfully", updatedReport));
+    }
+
+    @GetMapping("/{reportId}")
+    public ResponseEntity<APIResponse> getReportById(
+            @PathVariable Long reportId,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+
+        Report report = reportService.getReportById(reportId);
+
+        // check ownership
+        if (!report.getEmail().equals(email)) {
+            return ResponseEntity.status(403)
+                    .body(new APIResponse(403, "Access denied", null));
+        }
+
+        // map to DTO
+        ReportDTO dto = new ReportDTO();
+        dto.setId(report.getId());
+        dto.setType(report.getType());
+        dto.setDescription(report.getDescription());
+        dto.setReporterContact(report.getReporterContact());
+        dto.setLatitude(report.getLatitude());
+        dto.setLongitude(report.getLongitude());
+        dto.setCreatedAt(report.getCreatedAt().toString());
+        dto.setAllocatedDonationAmount(report.getAllocatedDonationAmount());
+
+        if (report.getAssignedVolunteer() != null) {
+            dto.setAssignedVolunteerName(report.getAssignedVolunteer().getName());
+        }
+
+        if (report.getPhoto() != null) {
+            dto.setPhotoBase64(Base64.getEncoder().encodeToString(report.getPhoto()));
+        }
+
+        return ResponseEntity.ok(new APIResponse(200, "Report fetched successfully", dto));
+    }
+
+
+    // ================= Delete Report =================
+    @DeleteMapping("/{reportId}")
+    public ResponseEntity<APIResponse> deleteReport(
+            @PathVariable Long reportId,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+
+        reportService.deleteReport(reportId, email);
+        return ResponseEntity.ok(new APIResponse(200, "Report deleted successfully", null));
+    }
+
+
 
 
 
