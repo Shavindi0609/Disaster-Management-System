@@ -31,12 +31,10 @@
             <i class="fa fa-file-alt"></i>Reports & Responses In Week</a></li>
         <li><a href="#" onclick="showReportsPage()">
             <i class="fa fa-chart-line"></i> Allocate Donations</a></li>
-        <li><a href="adminResponses.html">
+        <li><a href="allResponses.html">
             <i class="fa fa-file-alt"></i> All Reports & Responses</a></li>
         <li><a href="dashboard.html" id="logoutLink">
             <i class="fas fa-sign-out-alt"></i> Logout</a></li>
-
-
     </ul>
 </div>
 
@@ -186,15 +184,6 @@
         </div>
     </div>
 
-    <!--    <div id="donationModal" class="modal">-->
-    <!--        <div class="modal-content">-->
-    <!--            <span class="close" onclick="closeDonationModal()">&times;</span>-->
-    <!--            <h2>Add Donation to Report</h2>-->
-    <!--            <input type="number" id="donationAmount" placeholder="Enter amount" class="form-control mb-2">-->
-    <!--            <button class="btn btn-success" onclick="submitDonation()">Save Donation</button>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
     <!-- Allocate Donation Modal -->
     <div id="allocateModal" class="modal">
         <div class="modal-content">
@@ -218,14 +207,14 @@
 
 
 
-<!-- Popup Modal -->
-<div id="popupModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle">Edit</h2>
-        <form id="updateForm"></form>
+    <!-- Popup Modal -->
+    <div id="popupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Edit</h2>
+            <form id="updateForm"></form>
+        </div>
     </div>
-</div>
 
 <script src="js/admin.js"></script>
 
@@ -402,42 +391,6 @@
             alert(err.message || "Error allocating donation.");
         }
     }
-
-
-    // ------------------- DONATIONS -------------------
-    //     function openDonationModal(reportId) {
-    //         currentDonationReportId = reportId;
-    //         document.getElementById("donationAmount").value = '';
-    //         document.getElementById("donationModal").style.display = 'block';
-    //     }
-    //     function closeDonationModal() {
-    //         document.getElementById("donationModal").style.display = 'none';
-    //     }
-    //     async function submitDonation() {
-    //         const amount = parseFloat(document.getElementById("donationAmount").value);
-    //         if (!amount || amount <= 0) return alert("Please enter a valid donation amount.");
-    //
-    //         try {
-    //             const data = await fetchWithToken(`http://localhost:8080/api/reports/${currentDonationReportId}/donations`, {
-    //                 method: "POST",
-    //                 body: JSON.stringify({ donationAmount: amount })
-    //             });
-    //
-    // // res already JSON
-    //             alert("Donation added successfully!");
-    //             closeDonationModal();
-    //
-    // // Update dashboard total donations
-    //             const total = await fetchWithToken("http://localhost:8080/api/donations/total");
-    //             document.getElementById("statDonations").textContent = "$" + total.data;
-    //
-    //
-    //         } catch (err) {
-    //             console.error("Error adding donation:", err);
-    //             alert("Error adding donation. Check console for details.");
-    //         }
-    //     }
-
 
     // ------------------- REPORTS -------------------
     async function loadReports() {

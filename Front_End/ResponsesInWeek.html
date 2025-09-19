@@ -14,9 +14,115 @@
     h2 { color: #066150; margin-top: 20px; margin-bottom: 15px; }
     .text-muted { font-style: italic; }
     .response-card { margin-bottom: 10px; padding: 10px; border-radius: 8px; background-color: #e9f5f1; }
+
+    /* Sidebar - Horizontal Version */
+    .sidebar {
+      background: linear-gradient(90deg, var(--main-dark), var(--main-light));
+      color: #fff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+
+    .sidebar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .sidebar ul {
+      display: flex;
+      gap: 15px;
+      padding-left: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin: 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: rgba(255,255,255,0.2);
+    }
+
+
+    .report-map {
+      height: 150px;       /* small map */
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    :root {
+      --main-dark: #066150;
+      --main-light: #1D865C;
+      --accent-color: #FF6B35;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Orange login button in sidebar */
+    .sidebar .btn-login {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: #fff;
+    }
+
+    .sidebar .btn-login:hover {
+      background-color: #e55a2b;
+      border-color: var(--accent-color);
+    }
   </style>
 </head>
 <body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-content">
+    <div class="brand">
+      <i class="fas fa-shield-alt"></i>
+      <h2>NDMRS</h2>
+    </div>
+    <ul class="list-unstyled">
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="adminDashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+</div>
+
 <div class="container mt-4">
   <h2>Last 7 Days Reports & Responses</h2>
   <div id="responsesContainer"></div>
@@ -40,7 +146,10 @@
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
-      const reports = data.data || [];
+
+      const reports = (data.data || [])
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
 
       if (reports.length === 0) {
         container.innerHTML = "<p>No reports available for the last 7 days.</p>";
@@ -79,24 +188,24 @@
         }
 
         div.innerHTML = `
-        <div class="row">
-          <!-- Left side: Report -->
-          <div class="col-md-6">
-            <h5>${report.type}</h5>
-            <p>${report.description}</p>
-            <p><b>Reporter:</b> ${report.reporterContact || 'N/A'}</p>
-            <p><b>Assigned Volunteer:</b> ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</p>
-            <div id="map-${report.id}" class="response-map"></div>
-          </div>
+<div class="row">
+  <!-- Left side: Report -->
+  <div class="col-md-6">
+    <h5>${report.type}</h5>
+    <p>${report.description}</p>
+    <p><b>Reporter:</b> ${report.reporterContact || 'N/A'}</p>
+    <p><b>Assigned Volunteer:</b> ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</p>
+    <p><b>Date:</b> ${report.createdAt ? new Date(report.createdAt).toLocaleString() : '-'}</p>
+    <div id="map-${report.id}" class="response-map"></div>
+  </div>
 
-          <!-- Right side: Responses -->
-          <div class="col-md-6">
-            <h6>Responses</h6>
-            ${responsesHTML}
-          </div>
-        </div>
-      `;
-
+  <!-- Right side: Responses -->
+  <div class="col-md-6">
+    <h6>Responses</h6>
+    ${responsesHTML}
+  </div>
+</div>
+`;
         container.appendChild(div);
 
         // Initialize map
