@@ -256,29 +256,7 @@ public class ReportService {
         return report;
     }
 
-    // ================= Update Report =================
-    public Report updateReport(Long reportId, String email, String type, String description,
-                               String reporterContact, Double latitude, Double longitude, MultipartFile photo) throws IOException {
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
 
-        // Ensure only the owner can update
-        if (!report.getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized to update this report");
-        }
-
-        report.setType(type);
-        report.setDescription(description);
-        report.setReporterContact(reporterContact);
-        report.setLatitude(latitude);
-        report.setLongitude(longitude);
-
-        if (photo != null && !photo.isEmpty()) {
-            report.setPhoto(photo.getBytes());
-        }
-
-        return reportRepository.save(report);
-    }
 
     // ================= Delete Report =================
     public void deleteReport(Long reportId, String email) {

@@ -114,15 +114,41 @@
       border-color: var(--accent-color);
     }
 
-
     .dashboard-header {
-      background-color: var(--main-light);
-      color: #fff;
+      background: linear-gradient(90deg, var(--main-dark), var(--main-light));
+      color: black;
       padding: 40px 20px;
       text-align: center;
       border-radius: 10px;
       margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: pulseBg 3s infinite alternate;
     }
+
+    @keyframes pulseBg {
+      0% { background-position: left; }
+      100% { background-position: right; }
+    }
+
+    #todayReportsSummary {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #todayReportsList li {
+      background: #fff;
+      padding: 12px 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    #todayReportsList li:hover {
+      transform: translateX(5px);
+      background: #f1fdf7;
+    }
+
 
     .dashboard-header h1 {
       margin-bottom: 10px;
@@ -190,11 +216,10 @@
     <ul class="list-unstyled">
       <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
       <li><a href="volunteerDashboard.html" class="active"><i class="fas fa-hand-holding-heart"></i> Dashboard</a></li>
-      <li><a href="volunteerMyReports.html"><i class="fas fa-exclamation-triangle"></i> My Report Disaster</a></li>
+      <li><a href="volunteerMyReports.html"><i class="fas fa-exclamation-triangle"></i> My Report & Responses</a></li>
       <li><a href="volunteerProfile.html"><i class="fas fa-user"></i> Profile</a></li>
-      <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
-    <a href="#" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log In as a Volunteer</a>
+    <a href="signUp.html" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log out as a Volunteer</a>
   </div>
 </div>
 
@@ -317,10 +342,12 @@
         const li = document.createElement("li");
         li.className = "mb-2";
         li.innerHTML = `
-        <i class="fas fa-exclamation-circle text-warning me-2"></i>
-        <b>${r.type}</b> - ${r.description}
-        <span class="text-muted">(${new Date(r.date || r.createdAt).toLocaleString()})</span>
-      `;
+  <i class="fas fa-exclamation-circle text-warning me-2"></i>
+  <b>${r.type}</b> - ${r.description}
+  <span class="badge bg-danger ms-2">Today</span>
+  <div class="text-muted small">(${new Date(r.date || r.createdAt).toLocaleString()})</div>
+`;
+
         listEl.appendChild(li);
       });
 

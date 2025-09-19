@@ -196,15 +196,26 @@
                 document.getElementById("report-count").textContent = count;
 
                 // Show recent 5 reports
+// Show recent 3 reports
+// Show latest 3 reports
                 const recent = document.getElementById("recentReports");
-                recent.innerHTML = "";
-                (data.data || []).slice(0, 5).forEach(r => {
+                recent.innerHTML = ""; // clear previous entries
+
+                const reports = (data.data || []).sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
+
+                reports.slice(0, 3).forEach(r => {
                     const li = document.createElement("li");
                     li.className = "list-group-item";
                     li.innerHTML = `<b>${r.type}</b> - ${r.description || "No description"} <br>
-                      <small class="text-muted">${r.date || ""}</small>`;
+      <small class="text-muted">${r.date || ""}</small>`;
                     recent.appendChild(li);
                 });
+
+
+
+
+
+
             })
             .catch(err => console.error("Error fetching user reports:", err));
     });

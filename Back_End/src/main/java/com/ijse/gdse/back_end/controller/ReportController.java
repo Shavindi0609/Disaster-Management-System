@@ -214,27 +214,6 @@ public class ReportController {
         return ResponseEntity.ok(updated);
     }
 
-    // ================= Update Report =================
-    @PutMapping("/{reportId}")
-    public ResponseEntity<APIResponse> updateReport(
-            @PathVariable Long reportId,
-            Authentication authentication,
-            @RequestParam String type,
-            @RequestParam String description,
-            @RequestParam(required = false) String reporterContact,
-            @RequestParam Double latitude,
-            @RequestParam Double longitude,
-            @RequestParam(required = false) MultipartFile photo
-    ) throws IOException {
-        String email = authentication.getName();
-
-        Report updatedReport = reportService.updateReport(
-                reportId, email, type, description, reporterContact, latitude, longitude, photo
-        );
-
-        return ResponseEntity.ok(new APIResponse(200, "Report updated successfully", updatedReport));
-    }
-
     @GetMapping("/{reportId}")
     public ResponseEntity<APIResponse> getReportById(
             @PathVariable Long reportId,

@@ -66,6 +66,7 @@
             margin: 0;
             font-size: 22px;
             font-weight: 700;
+            color: white;
         }
 
         .sidebar ul {
@@ -196,14 +197,12 @@
         </div>
         <ul class="list-unstyled">
             <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="volunteerMyReports.html"><i class="fas fa-exclamation-triangle"></i> My Report Disaster</a></li>
-            <li><a href="myReports.html"><i class="fas fa-file-alt"></i> My Reports</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="volunteer.html" class="active"><i class="fas fa-hand-holding-heart"></i> Volunteer</a></li>
-            <li><a href="donation.html"><i class="fas fa-donate"></i> Donations</a></li>
-            <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="volunteerDashboard.html" ><i class="fas fa-hand-holding-heart"></i> Dashboard</a></li>
+            <li><a href="volunteerMyReports.html" class="active"><i class="fas fa-exclamation-triangle"></i> My Report Responses</a></li>
+            <li><a href="volunteerProfile.html"><i class="fas fa-user"></i> Profile</a></li>
+
         </ul>
-        <a href="#" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log In as a Volunteer</a>
+        <a href="signUp.html" id="volunteerLoginBtn" class="btn btn-login btn-sm rounded-pill me-2">Log Out as a Volunteer</a>
     </div>
 </div>
 
@@ -249,18 +248,21 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // When the page loads
     document.addEventListener("DOMContentLoaded", async () => {
+        // Get token and email from localStorage
         const token = localStorage.getItem("accessToken");
         const email = localStorage.getItem("email");
 
+        // Redirect to login if not logged in
         if (!token || !email) {
-            alert("⚠️ Please login first!");
+            alert("⚠️ Please log in first!");
             window.location.href = "volunteerLogin.html";
             return;
         }
 
         try {
-            // Get volunteer details
+            // Fetch volunteer details
             const volRes = await fetch(`http://localhost:8080/api/volunteers?email=${encodeURIComponent(email)}`, {
                 headers: {"Authorization": `Bearer ${token}`}
             });
@@ -277,28 +279,27 @@
             const reportData = await reportRes.json();
             const reports = reportData.data || [];
 
-            // 🟢 Count assigned reports
-            const assignedCount = reports.length;
-            console.log("Assigned Reports Count:", assignedCount);
+            // Sort reports by date (latest first)
+            reports.sort((a,b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+            document.getElementById("assignedCount").innerText = reports.length;
 
-            // Show count somewhere in UI
-            document.getElementById("assignedCount").innerText = assignedCount;
-
-            // Fetch responses
+            // Fetch volunteer responses
             const respRes = await fetch(`http://localhost:8080/api/responses/volunteer/${volunteerId}`, {
                 headers: {"Authorization": `Bearer ${token}`}
             });
             const respData = await respRes.json();
             const responses = respData.data || [];
 
+            // Container for assigned reports
             const container = document.getElementById("assignedReports");
             container.innerHTML = "";
 
             if (reports.length === 0) {
                 container.innerHTML = "<p>No reports assigned to you yet.</p>";
             } else {
+                // Render each report
                 reports.forEach(r => {
-                    // Check if this report has a response
+                    // Check if a response already exists for this report
                     const resp = responses.find(resp => resp.reportId === r.id);
                     const reportDate = new Date(r.date || r.createdAt).toLocaleString();
 
@@ -307,7 +308,6 @@
 
                     div.innerHTML = `
 <div class="row g-0">
-  <!-- Report Info -->
   <div class="col-md-6 border-end">
     <div class="card-body">
       <h5>${r.type}</h5>
@@ -319,16 +319,15 @@
               data-bs-toggle="modal"
               data-bs-target="#responseModal"
               onclick="openResponseModal(${r.id})">
-        📍 Mark as Responded
+        📍 Submit Response
       </button>
     </div>
   </div>
 
-  <!-- Response Info -->
   <div class="col-md-6">
     <div class="card-body">
       ${resp
-                        ? `<h5>Status Update</h5>
+                        ? `<h5>Response</h5>
            <p>${resp.statusUpdate}</p>
            <p><b>Date:</b> ${new Date(resp.respondedAt).toLocaleString()}</p>
            ${resp.photoBase64 ? `<img src="data:image/jpeg;base64,${resp.photoBase64}" class="img-fluid rounded mt-2" style="max-height:200px;">` : ""}`
@@ -341,7 +340,7 @@
 
                     container.appendChild(div);
 
-                    // Initialize map
+                    // Initialize map for this report
                     const map = L.map(`map-${r.id}`, { zoomControl: false, dragging: false })
                         .setView([r.latitude, r.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -353,18 +352,20 @@
 
         } catch (err) {
             console.error(err);
-            document.getElementById("assignedReports").innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+            container.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
         }
     });
 
-    // Modal function
+    // Function to open modal and select report for response
     let selectedReportId = null;
     function openResponseModal(reportId) {
         selectedReportId = reportId;
         document.getElementById("reportIdInput").value = reportId;
+        document.getElementById("statusUpdate").value = "";
+        document.getElementById("photoUpload").value = "";
     }
 
-    // Submit response
+    // Submit response to backend
     document.getElementById("responseForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("accessToken");
@@ -385,23 +386,21 @@
         try {
             const res = await fetch(`http://localhost:8080/api/reports/${reportId}/respond`, {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}` }, // do NOT set Content-Type
+                headers: { "Authorization": `Bearer ${token}` },
                 body: formData
             });
-
 
             if (!res.ok) throw new Error("Failed to submit response");
 
             const modal = bootstrap.Modal.getInstance(document.getElementById("responseModal"));
             modal.hide();
             alert("✅ Response submitted successfully!");
-            location.reload();
+            location.reload(); // Reload to show updated response
         } catch (err) {
             console.error(err);
             alert("❌ Error submitting response: " + err.message);
         }
     });
-
 
 </script>
 </body>
