@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/api/reports")
@@ -65,15 +68,47 @@ public class ReportController {
 
 
     // ================= My Reports (User) =================
+//    @GetMapping("/my")
+//    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
+//        String token = authHeader.replace("Bearer ", "");
+//        String email = jwtUtil.extractUsername(token);
+//
+//        List<Report> reports = reportService.getReportsByEmail(email);
+//        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
+//    }
+
     @GetMapping("/my")
     public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String email = jwtUtil.extractUsername(token);
 
-        List<Report> reports = reportService.getReportsByEmail(email);
+        List<ReportDTO> reports = reportService.getReportsByEmail(email);
         return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
     }
 
+
+    private ReportDTO mapToDTO(Report report) {
+        ReportDTO dto = new ReportDTO();
+        dto.setId(report.getId());
+        dto.setType(report.getType());
+        dto.setDescription(report.getDescription());
+        dto.setReporterContact(report.getReporterContact());
+        dto.setLatitude(report.getLatitude());
+        dto.setLongitude(report.getLongitude());
+        dto.setCreatedAt(report.getCreatedAt().toString());
+        dto.setAllocatedDonationAmount(report.getAllocatedDonationAmount());
+
+        if (report.getAssignedVolunteer() != null) {
+            dto.setAssignedVolunteerName(report.getAssignedVolunteer().getName());
+        }
+
+        // 🔹 Convert photo byte[] → Base64 string
+        if (report.getPhoto() != null) {
+            dto.setPhotoBase64(Base64.getEncoder().encodeToString(report.getPhoto()));
+        }
+
+        return dto;
+    }
     // ================= Total Reports =================
     @GetMapping("/total")
     public ResponseEntity<APIResponse> getTotalReports() {

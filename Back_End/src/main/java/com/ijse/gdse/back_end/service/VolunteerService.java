@@ -128,5 +128,10 @@ public class VolunteerService {
 //        });
 //    }
 
+    // Service method to get volunteer by email (from JWT)
+    public Volunteer getVolunteerByEmail(String email) {
+        return volunteerRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Volunteer not found with email: " + email));
+    }
 
 }

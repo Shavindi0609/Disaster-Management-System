@@ -102,8 +102,37 @@ public class ReportService {
 
 
     // Fetch user reports
-    public List<Report> getReportsByEmail(String email) {
-        return reportRepository.findByEmail(email);
+//    public List<Report> getReportsByEmail(String email) {
+//        return reportRepository.findByEmail(email);
+//    }
+
+    // Fetch user reports
+    public List<ReportDTO> getReportsByEmail(String email) {
+        return reportRepository.findByEmail(email)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ReportDTO mapToDTO(Report r) {
+        ReportDTO dto = new ReportDTO();
+        dto.setId(r.getId());
+        dto.setType(r.getType());
+        dto.setDescription(r.getDescription());
+        dto.setReporterContact(r.getReporterContact());
+        dto.setLatitude(r.getLatitude());
+        dto.setLongitude(r.getLongitude());
+        dto.setAllocatedDonationAmount(r.getAllocatedDonationAmount());
+        dto.setCreatedAt(r.getCreatedAt().toString());
+        dto.setAssignedVolunteerName(
+                r.getAssignedVolunteer() != null ? r.getAssignedVolunteer().getName() : "Not Assigned"
+        );
+
+        if (r.getPhoto() != null) {
+            dto.setPhotoBase64(Base64.getEncoder().encodeToString(r.getPhoto()));
+        }
+
+        return dto;
     }
 
     // Total reports count

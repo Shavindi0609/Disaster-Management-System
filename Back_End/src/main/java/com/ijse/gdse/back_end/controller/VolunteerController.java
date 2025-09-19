@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -139,6 +140,18 @@ public class VolunteerController {
 //                ));
 //    }
 
+    // Get logged-in volunteer profile
+    @GetMapping("/me")
+    public ResponseEntity<APIResponse> getLoggedInVolunteer(Authentication authentication) {
+        String email = authentication.getName(); // JWT → email
+        try {
+            Volunteer volunteer = volunteerService.getVolunteerByEmail(email);
+            return ResponseEntity.ok(new APIResponse(200, "Volunteer profile loaded", volunteer));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new APIResponse(404, e.getMessage(), null));
+        }
+    }
 
 }
 
