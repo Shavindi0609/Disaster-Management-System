@@ -1,26 +1,29 @@
 package com.ijse.gdse.back_end.controller;
 
-import com.ijse.gdse.back_end.dto.APIResponse;
-import com.ijse.gdse.back_end.dto.DonationDTO;
-import com.ijse.gdse.back_end.dto.LastWeekReportDTO;
-import com.ijse.gdse.back_end.dto.ReportDTO;
+import com.ijse.gdse.back_end.dto.*;
 import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.ReportResponse;
-import com.ijse.gdse.back_end.service.DonationService;
-import com.ijse.gdse.back_end.service.EmailService;
-import com.ijse.gdse.back_end.service.ReportResponseService;
-import com.ijse.gdse.back_end.service.ReportService;
+import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.repository.ReportRepository;
+import com.ijse.gdse.back_end.repository.ReportResponseRepository;
+import com.ijse.gdse.back_end.repository.VolunteerRepository;
+import com.ijse.gdse.back_end.service.*;
 import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,10 @@ public class ReportController {
 
     private final ReportResponseService reportResponseService;
     private final DonationService donationService;
+    private final VolunteerRepository volunteerRepository;
+    private final ReportRepository reportRepository;
+    private final ReportResponseRepository reportResponseRepository;
+
 
     // ================= Add Report =================
     @PostMapping
@@ -68,23 +75,23 @@ public class ReportController {
 
 
     // ================= My Reports (User) =================
-//    @GetMapping("/my")
-//    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
-//        String token = authHeader.replace("Bearer ", "");
-//        String email = jwtUtil.extractUsername(token);
-//
-//        List<Report> reports = reportService.getReportsByEmail(email);
-//        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
-//    }
-
     @GetMapping("/my")
     public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String email = jwtUtil.extractUsername(token);
 
-        List<ReportDTO> reports = reportService.getReportsByEmail(email);
+        List<Report> reports = reportService.getReportsByEmail(email);
         return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
     }
+
+//    @GetMapping("/my")
+//    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
+//        String token = authHeader.replace("Bearer ", "");
+//        String email = jwtUtil.extractUsername(token);
+//
+//        List<ReportDTO> reports = reportService.getReportsByEmail(email);
+//        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
+//    }
 
 
     private ReportDTO mapToDTO(Report report) {
@@ -160,22 +167,113 @@ public class ReportController {
         );
     }
 
-    @PostMapping("/{reportId}/respond")
-    public ResponseEntity<APIResponse> respondToReport(
-            @PathVariable Long reportId,
-            @RequestHeader("Authorization") String authHeader,
-            @RequestParam String statusUpdate,
-            @RequestParam(required = false) MultipartFile photo
-    ) throws IOException {
+//    @PostMapping("/{reportId}/respond")
+//    public ResponseEntity<APIResponse> respondToReport(
+//            @PathVariable Long reportId,
+//            @RequestHeader("Authorization") String authHeader,
+//            @RequestParam String statusUpdate,
+//            @RequestParam(required = false) MultipartFile photo
+//    ) throws IOException {
+//
+//        String token = authHeader.replace("Bearer ", "");
+//        String email = jwtUtil.extractUsername(token);
+//
+//        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
+//
+//        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
+//    }
 
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
+//    @PostMapping("/{reportId}/respond")
+//    public ResponseEntity<?> addResponse(
+//            @PathVariable Long reportId,
+//            @RequestParam String statusUpdate,
+//            @RequestParam(required = false) MultipartFile photo,
+//            Authentication authentication
+//    ) throws IOException {
+//
+//        // 1. Find logged-in volunteer from JWT
+//        String email = authentication.getName();
+//        Volunteer volunteer = volunteerRepository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+//
+//        // 2. Get the report
+//        Report report = reportRepository.findById(reportId)
+//                .orElseThrow(() -> new RuntimeException("Report not found"));
+//
+//        // 3. Check if this report is assigned to the volunteer
+//        if (!report.getAssignedVolunteer().getId().equals(volunteer.getId())) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body("You are not allowed to respond to this report");
+//        }
+//
+//        // 4. Create and save response
+//        ReportResponse response = ReportResponse.builder()
+//                .report(report)
+//                .volunteer(volunteer)
+//                .statusUpdate(statusUpdate)
+//                .respondedAt(LocalDateTime.now())
+//                .photo(photo != null ? photo.getBytes() : null)
+//                .build();
+//
+//        reportResponseRepository.save(response);
+//
+//        return ResponseEntity.ok("Response saved successfully!");
+//    }
+@PostMapping("/{reportId}/respond")
+public ResponseEntity<APIResponse> respondToReport(
+        @PathVariable Long reportId,
+        @RequestParam String statusUpdate,
+        @RequestParam(required = false) MultipartFile photo,
+        Authentication authentication
+) throws IOException {
+    // JWT / Spring Security එකෙන් logged-in volunteer email ගන්න
+    String volunteerEmail = authentication.getName();
 
-        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
+    // service layer එක call කරන්න
+    ReportResponse response = reportResponseService.addResponse(reportId, volunteerEmail, statusUpdate, photo);
 
-        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
-    }
+    return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
+}
 
+//    // Volunteer submitting a response
+//    @PostMapping("/{reportId}/respond")
+//    public ResponseEntity<APIResponse> respondToReport(
+//            @PathVariable Long reportId,
+//            @RequestParam String statusUpdate,
+//            @RequestParam(required = false) MultipartFile photo,
+//            @AuthenticationPrincipal UserDetails userDetails // token වලින් volunteer email ගන්න
+//    ) throws IOException {
+//        String volunteerEmail = userDetails.getUsername(); // token එකෙන් email
+//        var response = reportResponseService.addResponse(reportId, volunteerEmail, statusUpdate, photo);
+//        System.out.println(response);
+//
+//        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response.getId()));
+//    }
+
+//    @PostMapping("/{reportId}/respond")
+//    public APIResponse respondToReport(
+//            @PathVariable Long reportId,
+//            @RequestHeader("Authorization") String authHeader,
+//            @RequestParam String statusUpdate,
+//            @RequestParam(required = false) MultipartFile photo
+//    ) throws Exception {
+//
+//        String token = authHeader.replace("Bearer ", "");
+//        String email = jwtUtil.extractUsername(token);
+//
+//        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
+//
+//        // Send real-time notification to admin
+//        NotificationDTO notification = new NotificationDTO(
+//                reportId,
+//                response.getVolunteer().getName(),
+//                statusUpdate
+//        );
+//        messagingTemplate.convertAndSend("/topic/admin-notifications", notification);
+//
+//        return new APIResponse(200, "Response submitted successfully", response);
+//    }
+//
 
 
     @GetMapping("/volunteer/{volunteerId}/count")

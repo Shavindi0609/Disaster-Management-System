@@ -76,7 +76,6 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-
     public List<ReportDTO> getAllReports() {
         List<Report> reports = reportRepository.findAll();
 
@@ -102,17 +101,17 @@ public class ReportService {
 
 
     // Fetch user reports
-//    public List<Report> getReportsByEmail(String email) {
-//        return reportRepository.findByEmail(email);
-//    }
+    public List<Report> getReportsByEmail(String email) {
+        return reportRepository.findByEmail(email);
+    }
 
     // Fetch user reports
-    public List<ReportDTO> getReportsByEmail(String email) {
-        return reportRepository.findByEmail(email)
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
+//    public List<ReportDTO> getReportsByEmail(String email) {
+//        return reportRepository.findByEmail(email)
+//                .stream()
+//                .map(this::mapToDTO)
+//                .collect(Collectors.toList());
+//    }
 
     private ReportDTO mapToDTO(Report r) {
         ReportDTO dto = new ReportDTO();

@@ -1,3 +1,4 @@
+
 package com.ijse.gdse.back_end.config;
 
 import com.ijse.gdse.back_end.util.JwtAuthFilter;
@@ -39,8 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/auth/password/**",
-                                "api/reports/"
+                                "/api/weather"
                         ).permitAll()
+                        .requestMatchers("/api/reports/**").hasAnyRole("USER", "ADMIN")  // <-- allow USER & ADMIN
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -79,6 +79,14 @@
             </div>
 
 
+            <!-- Notifications Panel -->
+            <div class="card mt-4">
+                <div class="card-header bg-dark text-white">
+                    <i class="fas fa-bell"></i> Recent Volunteer Responses
+                </div>
+                <ul id="adminNotifications" class="list-group list-group-flush"></ul>
+            </div>
+
         </div>
 
         <!-- Dashboard row with map bigger on left -->
@@ -217,6 +225,40 @@
     </div>
 
 <script src="js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient = null;
+
+    function connectNotifications() {
+        const socket = new SockJS('http://localhost:8080/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            console.log('WebSocket connected: ' + frame);
+            stompClient.subscribe('/topic/adminNotifications', function(message) {
+                const n = JSON.parse(message.body);
+                addNotification(n);
+            });
+        });
+    }
+
+    function addNotification(n) {
+        const list = document.getElementById("adminNotifications");
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerHTML = `
+        <b>Report ID:</b> ${n.reportId} <br>
+        <b>Volunteer:</b> ${n.volunteerEmail} <br>
+        <b>Status:</b> ${n.statusUpdate} <br>
+        <small>Responded at: ${new Date(n.respondedAt).toLocaleString()}</small>
+    `;
+        list.prepend(li);
+    }
+
+    // Start WebSocket connection after DOM load
+    document.addEventListener("DOMContentLoaded", connectNotifications);
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

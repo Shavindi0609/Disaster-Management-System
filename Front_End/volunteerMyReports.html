@@ -248,13 +248,10 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // When the page loads
     document.addEventListener("DOMContentLoaded", async () => {
-        // Get token and email from localStorage
         const token = localStorage.getItem("accessToken");
         const email = localStorage.getItem("email");
 
-        // Redirect to login if not logged in
         if (!token || !email) {
             alert("⚠️ Please log in first!");
             window.location.href = "volunteerLogin.html";
@@ -262,9 +259,9 @@
         }
 
         try {
-            // Fetch volunteer details
+            // 1️⃣ Get volunteer info
             const volRes = await fetch(`http://localhost:8080/api/volunteers?email=${encodeURIComponent(email)}`, {
-                headers: {"Authorization": `Bearer ${token}`}
+                headers: { "Authorization": `Bearer ${token}` }
             });
             if (!volRes.ok) throw new Error("Failed to fetch volunteer details");
             const volData = await volRes.json();
@@ -272,40 +269,34 @@
             if (!volunteer) throw new Error("Volunteer not found");
             const volunteerId = volunteer.id;
 
-            // Fetch assigned reports
+            // 2️⃣ Get assigned reports
             const reportRes = await fetch(`http://localhost:8080/api/reports/volunteer/${volunteerId}`, {
-                headers: {"Authorization": `Bearer ${token}`}
+                headers: { "Authorization": `Bearer ${token}` }
             });
             const reportData = await reportRes.json();
             const reports = reportData.data || [];
-
-            // Sort reports by date (latest first)
             reports.sort((a,b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
             document.getElementById("assignedCount").innerText = reports.length;
 
-            // Fetch volunteer responses
+            // 3️⃣ Get volunteer responses
             const respRes = await fetch(`http://localhost:8080/api/responses/volunteer/${volunteerId}`, {
-                headers: {"Authorization": `Bearer ${token}`}
+                headers: { "Authorization": `Bearer ${token}` }
             });
             const respData = await respRes.json();
             const responses = respData.data || [];
 
-            // Container for assigned reports
+            // 4️⃣ Render reports
             const container = document.getElementById("assignedReports");
             container.innerHTML = "";
-
             if (reports.length === 0) {
                 container.innerHTML = "<p>No reports assigned to you yet.</p>";
             } else {
-                // Render each report
                 reports.forEach(r => {
-                    // Check if a response already exists for this report
                     const resp = responses.find(resp => resp.reportId === r.id);
                     const reportDate = new Date(r.date || r.createdAt).toLocaleString();
 
                     const div = document.createElement("div");
                     div.className = "card mb-3";
-
                     div.innerHTML = `
 <div class="row g-0">
   <div class="col-md-6 border-end">
@@ -323,7 +314,6 @@
       </button>
     </div>
   </div>
-
   <div class="col-md-6">
     <div class="card-body">
       ${resp
@@ -337,10 +327,9 @@
   </div>
 </div>
                 `;
-
                     container.appendChild(div);
 
-                    // Initialize map for this report
+                    // 5️⃣ Initialize map
                     const map = L.map(`map-${r.id}`, { zoomControl: false, dragging: false })
                         .setView([r.latitude, r.longitude], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -352,11 +341,11 @@
 
         } catch (err) {
             console.error(err);
-            container.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+            document.getElementById("assignedReports").innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
         }
     });
 
-    // Function to open modal and select report for response
+    // ================= Modal & Form =================
     let selectedReportId = null;
     function openResponseModal(reportId) {
         selectedReportId = reportId;
@@ -365,42 +354,49 @@
         document.getElementById("photoUpload").value = "";
     }
 
-    // Submit response to backend
-    document.getElementById("responseForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem("accessToken");
-        const reportId = selectedReportId;
-        const statusUpdate = document.getElementById("statusUpdate").value;
-        const photoFile = document.getElementById("photoUpload").files[0];
+    document.addEventListener("DOMContentLoaded", () => {
+        const responseForm = document.getElementById("responseForm");
 
-        if (!statusUpdate.trim()) {
-            alert("⚠️ Please enter a status update!");
-            return;
-        }
 
-        const formData = new FormData();
-        formData.append("statusUpdate", statusUpdate);
-        formData.append("respondedAt", new Date().toISOString());
-        if (photoFile) formData.append("photo", photoFile);
+        if (responseForm) {
+            responseForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
 
-        try {
-            const res = await fetch(`http://localhost:8080/api/reports/${reportId}/respond`, {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${token}` },
-                body: formData
+                const token = localStorage.getItem("accessToken");
+                const reportId = document.getElementById("reportIdInput").value;
+                const statusUpdate = document.getElementById("statusUpdate").value;
+                const photoFile = document.getElementById("photoUpload").files[0];
+
+                if (!statusUpdate.trim()) {
+                    alert("⚠️ Please enter a status update!");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("statusUpdate", statusUpdate);
+                if (photoFile) formData.append("photo", photoFile);
+
+                try {
+                    const res = await fetch(`http://localhost:8080/api/reports/${reportId}/respond`, {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${token}` },
+                        body: formData
+                    });
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    alert("✅ Response submitted successfully!");
+                    location.reload();
+                } catch (err) {
+                    console.error("Submit error:", err);
+                    alert("❌ Error submitting response: " + err.message);
+                }
             });
-
-            if (!res.ok) throw new Error("Failed to submit response");
-
-            const modal = bootstrap.Modal.getInstance(document.getElementById("responseModal"));
-            modal.hide();
-            alert("✅ Response submitted successfully!");
-            location.reload(); // Reload to show updated response
-        } catch (err) {
-            console.error(err);
-            alert("❌ Error submitting response: " + err.message);
+        } else {
+            console.error("⚠️ responseForm not found in DOM!");
         }
     });
+
 
 </script>
 </body>

@@ -52,10 +52,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 User user = userRepository.findByEmail(email).get();
                 principal = user.getEmail();  // <-- FIX: email use කරන්න
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+                // ✅ Debug
+                System.out.println("[JWT FILTER] USER email=" + email + ", role=" + user.getRole() + ", authorities=" + authorities);
             } else if (volunteerRepository.findByEmail(email).isPresent()) {
                 Volunteer volunteer = volunteerRepository.findByEmail(email).get();
                 principal = volunteer.getEmail();  // <-- FIX: email use කරන්න
                 authorities.add(new SimpleGrantedAuthority("ROLE_VOLUNTEER"));
+
+
+                // ✅ Debug
+                System.out.println("[JWT FILTER] VOLUNTEER email=" + email + ", authorities=" + authorities);
             }
 
             if (principal != null && jwtUtil.validateToken(token)) {
@@ -63,6 +69,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 if (authorities.isEmpty()) {
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                 }
+                System.out.println("[JWT FILTER] Token valid, setting authentication for " + principal);
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(principal, null, authorities);
