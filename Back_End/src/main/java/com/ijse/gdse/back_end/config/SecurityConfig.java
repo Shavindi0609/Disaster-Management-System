@@ -40,9 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/auth/password/**",
-                                "/api/weather"
+                                "/api/weather",
+                                "/ws/**"    // ✅ WebSocket permit
                         ).permitAll()
-                        .requestMatchers("/api/reports/**").hasAnyRole("USER", "ADMIN")  // <-- allow USER & ADMIN
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

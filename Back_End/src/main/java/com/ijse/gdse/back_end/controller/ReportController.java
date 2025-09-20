@@ -1,10 +1,11 @@
 package com.ijse.gdse.back_end.controller;
 
 import com.ijse.gdse.back_end.dto.*;
-import com.ijse.gdse.back_end.entity.Donation;
+import com.ijse.gdse.back_end.entity.AdminNotification;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.ReportResponse;
 import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.repository.AdminNotificationRepository;
 import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.ReportResponseRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
@@ -15,19 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
@@ -45,6 +45,12 @@ public class ReportController {
     private final VolunteerRepository volunteerRepository;
     private final ReportRepository reportRepository;
     private final ReportResponseRepository reportResponseRepository;
+
+    @Autowired
+    private AdminNotificationRepository notificationRepo;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
 
     // ================= Add Report =================
@@ -75,23 +81,23 @@ public class ReportController {
 
 
     // ================= My Reports (User) =================
-    @GetMapping("/my")
-    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String email = jwtUtil.extractUsername(token);
-
-        List<Report> reports = reportService.getReportsByEmail(email);
-        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
-    }
-
 //    @GetMapping("/my")
 //    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
 //        String token = authHeader.replace("Bearer ", "");
 //        String email = jwtUtil.extractUsername(token);
 //
-//        List<ReportDTO> reports = reportService.getReportsByEmail(email);
+//        List<Report> reports = reportService.getReportsByEmail(email);
 //        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
 //    }
+
+    @GetMapping("/my")
+    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtUtil.extractUsername(token);
+
+        List<ReportDTO> reports = reportService.getReportsByEmail(email);
+        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
+    }
 
 
     private ReportDTO mapToDTO(Report report) {
@@ -220,20 +226,54 @@ public class ReportController {
 //        return ResponseEntity.ok("Response saved successfully!");
 //    }
 @PostMapping("/{reportId}/respond")
-public ResponseEntity<APIResponse> respondToReport(
+public ResponseEntity<?> submitResponse(
         @PathVariable Long reportId,
         @RequestParam String statusUpdate,
-        @RequestParam(required = false) MultipartFile photo,
-        Authentication authentication
+        @RequestParam(required = false) MultipartFile photo
 ) throws IOException {
-    // JWT / Spring Security එකෙන් logged-in volunteer email ගන්න
-    String volunteerEmail = authentication.getName();
 
-    // service layer එක call කරන්න
-    ReportResponse response = reportResponseService.addResponse(reportId, volunteerEmail, statusUpdate, photo);
+    // 1️⃣ Fetch Report
+    Report report = reportRepository.findById(reportId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found"));
 
-    return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
+    // 2️⃣ Get logged-in user's email from SecurityContext
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String email = authentication.getName(); // JWT filter එකෙන් set කල email
+
+    // 3️⃣ Fetch Volunteer
+    Volunteer volunteer = volunteerRepository.findByEmail(email)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Volunteer not found"));
+
+    // 4️⃣ Save ReportResponse
+    ReportResponse response = ReportResponse.builder()
+            .report(report)
+            .volunteer(volunteer)
+            .statusUpdate(statusUpdate)
+            .respondedAt(LocalDateTime.now())
+            .photo(photo != null ? photo.getBytes() : null)
+            .build();
+    reportResponseRepository.save(response);
+
+    // 5️⃣ Save AdminNotification
+    AdminNotification notification = AdminNotification.builder()
+            .reportId(report.getId())
+            .volunteerEmail(volunteer.getEmail())
+            .statusUpdate(statusUpdate)
+            .respondedAt(response.getRespondedAt())
+            .notifiedAt(LocalDateTime.now())
+            .build();
+    notificationRepo.save(notification);
+
+// 6️⃣ Send WebSocket notification
+    System.out.println("Sending notification: " + notification);
+
+
+    // 6️⃣ Send WebSocket notification
+    messagingTemplate.convertAndSend("/topic/adminNotifications", notification);
+
+    return ResponseEntity.ok(response);
 }
+
 
 //    // Volunteer submitting a response
 //    @PostMapping("/{reportId}/respond")

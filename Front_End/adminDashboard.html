@@ -11,6 +11,8 @@
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
 <body>
 <!-- Sidebar -->
@@ -79,13 +81,21 @@
             </div>
 
 
-            <!-- Notifications Panel -->
-            <div class="card mt-4">
-                <div class="card-header bg-dark text-white">
-                    <i class="fas fa-bell"></i> Recent Volunteer Responses
-                </div>
-                <ul id="adminNotifications" class="list-group list-group-flush"></ul>
+            <!-- Admin Notifications List -->
+            <div class="card">
+                <h3>Notifications</h3>
+                <ul id="adminNotifications" class="list-group"></ul>
             </div>
+
+            <!-- Toast Notification Container -->
+            <div id="toastContainer" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+"></div>
+
+
 
         </div>
 
@@ -228,23 +238,40 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
+
     let stompClient = null;
 
-    function connectNotifications() {
+    function connectAdminWS() {
         const socket = new SockJS('http://localhost:8080/ws');
         stompClient = Stomp.over(socket);
 
+        stompClient.debug = console.log;
+
         stompClient.connect({}, function(frame) {
-            console.log('WebSocket connected: ' + frame);
+            console.log('Connected: ' + frame);
+
+            // Subscribe only after connection is established
             stompClient.subscribe('/topic/adminNotifications', function(message) {
-                const n = JSON.parse(message.body);
-                addNotification(n);
+                console.log("WS message received:", message.body);
+                try {
+                    const notification = JSON.parse(message.body);
+                    addNotification(notification);
+                    showToast(notification);
+                } catch (err) {
+                    console.error("Error parsing notification:", err, message.body);
+                }
             });
+        }, function(error) {
+            console.error('STOMP connection error:', error);
         });
     }
 
+
+
     function addNotification(n) {
         const list = document.getElementById("adminNotifications");
+        if (!list) return;
+
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerHTML = `
@@ -256,9 +283,40 @@
         list.prepend(li);
     }
 
-    // Start WebSocket connection after DOM load
-    document.addEventListener("DOMContentLoaded", connectNotifications);
+    function showToast(n) {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+
+        toast.className = "toast-message";
+        toast.innerHTML = `
+        🚨 <b>Report #${n.reportId}</b><br>
+        Volunteer: ${n.volunteerEmail}<br>
+        Status: ${n.statusUpdate}
+    `;
+
+        toast.style.background = "#333";
+        toast.style.color = "#fff";
+        toast.style.padding = "10px 20px";
+        toast.style.marginTop = "10px";
+        toast.style.borderRadius = "8px";
+        toast.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.5s ease";
+
+        container.appendChild(toast);
+
+        setTimeout(() => toast.style.opacity = "1", 100);
+
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    }
+
+    document.addEventListener("DOMContentLoaded", connectAdminWS);
+
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

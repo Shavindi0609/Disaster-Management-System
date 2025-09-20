@@ -3,7 +3,9 @@ package com.ijse.gdse.back_end.controller;
 
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.dto.DonorDTO;
+import com.ijse.gdse.back_end.entity.Donor;
 import com.ijse.gdse.back_end.service.DonorService;
+import com.ijse.gdse.back_end.service.impl.DonorServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,22 +45,16 @@ public class DonorController {
     // Get Donor by ID
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse> getDonorById(@PathVariable Long id) {
-        return donorService.getDonorById(id)
-                .map(donor -> ResponseEntity.ok(
-                        new APIResponse(
-                                200,
-                                "Donor fetched successfully",
-                                donor
-                        )
-                ))
-                .orElse(ResponseEntity.status(404).body(
-                        new APIResponse(
-                                404,
-                                "Donor not found",
-                                null
-                        )
-                ));
+        Donor donor = donorService.getDonorById(id); // will throw exception if not found
+        return ResponseEntity.ok(
+                new APIResponse(
+                        200,
+                        "Donor fetched successfully",
+                        donor
+                )
+        );
     }
+
 
     // Update Donor
     @PutMapping("/{id}")
