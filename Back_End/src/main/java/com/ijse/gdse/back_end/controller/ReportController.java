@@ -225,25 +225,28 @@ public class ReportController {
 //        return ResponseEntity.ok("Response saved successfully!");
 //    }
 @PostMapping("/{reportId}/respond")
-public ResponseEntity<?> submitResponse(
+public ResponseEntity<AdminNotification> submitResponse(
         @PathVariable Long reportId,
         @RequestParam String statusUpdate,
         @RequestParam(required = false) MultipartFile photo
 ) throws IOException {
 
-    // 1️⃣ Fetch Report
-    Report report = reportRepository.findById(reportId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found"));
-
-    // 2️⃣ Get logged-in user's email from SecurityContext
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String email = authentication.getName(); // JWT filter එකෙන් set කල email
 
-    // 3️⃣ Fetch Volunteer
+    // Fetch Report & Volunteer
+    Report report = reportRepository.findById(reportId)
+            .orElseThrow(() -> new RuntimeException("Report not found"));
     Volunteer volunteer = volunteerRepository.findByEmail(email)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Volunteer not found"));
+            .orElseThrow(() -> new RuntimeException("Volunteer not found"));
 
-    // 4️⃣ Save ReportResponse
+    // Verify assignment
+    if (report.getAssignedVolunteer() == null ||
+            !report.getAssignedVolunteer().getId().equals(volunteer.getId())) {
+        throw new RuntimeException("You are not assigned to this report");
+    }
+
+    // Save ReportResponse
     ReportResponse response = ReportResponse.builder()
             .report(report)
             .volunteer(volunteer)
@@ -253,7 +256,7 @@ public ResponseEntity<?> submitResponse(
             .build();
     reportResponseRepository.save(response);
 
-    // 5️⃣ Save AdminNotification
+    // Save AdminNotification (DB only)
     AdminNotification notification = AdminNotification.builder()
             .reportId(report.getId())
             .volunteerEmail(volunteer.getEmail())
@@ -263,16 +266,9 @@ public ResponseEntity<?> submitResponse(
             .build();
     notificationRepo.save(notification);
 
-// 6️⃣ Send WebSocket notification
-    System.out.println("Sending notification: " + notification);
-
-
-    // 6️⃣ Send WebSocket notification
-    messagingTemplate.convertAndSend("/topic/adminNotifications", notification);
-
-    return ResponseEntity.ok(response);
+    // ✅ Return the notification instead of response
+    return ResponseEntity.ok(notification);
 }
-
 
 //    // Volunteer submitting a response
 //    @PostMapping("/{reportId}/respond")

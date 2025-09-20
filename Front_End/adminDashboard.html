@@ -238,83 +238,39 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
-
-    let stompClient = null;
-
-    function connectAdminWS() {
-        const socket = new SockJS('http://localhost:8080/ws');
-        stompClient = Stomp.over(socket);
-
-        stompClient.debug = console.log;
-
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-
-            // Subscribe only after connection is established
-            stompClient.subscribe('/topic/adminNotifications', function(message) {
-                console.log("WS message received:", message.body);
-                try {
-                    const notification = JSON.parse(message.body);
-                    addNotification(notification);
-                    showToast(notification);
-                } catch (err) {
-                    console.error("Error parsing notification:", err, message.body);
-                }
-            });
-        }, function(error) {
-            console.error('STOMP connection error:', error);
+    async function submitResponse(reportId, formData) {
+        const res = await fetch(`/api/reports/${reportId}/respond`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
         });
+
+        const response = await res.json(); // This is ReportResponse
+
+        const notification = {
+            reportId: response.report.id,
+            volunteerEmail: response.volunteer.email,
+            statusUpdate: response.statusUpdate,
+            notifiedAt: new Date().toISOString()
+        };
+
+        addNotificationToUI(notification);
     }
 
-
-
-    function addNotification(n) {
-        const list = document.getElementById("adminNotifications");
-        if (!list) return;
-
+    function addNotificationToUI(notification) {
+        const container = document.getElementById("adminNotifications"); // ✅ correct id
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerHTML = `
-        <b>Report ID:</b> ${n.reportId} <br>
-        <b>Volunteer:</b> ${n.volunteerEmail} <br>
-        <b>Status:</b> ${n.statusUpdate} <br>
-        <small>Responded at: ${new Date(n.respondedAt).toLocaleString()}</small>
-    `;
-        list.prepend(li);
+            <b>Report #${notification.reportId}</b><br>
+            Volunteer: ${notification.volunteerEmail}<br>
+            ${notification.statusUpdate}<br>
+            <small>${new Date(notification.notifiedAt).toLocaleString()}</small>
+        `;
+        container.prepend(li);
     }
-
-    function showToast(n) {
-        const container = document.getElementById("toastContainer");
-        const toast = document.createElement("div");
-
-        toast.className = "toast-message";
-        toast.innerHTML = `
-        🚨 <b>Report #${n.reportId}</b><br>
-        Volunteer: ${n.volunteerEmail}<br>
-        Status: ${n.statusUpdate}
-    `;
-
-        toast.style.background = "#333";
-        toast.style.color = "#fff";
-        toast.style.padding = "10px 20px";
-        toast.style.marginTop = "10px";
-        toast.style.borderRadius = "8px";
-        toast.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
-        toast.style.opacity = "0";
-        toast.style.transition = "opacity 0.5s ease";
-
-        container.appendChild(toast);
-
-        setTimeout(() => toast.style.opacity = "1", 100);
-
-        setTimeout(() => {
-            toast.style.opacity = "0";
-            setTimeout(() => toast.remove(), 500);
-        }, 5000);
-    }
-
-    document.addEventListener("DOMContentLoaded", connectAdminWS);
-
 </script>
 
 

@@ -1,9 +1,6 @@
 package com.ijse.gdse.back_end.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,8 +18,16 @@ public class AdminNotification {
     private Long id;
 
     private Long reportId;
+
     private String volunteerEmail;
+
     private String statusUpdate;
+
     private LocalDateTime respondedAt;
+
     private LocalDateTime notifiedAt;
+
+    // ✅ Fix 1: Rename the field
+    @Column(name = "is_read", nullable = false)
+    private boolean read;
 }

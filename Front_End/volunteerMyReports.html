@@ -385,12 +385,29 @@
 
                     if (!res.ok) throw new Error(await res.text());
 
-                    alert("✅ Response submitted successfully!");
+                    const responseData = await res.json(); // Backend should return report + volunteer info
+
+                    // 🔹 Admin notification API call
+                    await fetch(`http://localhost:8080/api/admin/notifications`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            reportId: reportId,
+                            volunteerEmail: localStorage.getItem("email"),
+                            statusUpdate: statusUpdate
+                        })
+                    });
+
+                    alert("✅ Response submitted and Admin notified!");
                     location.reload();
                 } catch (err) {
                     console.error("Submit error:", err);
                     alert("❌ Error submitting response: " + err.message);
                 }
+
             });
         } else {
             console.error("⚠️ responseForm not found in DOM!");
