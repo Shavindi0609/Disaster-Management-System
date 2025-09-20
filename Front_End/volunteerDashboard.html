@@ -226,6 +226,7 @@
 <!-- Dashboard Header -->
 <section class="dashboard-header">
   <div class="container">
+    <!-- Volunteer Stats -->
     <h1>📌 Today's Assigned Reports</h1>
     <p id="todayReportsSummary">Loading...</p>
     <ul id="todayReportsList" class="list-unstyled mt-3"></ul>
@@ -234,58 +235,65 @@
 
 
 
-<!-- Volunteer Stats -->
-<!-- Stats -->
-<section class="container volunteer-stats d-flex flex-wrap justify-content-center gap-4">
-  <div class="stat-card">
-    <i class="fas fa-clipboard-list"></i>
-    <h3 id="assignedCount">0</h3>
-    <p>Assigned Reports</p>
-  </div>
-  <div class="stat-card">
-    <i class="fas fa-calendar-alt"></i>
-    <h3>3</h3>
-    <p>Upcoming Events</p>
-  </div>
-  <div class="stat-card">
-    <i class="fas fa-graduation-cap"></i>
-    <h3>5</h3>
-    <p>Completed Trainings</p>
-  </div>
-  <div class="stat-card">
-    <i class="fas fa-clock"></i>
-    <h3>24</h3>
-    <p>Total Hours</p>
-  </div>
+  <!-- Volunteer Tasks + Map Section -->
+  <section class="container mb-5">
+    <h2 class="mb-4 fw-bold" style="color:var(--main-dark)">My Tasks</h2>
+    <div class="row g-4">
+      <!-- Left: Tasks (8 columns) -->
+      <div class="col-md-8">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card card-volunteer h-100">
+              <div class="card-body">
+                <h5 class="card-title">Flood Relief Assistance</h5>
+                <p class="card-text">Assist with food and water distribution in affected areas.</p>
+                <a href="#" class="btn btn-sm rounded-pill">View Details</a>
+              </div>
+            </div>
 
+          </div>
+          <div class="col-md-6">
+            <div class="card card-volunteer h-100">
+              <div class="card-body">
+                <h5 class="card-title">Community Training</h5>
+                <p class="card-text">Help organize workshops for community preparedness.</p>
+                <a href="#" class="btn btn-sm rounded-pill">View Details</a>
+              </div>
 
-<!-- Volunteer Tasks -->
-<section class="container mb-5">
-  <h2 class="mb-4 fw-bold" style="color:var(--main-dark)">My Tasks</h2>
-  <div class="row g-4">
+            </div>
 
-    <div class="col-md-4">
-      <div class="card card-volunteer h-100">
-        <div class="card-body">
-          <h5 class="card-title">Flood Relief Assistance</h5>
-          <p class="card-text">Assist with food and water distribution in affected areas.</p>
-          <a href="#" class="btn btn-sm rounded-pill">View Details</a>
+          </div>
+        </div>
+        <section class="container volunteer-stats d-flex flex-wrap justify-content-center gap-4">
+          <div class="stat-card">
+            <i class="fas fa-clipboard-list"></i>
+            <h3 id="assignedCount">0</h3>
+            <p>Assigned Reports</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right: Today’s Disasters Map (4 columns) -->
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Today’s Disasters</h5>
+          </div>
+          <div class="card-body p-0">
+            <div id="todayDisastersMapTasks" style="height: 400px; border-radius: 0 0 10px 10px;"></div>
+          </div>
+          <div class="p-2">
+            <small><b>Legend:</b>
+              <span style="color:blue">● Flood</span> |
+              <span style="color:green">● Cyclone</span> |
+              <span style="color:orange">● Landslide</span> |
+              <span style="color:red">● Earthquake</span>
+            </small>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="col-md-4">
-      <div class="card card-volunteer h-100">
-        <div class="card-body">
-          <h5 class="card-title">Community Training</h5>
-          <p class="card-text">Help organize workshops for community preparedness.</p>
-          <a href="#" class="btn btn-sm rounded-pill">View Details</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
+  </section>
 
 
 <!-- Bootstrap JS -->
@@ -357,6 +365,51 @@
     }
   });
 
+  document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    const mapTasks = L.map("todayDisastersMapTasks").setView([7.8731, 80.7718], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(mapTasks);
+
+    let allMarkersTasks = [];
+
+    async function loadDisastersTasks() {
+      try {
+        const res = await fetch("http://localhost:8080/api/reports/today", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const reports = data.data || [];
+
+        allMarkersTasks.forEach(m => mapTasks.removeLayer(m));
+        allMarkersTasks = [];
+
+        reports.forEach(r => {
+          if (r.latitude && r.longitude) {
+            const color = r.type === "Flood" ? "blue" :
+                    r.type === "Cyclone" ? "green" :
+                            r.type === "Landslide" ? "orange" :
+                                    "red";
+
+            const marker = L.circleMarker([r.latitude, r.longitude], {
+              radius: 8, color, fillColor: color, fillOpacity: 0.7
+            }).addTo(mapTasks)
+                    .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
+
+            allMarkersTasks.push(marker);
+          }
+        });
+
+      } catch(err) {
+        console.error("Error loading today’s disasters:", err);
+      }
+    }
+
+    loadDisastersTasks();
+  });
 
 
 </script>
