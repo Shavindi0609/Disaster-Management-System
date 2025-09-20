@@ -2,13 +2,10 @@ package com.ijse.gdse.back_end.controller;
 
 import com.ijse.gdse.back_end.dto.WeatherDTO;
 import com.ijse.gdse.back_end.service.WeatherService;
+import com.ijse.gdse.back_end.service.impl.WeatherServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
