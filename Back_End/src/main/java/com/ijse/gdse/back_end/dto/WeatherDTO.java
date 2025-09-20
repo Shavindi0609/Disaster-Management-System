@@ -1,7 +1,15 @@
 package com.ijse.gdse.back_end.dto;
 
+import lombok.*;
+
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 public class WeatherDTO {
 
     private Main main;

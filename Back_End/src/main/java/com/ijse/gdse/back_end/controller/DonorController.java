@@ -6,7 +6,9 @@ import com.ijse.gdse.back_end.dto.DonorDTO;
 import com.ijse.gdse.back_end.entity.Donor;
 import com.ijse.gdse.back_end.service.DonorService;
 import com.ijse.gdse.back_end.service.impl.DonorServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,20 +16,39 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/donors")
 @RequiredArgsConstructor
+@Slf4j
 public class DonorController {
 
     private final DonorService donorService;
 
     // Add Donor
     @PostMapping
-    public ResponseEntity<APIResponse> addDonor(@RequestBody DonorDTO donorDTO) {
-        return ResponseEntity.ok(
-                new APIResponse(
-                        200,
-                        "Donor Added Successfully",
-                        donorService.addDonor(donorDTO)
-                )
-        );
+    public ResponseEntity<APIResponse> addDonor(@Valid @RequestBody DonorDTO donorDTO) {
+        log.info("INFO - Adding new donor: {}", donorDTO.getEmail());
+        log.debug("DEBUG - Donor details: {}", donorDTO);
+        log.warn("WARN - Ensure donor email {} is unique", donorDTO.getEmail());
+
+        try {
+            Object savedDonor = donorService.addDonor(donorDTO);
+            log.info("INFO - Donor {} added successfully", donorDTO.getEmail());
+
+            return ResponseEntity.ok(
+                    new APIResponse(
+                            200,
+                            "Donor Added Successfully",
+                            savedDonor
+                    )
+            );
+        } catch (Exception e) {
+            log.error("ERROR - Failed to add donor {}. Reason: {}", donorDTO.getEmail(), e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                    new APIResponse(
+                            500,
+                            "Failed to add donor",
+                            null
+                    )
+            );
+        }
     }
 
     // Get All Donors

@@ -2,9 +2,14 @@ package com.ijse.gdse.back_end.dto;
 
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 public class DonationDTO {
 
     @NotBlank(message = "Name is mandatory")

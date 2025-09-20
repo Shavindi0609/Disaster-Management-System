@@ -77,6 +77,7 @@
     await fetchWithToken(`${BASE}/volunteers`, { method:"POST", body: JSON.stringify(vol) });
     loadVolunteers();
     e.target.reset();
+        alert("✅ Volunteer added successfully!");
 } catch(err) {
     console.error("Error adding volunteer:", err);
 }
@@ -118,6 +119,7 @@
     await fetchWithToken(`${BASE}/donors`, { method:"POST", body: JSON.stringify(don) });
     loadDonors();
     e.target.reset();
+    alert("✅ Donor added successfully!");
 } catch(err) { console.error("Error adding donor:", err); }
 });
 
@@ -196,6 +198,7 @@
     skills: editField2.value
 };
     await fetchWithToken(`${BASE}/volunteers/${id}`, { method:"PUT", body: JSON.stringify(updated) });
+    alert("✅ Updated successfully!");
     loadVolunteers();
 }
     if(type==="donor") {
@@ -205,7 +208,9 @@
     amount: editField.value
 };
     await fetchWithToken(`${BASE}/donors/${id}`, { method:"PUT", body: JSON.stringify(updated) });
+    alert("✅ Updated successfully!");
     loadDonors();
+
 }
     closeModal();
 };

@@ -24,6 +24,5 @@ public class DonorDTO {
     private String email;
 
     @NotNull(message = "Donation amount is mandatory")
-//    @DecimalMin(value = "1.0", inclusive = true, message = "Donation amount must be at least 1")
     private BigDecimal amount;
 }
