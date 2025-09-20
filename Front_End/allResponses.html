@@ -121,10 +121,27 @@
     </ul>
   </div>
 </div>
+
 <div class="container mt-4">
   <h2>All Reports & Volunteer Responses</h2>
+
+  <!-- Date Filter -->
+  <div class="mb-3 row">
+    <div class="col-md-4">
+      <label for="dateFilter" class="form-label">Filter by Date:</label>
+      <input type="date" id="dateFilter" class="form-control">
+    </div>
+    <div class="col-md-2 align-self-end">
+      <button id="filterBtn" class="btn btn-primary">Filter</button>
+    </div>
+  </div>
+
   <div id="responsesContainer"></div>
+  <nav>
+    <ul id="pagination" class="pagination justify-content-center mt-3"></ul>
+  </nav>
 </div>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
@@ -136,29 +153,44 @@
     }
 
     const container = document.getElementById("responsesContainer");
-    container.innerHTML = "<p>Loading reports...</p>";
+    const pagination = document.getElementById("pagination");
+    const dateFilter = document.getElementById("dateFilter");
+    const filterBtn = document.getElementById("filterBtn");
+
+    let reports = [];
 
     try {
-      // Fetch all reports
       const res = await fetch("http://localhost:8080/api/reports/all", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
+      reports = (data.data || []).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+      return;
+    }
 
-      const reports = (data.data || [])
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      if (reports.length === 0) {
+    const pageSize = 5;
+    let currentPage = 1;
+    let filteredReports = [...reports]; // filtered reports
+
+    function renderReports() {
+      container.innerHTML = "";
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageReports = filteredReports.slice(start, end);
+
+      if (pageReports.length === 0) {
         container.innerHTML = "<p>No reports available.</p>";
         return;
       }
 
-      container.innerHTML = "";
-
-      for (let report of reports) {
+      pageReports.forEach(async report => {
         const div = document.createElement("div");
         div.className = "card p-3 mb-3";
 
-        // Fetch responses for this report
+        // Fetch responses
         let responsesHTML = "<p class='text-muted'>No response yet</p>";
         try {
           const respRes = await fetch(`http://localhost:8080/api/responses/report/${report.id}`, {
@@ -166,7 +198,6 @@
           });
           const respData = await respRes.json();
           const responses = respData.data || [];
-
           if (responses.length > 0) {
             responsesHTML = "";
             responses.forEach(resp => {
@@ -179,47 +210,68 @@
             `;
             });
           }
-        } catch(err) {
-          console.warn("No responses or error fetching for report " + report.id, err);
-        }
+        } catch(err) { console.warn("No responses for report " + report.id, err); }
 
         div.innerHTML = `
-<div class="row">
-  <!-- Left side: Report -->
-  <div class="col-md-6">
-    <h5>${report.type}</h5>
-    <p>${report.description}</p>
-    <p><b>Reporter:</b> ${report.reporterContact || 'N/A'}</p>
-    <p><b>Assigned Volunteer:</b> ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</p>
-    <p><b>Date:</b> ${report.createdAt ? new Date(report.createdAt).toLocaleString() : '-'}</p>
-    <div id="map-${report.id}" class="response-map"></div>
-  </div>
-
-  <!-- Right side: Responses -->
-  <div class="col-md-6">
-    <h6>Responses</h6>
-    ${responsesHTML}
-  </div>
-</div>
-`;
-
-
+        <div class="row">
+          <div class="col-md-6">
+            <h5>${report.type}</h5>
+            <p>${report.description}</p>
+            <p><b>Reporter:</b> ${report.reporterContact || 'N/A'}</p>
+            <p><b>Assigned Volunteer:</b> ${report.assignedVolunteer ? report.assignedVolunteer.name : 'Not Assigned'}</p>
+            <p><b>Date:</b> ${report.createdAt ? new Date(report.createdAt).toLocaleString() : '-'}</p>
+            <div id="map-${report.id}" class="response-map"></div>
+          </div>
+          <div class="col-md-6">
+            <h6>Responses</h6>
+            ${responsesHTML}
+          </div>
+        </div>
+      `;
         container.appendChild(div);
 
         // Initialize map
         const map = L.map(`map-${report.id}`, { zoomControl: false, dragging: false })
                 .setView([report.latitude, report.longitude], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
         L.marker([report.latitude, report.longitude]).addTo(map);
-      }
+      });
 
-    } catch (err) {
-      console.error(err);
-      container.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+      renderPagination();
     }
+
+    function renderPagination() {
+      pagination.innerHTML = "";
+      const pageCount = Math.ceil(filteredReports.length / pageSize);
+
+      for (let i = 1; i <= pageCount; i++) {
+        const li = document.createElement("li");
+        li.className = "page-item" + (i === currentPage ? " active" : "");
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.addEventListener("click", (e) => {
+          e.preventDefault();
+          currentPage = i;
+          renderReports();
+        });
+        pagination.appendChild(li);
+      }
+    }
+
+    // Filter button click
+    filterBtn.addEventListener("click", () => {
+      const selectedDate = dateFilter.value; // YYYY-MM-DD
+      if (selectedDate) {
+        filteredReports = reports.filter(r => r.createdAt.startsWith(selectedDate));
+      } else {
+        filteredReports = [...reports];
+      }
+      currentPage = 1;
+      renderReports();
+    });
+
+    renderReports();
   });
+
 </script>
 </body>
 </html>

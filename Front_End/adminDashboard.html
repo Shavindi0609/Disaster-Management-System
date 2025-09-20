@@ -34,7 +34,7 @@
         <li><a href="#" onclick="showReportsPage()">
             <i class="fa fa-chart-line"></i> Allocate Donations</a></li>
         <li><a href="allResponses.html">
-            <i class="fa fa-file-alt"></i> All Reports & Responses</a></li>
+            <i class="fa fa-file-alt"></i> History</a></li>
         <li><a href="dashboard.html" id="logoutLink">
             <i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
@@ -109,7 +109,7 @@
                         <select id="adminFilterType" class="form-select w-auto">
                             <option value="all">All</option>
                             <option value="Flood">Flood</option>
-                            <option value="Fire">Fire</option>
+                            <option value="Cyclone">Cyclone</option>
                             <option value="Earthquake">Earthquake</option>
                             <option value="Landslide">Landslide</option>
                         </select>
@@ -120,9 +120,9 @@
                     <div class="p-3">
                         <small><b>Legend:</b>
                             <span style="color:blue">● Flood</span> |
-                            <span style="color:red">● Fire</span> |
+                            <span style="color:green">● Cyclone</span> |
                             <span style="color:orange">● Landslide</span> |
-                            <span style="color:green">● Earthquake</span>
+                            <span style="color:red">● Earthquake</span>
                         </small>
                     </div>
                 </div>
@@ -566,7 +566,10 @@
 
             data.data.forEach(r => {
                 if (r.latitude && r.longitude && (filter === "all" || r.type === filter)) {
-                    const color = r.type === "Flood" ? "blue" : r.type === "Fire" ? "red" : r.type === "Landslide" ? "orange" : "green";
+                    const color = r.type === "Flood" ? "blue" :
+                        r.type === "Cyclone" ? "green" :
+                            r.type === "Landslide" ? "orange" :
+                                "red";
                     const marker = L.circleMarker([r.latitude, r.longitude], { radius: 8, color, fillColor: color, fillOpacity: 0.7 }).addTo(adminMap)
                         .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
                     adminMarkers.push(marker);
@@ -601,7 +604,10 @@
 
             data.data.forEach(r => {
                 if (r.latitude && r.longitude) {
-                    const color = r.type === "Flood" ? "blue" : r.type === "Fire" ? "red" : r.type === "Landslide" ? "orange" : "green";
+                    const color = r.type === "Flood" ? "blue" :
+                        r.type === "Cyclone" ? "green" :
+                            r.type === "Landslide" ? "orange" :
+                                "red";
                     const marker = L.circleMarker([r.latitude, r.longitude], { radius: 8, color, fillColor: color, fillOpacity: 0.7 }).addTo(weekMap)
                         .bindPopup(`<b>${r.type}</b><br>${r.description || ""}`);
                     weekMarkers.push(marker);
