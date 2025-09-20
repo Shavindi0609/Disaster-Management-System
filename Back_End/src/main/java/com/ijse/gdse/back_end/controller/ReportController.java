@@ -10,7 +10,7 @@ import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.ReportResponseRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import com.ijse.gdse.back_end.service.*;
-import com.ijse.gdse.back_end.service.impl.EmailServiceImpl;
+import com.ijse.gdse.back_end.service.impl.ReportServiceImpl;
 import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
