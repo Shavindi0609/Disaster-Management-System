@@ -3,6 +3,7 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.dto.ReportResponseDTO;
 import com.ijse.gdse.back_end.service.ReportResponseService;
+import com.ijse.gdse.back_end.service.impl.ReportResponseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
