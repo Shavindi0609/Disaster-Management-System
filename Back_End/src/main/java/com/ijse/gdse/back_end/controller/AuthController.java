@@ -4,6 +4,7 @@ import com.ijse.gdse.back_end.dto.*;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.service.AuthService;
 import com.ijse.gdse.back_end.service.VolunteerService;
+import com.ijse.gdse.back_end.service.impl.VolunteerServiceImpl;
 import com.ijse.gdse.back_end.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -60,8 +61,7 @@ public class AuthController {
         try {
             Volunteer volunteer = volunteerService.authenticateVolunteer(
                     dto.getEmail(),
-                    dto.getPassword(),
-                    passwordEncoder
+                    dto.getPassword()
             );
 
             String token = jwtUtil.generateToken(volunteer.getEmail());
@@ -79,4 +79,5 @@ public class AuthController {
                     .body(Map.of("message", e.getMessage()));
         }
     }
+
 }

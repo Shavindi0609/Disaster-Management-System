@@ -2,21 +2,15 @@ package com.ijse.gdse.back_end.controller;
 
 
 import com.ijse.gdse.back_end.dto.APIResponse;
-import com.ijse.gdse.back_end.dto.RegisterDTO;
 import com.ijse.gdse.back_end.dto.VolunteerDTO;
-import com.ijse.gdse.back_end.dto.VolunteerResponseDTO;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.service.VolunteerService;
-import com.ijse.gdse.back_end.util.JwtUtil;
+import com.ijse.gdse.back_end.service.impl.VolunteerServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
@@ -53,25 +47,27 @@ public class VolunteerController {
         );
     }
 
-    // Get Volunteer by ID
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse> getVolunteerById(@PathVariable Long id) {
-        return volunteerService.getVolunteerById(id)
-                .map(volunteer -> ResponseEntity.ok(
-                        new APIResponse(
-                                200,
-                                "Volunteer fetched successfully",
-                                volunteer
-                        )
-                ))
-                .orElse(ResponseEntity.status(404).body(
-                        new APIResponse(
-                                404,
-                                "Volunteer not found",
-                                null
-                        )
-                ));
+        try {
+            Volunteer volunteer = volunteerService.getVolunteerById(id); // method returns Volunteer
+            return ResponseEntity.ok(
+                    new APIResponse(
+                            200,
+                            "Volunteer fetched successfully",
+                            volunteer
+                    )
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new APIResponse(
+                            404,
+                            e.getMessage(),
+                            null
+                    ));
+        }
     }
+
 
     // ✅ Update Volunteer
     @PutMapping("/{id}")
