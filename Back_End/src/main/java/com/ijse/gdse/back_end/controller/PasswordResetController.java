@@ -3,6 +3,7 @@ package com.ijse.gdse.back_end.controller;
 import com.ijse.gdse.back_end.repository.UserRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import com.ijse.gdse.back_end.service.EmailService;
+import com.ijse.gdse.back_end.service.impl.EmailServiceImpl;
 import com.ijse.gdse.back_end.service.OTPService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
