@@ -1,67 +1,23 @@
 package com.ijse.gdse.back_end.service;
 
 import com.ijse.gdse.back_end.entity.User;
-import com.ijse.gdse.back_end.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    List<User> getAllUsers();
 
-    // Get all users
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    Optional<User> getUserById(Long id);
 
-    // Get user by ID
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
+    Optional<User> getUserByUsername(String username);
 
-    // Get user by username
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+    User addUser(User user);
 
-    // Add new user
-    public User addUser(User user) {
-        return userRepository.save(user);
-    }
+    User updateUser(Long id, User user);
 
-    public User updateUser(Long id, User user) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    void deleteUser(Long id);
 
-        existingUser.setUsername(user.getUsername());
-        existingUser.setEmail(user.getEmail());
-
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            // encode password before saving
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        return userRepository.save(existingUser);
-    }
-
-    public void deleteUser(Long id) {
-        boolean exists = userRepository.existsById(id);
-        if (!exists) {
-            throw new RuntimeException("User not found with id: " + id);
-        }
-        userRepository.deleteById(id);
-    }
-
-
-    // Count users
-    public long countUsers() {
-        return userRepository.count();
-    }
+    long countUsers();
 }

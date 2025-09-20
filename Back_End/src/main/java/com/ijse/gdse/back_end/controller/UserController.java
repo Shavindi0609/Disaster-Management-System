@@ -4,6 +4,7 @@ import com.ijse.gdse.back_end.dto.APIResponse;
 import com.ijse.gdse.back_end.entity.User;
 import com.ijse.gdse.back_end.repository.UserRepository;
 import com.ijse.gdse.back_end.service.UserService;
+import com.ijse.gdse.back_end.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
