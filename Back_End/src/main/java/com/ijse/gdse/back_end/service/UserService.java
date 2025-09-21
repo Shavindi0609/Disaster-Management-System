@@ -13,6 +13,8 @@ public interface UserService {
 
     Optional<User> getUserByUsername(String username);
 
+    Optional<User> getUserByEmail(String username);
+
     User addUser(User user);
 
     User updateUser(Long id, User user);

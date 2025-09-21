@@ -61,8 +61,8 @@ public class AuthServiceImpl implements AuthService {
 //   }
 
     public String register(RegisterDTO registerDTO) {
-        if (userRepository.findByUsername(registerDTO.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+        if (userRepository.findByEmail(registerDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
         }
 
         // default role USER
