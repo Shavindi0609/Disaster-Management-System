@@ -41,6 +41,9 @@ It provides a **faster, organized, and accountable disaster response mechanism**
 
 ### 🏠 Home Page
 ![Home Page](uploads/Home.png)
+![Home Page](uploads/Home1.png)
+![Home Page](uploads/WeatherChecker.png)
+
 
 ### 🔑 Live Weather Page
 ![Live Weather Page](uploads/LiveWeather.png)
