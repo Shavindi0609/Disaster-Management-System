@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
     public APIResponse handleInsufficientFunds(InsufficientFundsException ex) {
         return new APIResponse(400, ex.getMessage(), null);
     }
+
+    @ExceptionHandler(UnauthorizedActionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public APIResponse handleUnauthorizedAction(UnauthorizedActionException ex) {
+        return new APIResponse(403, ex.getMessage(), null);
+    }
 }

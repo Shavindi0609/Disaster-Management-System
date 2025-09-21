@@ -6,6 +6,7 @@ import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.exception.InsufficientFundsException;
 import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
+import com.ijse.gdse.back_end.exception.UnauthorizedActionException;
 import com.ijse.gdse.back_end.repository.DonationRepository;
 import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
@@ -263,7 +264,7 @@ public class ReportServiceImpl implements ReportService {
 
         // Ensure only the owner can delete
         if (!report.getEmail().equals(email)) {
-            throw new RuntimeException("Unauthorized to delete this report");
+            throw new UnauthorizedActionException("Unauthorized to delete this report");
         }
 
         reportRepository.delete(report);
