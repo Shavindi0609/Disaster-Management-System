@@ -31,9 +31,16 @@ public class AdminNotificationController {
     }
 
     // Optional: fetch unread notifications
-    @GetMapping("/unread")
-    public ResponseEntity<List<AdminNotification>> getUnreadNotifications() {
-        List<AdminNotification> notifications = notificationRepo.findByReadFalse();
-        return ResponseEntity.ok(notifications);
+    // Mark a notification as read
+    @PutMapping("/{id}/read")
+    public ResponseEntity<AdminNotification> markAsRead(@PathVariable Long id) {
+        return notificationRepo.findById(id)
+                .map(notification -> {
+                    notification.setRead(true);
+                    notificationRepo.save(notification);
+                    return ResponseEntity.ok(notification);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
+
 }

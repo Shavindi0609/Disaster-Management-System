@@ -13,4 +13,7 @@ public interface AdminNotificationService {
     List<AdminNotification> getNotificationsByReport(Long reportId);
 
     List<AdminNotification> getUnreadNotifications();
+
+    // New method to mark a notification as read
+    AdminNotification markAsRead(Long id);
 }

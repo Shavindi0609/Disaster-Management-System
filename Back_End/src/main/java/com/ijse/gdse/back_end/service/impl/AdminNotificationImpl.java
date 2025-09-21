@@ -31,6 +31,16 @@ public class AdminNotificationImpl implements AdminNotificationService {
 
     @Override
     public List<AdminNotification> getUnreadNotifications() {
-        return notificationRepo.findByReadFalse();
+        return List.of();
     }
+
+    @Override
+    public AdminNotification markAsRead(Long id) {
+        return notificationRepo.findById(id)
+                .map(notification -> {
+                    notification.setRead(true);
+                    return notificationRepo.save(notification);
+                }).orElse(null);
+    }
+
 }

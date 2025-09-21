@@ -41,8 +41,10 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/auth/password/**",
                                 "/api/weather",
-                                "/ws/**"    // ✅ WebSocket permit
+                                "/ws/**",
+                                "/api/admin/notifications/**"// ✅ WebSocket permit
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

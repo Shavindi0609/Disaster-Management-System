@@ -164,7 +164,7 @@ http://localhost:8081
 - `signUp.html` – Login form
 - `userDashboard.html` – Victim disaster report and tracking
 - `volunteerDashboard.html` – Volunteer tasks and responses
-- `adminDashboard.html` – Admin management, resource allocation, reports
+- `adminDashboard.html` – Admin management, resource allocation, reports etc.
 
 **Key Files:**
 - `js/scripts.js` – Handles API calls and JWT functionality

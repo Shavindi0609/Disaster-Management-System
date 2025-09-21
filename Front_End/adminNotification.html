@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Notifications</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: Arial, sans-serif; }
+        .sidebar {
+            background: linear-gradient(90deg, var(--main-dark), var(--main-light));
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        .sidebar-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .sidebar h2 { margin: 0; font-size: 22px; font-weight: 700; color: white; }
+        .sidebar ul { display: flex; gap: 15px; padding-left: 0; margin: 0; list-style: none; }
+        .sidebar ul li a { display: flex; align-items: center; gap: 8px; padding: 10px 15px; text-decoration: none; color: #fff; font-size: 14px; font-weight: 500; border-radius: 8px; transition: all 0.3s ease; }
+        .sidebar ul li a:hover, .sidebar ul li a.active { background: rgba(255,255,255,0.2); }
+        :root { --main-dark: #066150; --main-light: #1D865C; --accent-color: #FF6B35; }
+
+        h1 { color: #066150; margin-top: 20px; margin-bottom: 15px; }
+        .notification-card { margin-bottom: 15px; padding: 15px; border-radius: 10px; background-color: #e9f5f1; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .notification-card.unread { background-color: #ffeeba; }
+        .notification-card p { margin-bottom: 5px; }
+        .search-input { max-width: 400px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-content">
+        <div class="brand">
+            <i class="fas fa-shield-alt"></i>
+            <h2>NDMRS</h2>
+        </div>
+        <ul class="list-unstyled">
+            <li><a href="dashboard.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="adminDashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="signUp.html" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <h1>Admin Notifications</h1>
+
+    <!-- Unread notification warning -->
+    <div id="unreadWarning" class="alert alert-warning d-none" role="alert">
+        You have <span id="unreadCount">0</span> unread notifications!
+    </div>
+
+    <div class="d-flex mb-3">
+        <input type="text" id="notificationSearch" class="form-control search-input" placeholder="Search by volunteer email or report ID">
+        <button id="searchBtn" class="btn btn-primary ms-2">Search</button>
+    </div>
+
+    <div id="notificationsContainer"></div>
+</div>
+
+<script>
+    const BASE = "http://localhost:8080/api";
+    let notifications = [];
+    const container = document.getElementById("notificationsContainer");
+    const unreadWarning = document.getElementById("unreadWarning");
+    const unreadCountEl = document.getElementById("unreadCount");
+
+    async function fetchWithToken(url, options = {}) {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            alert("⚠️ Session expired. Please login again.");
+            localStorage.clear();
+            window.location.href = "login.html";
+            return;
+        }
+        options.headers = {
+            ...options.headers,
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        };
+        const res = await fetch(url, options);
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`HTTP ${res.status}: ${text}`);
+        }
+        return res.json();
+    }
+
+    async function loadNotifications(initialLoad = true) {
+        try {
+            const data = await fetchWithToken(`${BASE}/admin/notifications`);
+            data.sort((a, b) => new Date(b.notifiedAt) - new Date(a.notifiedAt));
+
+            if(initialLoad) {
+                notifications = data;
+            } else {
+                const newNotifications = data.filter(n => !notifications.some(o => o.id === n.id));
+                if(newNotifications.length > 0) notifications = [...newNotifications, ...notifications];
+            }
+
+            renderNotifications(notifications);
+            showUnreadWarning(notifications);
+        } catch(err) {
+            console.error("Error loading notifications:", err);
+            container.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+        }
+    }
+
+    function renderNotifications(list) {
+        container.innerHTML = "";
+        list.forEach(n => {
+            const div = document.createElement("div");
+            div.className = "notification-card" + (!n.read ? " unread" : "");
+            div.innerHTML = `
+          <p><b>ID:</b> ${n.id}</p>
+          <p><b>Report ID:</b> ${n.reportId}</p>
+          <p><b>Volunteer Email:</b> ${n.volunteerEmail}</p>
+          <p><b>Status:</b> ${n.statusUpdate}</p>
+          <p><b>Responded At:</b> ${n.respondedAt ? new Date(n.respondedAt).toLocaleString() : "-"}</p>
+          <p><b>Notified At:</b> ${new Date(n.notifiedAt).toLocaleString()}</p>
+          <p><b>Read:</b> ${n.read ? "Yes" : "No"}</p>
+          ${!n.read ? `<button class="btn btn-success btn-sm mark-read-btn" data-id="${n.id}">Mark as Read</button>` : ""}
+        `;
+            container.appendChild(div);
+        });
+
+        // Add event listeners for "Mark as Read" buttons
+        document.querySelectorAll(".mark-read-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.getAttribute("data-id");
+                await markAsRead(id);
+            });
+        });
+    }
+
+    async function markAsRead(id) {
+        try {
+            await fetchWithToken(`${BASE}/admin/notifications/${id}/read`, { method: "PUT" });
+            // Update the notification locally
+            notifications = notifications.map(n => n.id == id ? {...n, read: true} : n);
+            renderNotifications(notifications);
+            showUnreadWarning(notifications);
+        } catch(err) {
+            console.error("Error marking notification as read:", err);
+        }
+    }
+
+    function filterNotifications() {
+        const keyword = document.getElementById("notificationSearch").value.toLowerCase().trim();
+        const filtered = notifications.filter(n =>
+            n.volunteerEmail.toLowerCase().includes(keyword) ||
+            n.reportId.toString().includes(keyword)
+        );
+        renderNotifications(filtered);
+        showUnreadWarning(filtered);
+    }
+
+    function showUnreadWarning(list) {
+        const unreadCount = list.filter(n => !n.read).length;
+        if (unreadCount > 0) {
+            unreadCountEl.textContent = unreadCount;
+            unreadWarning.classList.remove("d-none");
+        } else {
+            unreadWarning.classList.add("d-none");
+        }
+    }
+
+    // Event listeners
+    document.getElementById("searchBtn").addEventListener("click", filterNotifications);
+    document.getElementById("notificationSearch").addEventListener("keypress", function(e) {
+        if(e.key === "Enter") filterNotifications();
+    });
+    document.getElementById("logoutLink").addEventListener("click", e => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href="dashboard.html";
+    });
+
+    // Initial load
+    loadNotifications(true);
+    setInterval(() => loadNotifications(false), 10000);
+</script>
+
+</body>
+</html>
