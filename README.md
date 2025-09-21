@@ -58,7 +58,7 @@ cd ndmrs-api/backend
 
 ```
 
-**Navigate to backend folder**
+2. **Navigate to backend folder**
 ```bash
 cd ndmrs-api/backend
 
