@@ -62,7 +62,69 @@ cd ndmrs-api/backend
 ```bash
 cd ndmrs-api/backend
 
-````
+```
+
+3**Create uploads folder and copy default profile image**
+```bash
+mkdir uploads
+cp ../frontend/images/default-profile.png uploads/
+
+
+```
+
+4**Configure application.properties**
+```bash
+spring.application.name=Back_End
+
+# ===============================
+# Database Settings
+# ===============================
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=your-db-password
+spring.datasource.url=jdbc:mysql://localhost:3306/disaster01?createDatabaseIfNotExist=true
+spring.datasource.hikari.maximum-pool-size=10
+
+# ===============================
+# JPA Settings
+# ===============================
+spring.jpa.generate-ddl=true
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+
+# ===============================
+# JWT Configuration
+# ===============================
+jwt.secretKey=your-secure-key
+jwt.expiration=864000000
+
+# ===============================
+# File Upload
+# ===============================
+report.setPhotoPath("uploads/" + fileName);
+
+# ===============================
+# Gmail SMTP Configuration
+# ===============================
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your-email@gmail.com
+spring.mail.password=your-app-password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.debug=true
+
+# ===============================
+# Spring Multipart Settings
+# ===============================
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+
+
+
+```
 
 
 
