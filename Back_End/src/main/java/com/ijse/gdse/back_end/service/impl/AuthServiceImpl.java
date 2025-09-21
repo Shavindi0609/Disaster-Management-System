@@ -5,6 +5,8 @@ import com.ijse.gdse.back_end.dto.AuthResponseDTO;
 import com.ijse.gdse.back_end.dto.RegisterDTO;
 import com.ijse.gdse.back_end.entity.Role;
 import com.ijse.gdse.back_end.entity.User;
+import com.ijse.gdse.back_end.exception.ResourceAlreadyFoundException;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
 import com.ijse.gdse.back_end.repository.UserRepository;
 import com.ijse.gdse.back_end.service.AuthService;
 import com.ijse.gdse.back_end.util.JwtUtil;
@@ -24,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 🔹 Validate credentials using email instead of username
         User user = userRepository.findByEmail(authDTO.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         // 🔹 Check password
         if (!passwordEncoder.matches(authDTO.getPassword(), user.getPassword())) {
@@ -62,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
 
     public String register(RegisterDTO registerDTO) {
         if (userRepository.findByEmail(registerDTO.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new ResourceAlreadyFoundException("Email already exists");
         }
 
         // default role USER
