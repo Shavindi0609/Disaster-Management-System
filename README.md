@@ -47,6 +47,9 @@ It provides a **faster, organized, and accountable disaster response mechanism**
 
 ### 🔑Login Page
 ![Login Page](uploads/Login.png)
+![Forgot Password Page](uploads/ForgotPassword.png)
+![Sent OTP Page](uploads/SendOTP.png)
+![ Set New Password Page](uploads/NewPassword.png)
 
 ### 🔑Sign Up Page
 ![Sign Up Page](uploads/SignUp.png)
