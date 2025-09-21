@@ -1,13 +1,16 @@
 ﻿# 🌪️ Natural Disaster Management and Response System (NDMRS)
 
-## 📖 Project Description
-The **Natural Disaster Management and Response System (NDMRS)** is a **centralized web-based platform** that streamlines the management of natural disaster events in Sri Lanka. It enables:
-- **Rapid victim registration**
-- **Efficient aid distribution**
-- **Real-time volunteer coordination**
-- **Transparent donation tracking**
+---
 
-By providing a unified platform, NDMRS ensures a **faster, organized, and accountable disaster response mechanism**.
+## 📖 Project Description
+The **Natural Disaster Management and Response System (NDMRS)** is a **centralized web-based platform** that streamlines the management of natural disaster events in Sri Lanka.  
+It provides a **faster, organized, and accountable disaster response mechanism** by enabling:
+
+- ✅ **Rapid victim registration**
+- ✅ **Efficient aid distribution**
+- ✅ **Real-time volunteer coordination**
+- ✅ **Transparent donation tracking**
+
 
 ### ⚡ Key Features
 - 👤 **Role-based User Registration & Login** (Admin, Victim, Volunteer, Donor)
@@ -19,16 +22,17 @@ By providing a unified platform, NDMRS ensures a **faster, organized, and accoun
 - 📈 **Reports & Visual Dashboards**
 - 📲 **SMS / Email Alerts**
 
-### 🔧 How it Works
-NDMRS leverages a **RESTful API backend** for real-time disaster data management:
-- 🚨 Faster victim registration
-- 🏥 Quicker aid delivery
-- 💳 Transparent tracking of donations and resources
-- 👥 Efficient volunteer coordination
-- 📊 Data-driven reports to help authorities make timely and informed decisions
+---
 
 ### 🛠️ Technologies Used
 - **Frontend:** HTML, CSS, Bootstrap, JavaScript, jQuery
 - **Backend:** Java, Spring Boot, Spring Security (JWT)
 - **Database:** MySQL
-- **Other Tools:** Postman (API testing), Swagger (API documentation), Lombok (boilerplate reduction), Git & GitHub (version control)
+- **Other Tools / APIs:**
+    - Postman (API testing)
+    - Swagger (API documentation)
+    - Lombok (boilerplate reduction)
+    - Git & GitHub (version control)
+    - Map API (for disaster location mapping)
+    - Weather API (real-time weather data for disaster management)
+    - Email API (for SMS / Email alerts to users)
