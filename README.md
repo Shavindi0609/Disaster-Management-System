@@ -20,7 +20,7 @@ It provides a **faster, organized, and accountable disaster response mechanism**
 - 💰 **Resource & Donation Management** (Add / Update / Allocate)
 - 🤝 **Volunteer Registration & Task Assignment**
 - 📈 **Reports & Visual Dashboards**
-- 📲 **SMS / Email Alerts**
+- 📲 **Notification / Email Alerts**
 
 
 ### 🛠️ Technologies Used
@@ -36,6 +36,17 @@ It provides a **faster, organized, and accountable disaster response mechanism**
     - Weather API (real-time weather data for disaster management)
     - Email API (for SMS / Email alerts to users)
 
+
+## 📸 Project Screenshots
+
+### 🏠 Home Page
+![Home Page](uploads/Home.png)
+
+### 🔑 Login Page
+![Login Page](images/login.png)
+
+### 📊 Admin Dashboard
+![Admin Dashboard](images/admin-dashboard.png)
 
 
 ## ⚙️ Setup Instructions
