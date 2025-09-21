@@ -56,13 +56,13 @@ Before starting, make sure you have the following installed:
 git clone https://github.com/your-username/ndmrs-api.git
 cd ndmrs-api/backend
 
-```` 
+```
 
 **Navigate to backend folder**
 ```bash
 cd ndmrs-api/backend
 
-```` 
+````
 
 
 
