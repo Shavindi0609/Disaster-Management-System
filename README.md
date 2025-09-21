@@ -247,4 +247,7 @@ http://localhost:8081
 - `js/scripts.js` – Handles API calls and JWT functionality
 - `css/styles.css` – Contains styling for the frontend
 
-> 💡 Ensure the backend is running at `http://localhost:8080/api` for full functionality.
+
+## 🎥 Project Demo (YouTube)
+
+👉 [Watch Demo Video](https://www.youtube.com/watch?v=https://youtu.be/i8albo3oQt0?si=GScDN4dxDB6RUepf)
