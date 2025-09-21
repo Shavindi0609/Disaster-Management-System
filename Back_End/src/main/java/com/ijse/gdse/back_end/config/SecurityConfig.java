@@ -5,6 +5,7 @@ import com.ijse.gdse.back_end.util.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,9 +42,12 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/auth/password/**",
                                 "/api/weather",
-                                "/ws/**",
-                                "/api/admin/notifications/**"// ✅ WebSocket permit
+                                "/ws/**"
                         ).permitAll()
+
+                        // Admin Only Endpoints
+                        .requestMatchers("/api/admin/notifications/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/reports/*/allocate").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -55,6 +59,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
