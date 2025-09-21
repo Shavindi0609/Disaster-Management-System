@@ -5,6 +5,8 @@ import com.ijse.gdse.back_end.dto.ReportResponseDTO;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.ReportResponse;
 import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
+import com.ijse.gdse.back_end.exception.UnauthorizedActionException;
 import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.ReportResponseRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
@@ -37,18 +39,18 @@ public class ReportResponseServiceImpl implements ReportResponseService {
     public ReportResponse addResponse(Long reportId, String volunteerEmail, String statusUpdate, MultipartFile photo) throws IOException {
         // 1️⃣ Get report
         Report report = reportRepo.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Report not found"));
 
         // 2️⃣ Get volunteer
         Volunteer volunteer = volunteerRepo.findByEmail(volunteerEmail)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Volunteer not found"));
 
         // 3️⃣ Verify assignment
         if (report.getAssignedVolunteer() == null) {
-            throw new RuntimeException("This report is not assigned to any volunteer");
+            throw new UnauthorizedActionException("This report is not assigned to any volunteer");
         }
         if (!report.getAssignedVolunteer().getId().equals(volunteer.getId())) {
-            throw new RuntimeException("You are not assigned to this report");
+            throw new UnauthorizedActionException("You are not assigned to this report");
         }
 
         // 4️⃣ Build response
