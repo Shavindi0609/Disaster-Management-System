@@ -65,16 +65,37 @@
     <!-- Main Content -->
     <div id="page-content" class="p-4">
         <h2>📑 My Reports</h2>
+
+        <!-- 🔹 Date Filter UI -->
+        <div class="mb-3 row">
+            <div class="col-md-4">
+                <label for="dateFilter" class="form-label">Filter by Date:</label>
+                <input type="date" id="dateFilter" class="form-control">
+            </div>
+            <div class="col-md-2 align-self-end">
+                <button id="filterBtn" class="btn btn-primary">Filter</button>
+            </div>
+            <div class="col-md-2 align-self-end">
+                <button id="resetBtn" class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+
+        <!-- 🔹 Reports Container -->
         <div id="reports-container" class="row mt-4">
             <!-- Reports will load here as cards -->
         </div>
     </div>
+
+
+
+
 </div>
 
 <script>
     let currentPage = 1;
     const reportsPerPage = 6;
     let allReports = [];
+    let filteredReports = []; // <-- new
 
     async function loadMyReports() {
         const container = document.getElementById('reports-container');
@@ -96,6 +117,7 @@
             if (result.status !== 200) throw new Error(result.message || "Failed to load reports");
 
             allReports = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            filteredReports = [...allReports]; // initially all
 
             if (!allReports.length) {
                 container.innerHTML = `<p class="text-center">No reports found</p>`;
@@ -116,7 +138,12 @@
 
         const start = (page - 1) * reportsPerPage;
         const end = start + reportsPerPage;
-        const reportsToShow = allReports.slice(start, end);
+        const reportsToShow = filteredReports.slice(start, end);
+
+        if (!reportsToShow.length) {
+            container.innerHTML = "<p class='text-center'>No reports found.</p>";
+            return;
+        }
 
         reportsToShow.forEach(r => {
             const card = document.createElement("div");
@@ -138,9 +165,7 @@
                     <p><b>Assigned Volunteer:</b> ${r.assignedVolunteerName || "Not Assigned"}</p>
                     <p><b>Allocated Donations:</b> $${r.allocatedDonationAmount || 0}</p>
 
-                    <!-- Action buttons -->
                     <div class="mt-auto d-flex justify-content-between">
-
                         <button class="btn btn-sm btn-danger" onclick="deleteReport('${r.id}')">
                             <i class="fas fa-trash"></i> Delete
                         </button>
@@ -153,13 +178,12 @@
         });
     }
 
-
     function renderPagination() {
         const container = document.getElementById('reports-container');
         const paginationContainer = document.createElement("div");
         paginationContainer.className = "d-flex justify-content-center mt-4";
 
-        const totalPages = Math.ceil(allReports.length / reportsPerPage);
+        const totalPages = Math.ceil(filteredReports.length / reportsPerPage);
 
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement("button");
@@ -168,13 +192,33 @@
             btn.addEventListener("click", () => {
                 currentPage = i;
                 renderPage(currentPage);
-                renderPagination(); // refresh buttons
+                renderPagination();
             });
             paginationContainer.appendChild(btn);
         }
 
-        // Append pagination below the cards
         container.appendChild(paginationContainer);
+    }
+
+    // ✅ Date filter
+    function applyFilter() {
+        const selectedDate = document.getElementById("dateFilter").value; // YYYY-MM-DD
+        if (selectedDate) {
+            filteredReports = allReports.filter(r => r.createdAt.startsWith(selectedDate));
+        } else {
+            filteredReports = [...allReports];
+        }
+        currentPage = 1;
+        renderPage(currentPage);
+        renderPagination();
+    }
+
+    function resetFilter() {
+        document.getElementById("dateFilter").value = "";
+        filteredReports = [...allReports];
+        currentPage = 1;
+        renderPage(currentPage);
+        renderPagination();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -186,6 +230,10 @@
             localStorage.clear();
             window.location.href = "signUp.html";
         });
+
+        // connect filter buttons
+        document.getElementById("filterBtn").addEventListener("click", applyFilter);
+        document.getElementById("resetBtn").addEventListener("click", resetFilter);
     });
 
     async function deleteReport(reportId) {
@@ -203,17 +251,14 @@
             if (!res.ok) throw new Error("Failed to delete report");
 
             alert("Report deleted successfully!");
-            loadMyReports(); // refresh list
+            loadMyReports();
         } catch (err) {
             console.error("Delete error:", err);
             alert("Error deleting report.");
         }
     }
-
-
-
-
 </script>
+
 
 </body>
 </html>
