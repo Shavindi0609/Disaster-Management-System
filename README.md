@@ -1,8 +1,13 @@
 ﻿# 🌪️ Natural Disaster Management and Response System (NDMRS)
 
 ## 📖 Project Description
+The **Natural Disaster Management and Response System (NDMRS)** is a **centralized web-based platform** that streamlines the management of natural disaster events in Sri Lanka. It enables:
+- **Rapid victim registration**
+- **Efficient aid distribution**
+- **Real-time volunteer coordination**
+- **Transparent donation tracking**
 
-The **Natural Disaster Management and Response System (NDMRS)** is a **centralized web-based platform** designed to streamline the management of natural disaster events in Sri Lanka. The system enables **rapid victim registration**, **efficient aid distribution**, **real-time volunteer coordination**, and **transparent donation tracking**. By providing a unified platform, NDMRS ensures a **faster, organized, and accountable disaster response mechanism**.
+By providing a unified platform, NDMRS ensures a **faster, organized, and accountable disaster response mechanism**.
 
 ### ⚡ Key Features
 - 👤 **Role-based User Registration & Login** (Admin, Victim, Volunteer, Donor)
@@ -12,18 +17,18 @@ The **Natural Disaster Management and Response System (NDMRS)** is a **centraliz
 - 💰 **Resource & Donation Management** (Add / Update / Allocate)
 - 🤝 **Volunteer Registration & Task Assignment**
 - 📈 **Reports & Visual Dashboards**
-- 📲 **SMS / Email Alerts** for notifications
+- 📲 **SMS / Email Alerts**
 
 ### 🔧 How it Works
-NDMRS leverages a **RESTful API backend** to manage real-time disaster data:
+NDMRS leverages a **RESTful API backend** for real-time disaster data management:
 - 🚨 Faster victim registration
 - 🏥 Quicker aid delivery
 - 💳 Transparent tracking of donations and resources
 - 👥 Efficient volunteer coordination
-- 📊 Data-driven reports to assist authorities in making timely and informed decisions
+- 📊 Data-driven reports to help authorities make timely and informed decisions
 
 ### 🛠️ Technologies Used
 - **Frontend:** HTML, CSS, Bootstrap, JavaScript, jQuery
 - **Backend:** Java, Spring Boot, Spring Security (JWT)
 - **Database:** MySQL
-- **Other Tools:** Postman (API testing), Swagger (API documentation), Lombok (boilerplate reduction), Git & GitHub (version control)  
+- **Other Tools:** Postman (API testing), Swagger (API documentation), Lombok (boilerplate reduction), Git & GitHub (version control)
