@@ -221,13 +221,59 @@
 
     // -------------------- Volunteer Search --------------------
     function filterVolunteers() {
-    const input = document.getElementById("volunteerSearch").value.toLowerCase();
-    document.querySelectorAll("#volunteerList .item-card").forEach(card=>{
-    const name = card.querySelector("h4").innerText.toLowerCase();
-    const email = card.querySelector("p").innerText.toLowerCase();
-    card.style.display = (name.includes(input)||email.includes(input))?"block":"none";
-});
-}
+        const input = document.getElementById("volunteerSearch").value.toLowerCase();
+        document.querySelectorAll("#volunteerList .item-card").forEach(card => {
+            const name = card.querySelector("h4").innerText.toLowerCase();
+            const email = card.querySelector("p").innerText.toLowerCase();
+            card.style.display = (name.includes(input) || email.includes(input)) ? "block" : "none";
+        });
+    }
+
+    async function filterDonors() {
+        const keyword = document.getElementById("donorSearch").value.trim();
+
+        // Empty keyword නම් සියලු donors නැවත load කරන්න
+        if (!keyword) {
+            loadDonors();
+            return;
+        }
+
+        try {
+            const res = await fetchWithToken(`${BASE}/donors/search/${keyword}`);
+            const data = res.data;
+
+            const container = document.getElementById("donorList");
+            container.innerHTML = "";
+
+            data.forEach(d => {
+                const card = document.createElement("div");
+                card.className = "item-card";
+                card.innerHTML = `
+                <h4>${d.name}</h4>
+                <p><strong>Email:</strong> ${d.email}</p>
+                <p><strong>Amount:</strong> $${d.amount}</p>
+                <button onclick="openEditModal('donor', ${d.id}, '${d.name}', '${d.email}', '${d.amount}')">Edit</button>
+                <button onclick="deleteDonor(${d.id})">Delete</button>
+            `;
+                container.appendChild(card);
+            });
+        } catch(err) {
+            console.error("Error searching donors:", err);
+        }
+    }
+
+
+    // -------------------- Donor Search --------------------
+    // function filterDonors() {
+    //     const input = document.getElementById("donorSearch").value.toLowerCase();
+    //     document.querySelectorAll("#donorList .item-card").forEach(card => {
+    //         const name = card.querySelector("h4").innerText.toLowerCase();
+    //         const email = card.querySelector("p").innerText.toLowerCase();
+    //         const amount = card.querySelector("p:nth-of-type(2)")?.innerText.toLowerCase() || "";
+    //         card.style.display = (name.includes(input) || email.includes(input) || amount.includes(input)) ? "block" : "none";
+    //     });
+    // }
+
 
     // -------------------- Logout --------------------
     document.getElementById("logoutLink").addEventListener("click", e=>{

@@ -13,4 +13,7 @@ public interface DonorService {
     Donor updateDonor(Long id, DonorDTO donorDTO);
     void deleteDonor(Long id);
     long countDonors();
+
+    List<DonorDTO> searchDonorsByKeyword(String keyword);
+
 }

@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/donors")
@@ -112,4 +114,19 @@ public class DonorController {
                 )
         );
     }
+
+
+    // Search donors by keyword (name or email)
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<APIResponse> searchDonors(@PathVariable String keyword) {
+        try {
+            List<DonorDTO> results = donorService.searchDonorsByKeyword(keyword); // service layer implement කරන්න
+            return ResponseEntity.ok(new APIResponse(200, "Donors fetched successfully", results));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(new APIResponse(500, "Failed to search donors", null));
+        }
+    }
+
+
 }

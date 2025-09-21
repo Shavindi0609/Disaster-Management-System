@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 @Builder
 public class DonorDTO {
 
+    private Long id; // add this
+
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should contain only alphabets and spaces")
     private String name;
