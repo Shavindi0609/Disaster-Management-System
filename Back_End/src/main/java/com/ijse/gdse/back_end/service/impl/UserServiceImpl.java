@@ -1,6 +1,7 @@
 package com.ijse.gdse.back_end.service.impl;
 
 import com.ijse.gdse.back_end.entity.User;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
 import com.ijse.gdse.back_end.repository.UserRepository;
 import com.ijse.gdse.back_end.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUser(Long id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         existingUser.setUsername(user.getUsername());
         existingUser.setEmail(user.getEmail());
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         boolean exists = userRepository.existsById(id);
         if (!exists) {
-            throw new RuntimeException("User not found with id: " + id);
+            throw new ResourceNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
     }

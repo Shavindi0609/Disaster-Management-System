@@ -2,6 +2,8 @@ package com.ijse.gdse.back_end.service.impl;
 
 import com.ijse.gdse.back_end.dto.VolunteerDTO;
 import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.exception.ResourceAlreadyFoundException;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
 import com.ijse.gdse.back_end.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public String registerVolunteer(VolunteerDTO dto) {
         if (volunteerRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new ResourceAlreadyFoundException("Email already exists");
         }
 
         Volunteer volunteer = Volunteer.builder()
@@ -42,10 +44,10 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public Volunteer authenticateVolunteer(String email, String password) {
         Volunteer volunteer = volunteerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
 
         if (!passwordEncoder.matches(password, volunteer.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new ResourceNotFoundException("Invalid credentials");
         }
 
         return volunteer;
@@ -72,7 +74,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public Volunteer getVolunteerById(Long id) {
         return volunteerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Volunteer not found"));
     }
 
     @Override
@@ -101,7 +103,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public Volunteer getVolunteerByEmail(String email) {
         return volunteerRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Volunteer not found with email: " + email));
     }
 
 }

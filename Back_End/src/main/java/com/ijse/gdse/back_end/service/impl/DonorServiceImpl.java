@@ -3,6 +3,7 @@ package com.ijse.gdse.back_end.service.impl;
 
 import com.ijse.gdse.back_end.dto.DonorDTO;
 import com.ijse.gdse.back_end.entity.Donor;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
 import com.ijse.gdse.back_end.repository.DonorRepository;
 import com.ijse.gdse.back_end.service.DonorService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class DonorServiceImpl implements DonorService {
     @Override
     public Donor getDonorById(Long id) {
         return donorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Donor not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + id));
     }
 
     @Override

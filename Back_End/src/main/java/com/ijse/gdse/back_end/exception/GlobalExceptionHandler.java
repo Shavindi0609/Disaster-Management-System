@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
     public APIResponse handleAllExceptions(RuntimeException ex) {
         return new APIResponse(500,"Internal Server Error", null);
     }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public APIResponse handleInsufficientFunds(InsufficientFundsException ex) {
+        return new APIResponse(400, ex.getMessage(), null);
+    }
 }

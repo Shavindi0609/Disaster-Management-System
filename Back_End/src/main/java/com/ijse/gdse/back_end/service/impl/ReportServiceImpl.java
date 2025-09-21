@@ -4,6 +4,8 @@ import com.ijse.gdse.back_end.dto.*;
 import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.entity.Report;
 import com.ijse.gdse.back_end.entity.Volunteer;
+import com.ijse.gdse.back_end.exception.InsufficientFundsException;
+import com.ijse.gdse.back_end.exception.ResourceNotFoundException;
 import com.ijse.gdse.back_end.repository.DonationRepository;
 import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.repository.VolunteerRepository;
@@ -138,10 +140,10 @@ public class ReportServiceImpl implements ReportService {
 
     public Report assignVolunteer(Long reportId, Long volunteerId) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Report not found"));
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId)
-                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Volunteer not found"));
 
         report.setAssignedVolunteer(volunteer);
         return reportRepository.save(report);
@@ -211,12 +213,12 @@ public class ReportServiceImpl implements ReportService {
     public Report allocateDonationToReport(Long reportId, double amount) {
         // 1️⃣ Find the report
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Report not found"));
 
         // 2️⃣ Get total available donation balance
         double totalAvailable = donationRepository.getTotalBalance();
         if (amount > totalAvailable) {
-            throw new RuntimeException("Not enough funds to allocate");
+            throw new InsufficientFundsException("Not enough funds to allocate");
         }
 
         // 3️⃣ Allocate to report
@@ -257,7 +259,7 @@ public class ReportServiceImpl implements ReportService {
     // ================= Delete Report =================
     public void deleteReport(Long reportId, String email) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Report not found"));
 
         // Ensure only the owner can delete
         if (!report.getEmail().equals(email)) {
@@ -269,7 +271,7 @@ public class ReportServiceImpl implements ReportService {
 
     public Report getReportById(Long reportId) {
         return reportRepository.findById(reportId)
-                .orElseThrow(() -> new RuntimeException("Report not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Report not found"));
     }
 
 }
