@@ -128,18 +128,46 @@ spring.servlet.multipart.max-request-size=10MB
 
 ```
 
-4. **Build and run backend**
+5. **Build and run backend**
 ```bash
 mvn clean install
 mvn spring-boot:run
 
 ```
 
-5. **Build and run backend**
+6. **Build and run backend**
 ```bash
 http://localhost:8080/api
 
 ```
 
+### 🌐 Frontend Setup (Static HTML/CSS/JS)
 
+1. **Navigate to frontend folder**
+```bash
+cd ../frontend
+```
 
+2. **Run a local development server**
+```bash
+npx http-server -p 8081
+```
+
+3. **Access the frontend**
+   Open your browser and go to:
+```bash
+http://localhost:8081
+```
+
+**Pages Included:**
+- `dashboard.html` – Home
+- `signUp.html` – Login form
+- `userDashboard.html` – Victim disaster report and tracking
+- `volunteerDashboard.html` – Volunteer tasks and responses
+- `adminDashboard.html` – Admin management, resource allocation, reports
+
+**Key Files:**
+- `js/scripts.js` – Handles API calls and JWT functionality
+- `css/styles.css` – Contains styling for the frontend
+
+> 💡 Ensure the backend is running at `http://localhost:8080/api` for full functionality.
