@@ -42,11 +42,74 @@ It provides a **faster, organized, and accountable disaster response mechanism**
 ### 🏠 Home Page
 ![Home Page](uploads/Home.png)
 
-### 🔑 Login Page
-![Login Page](images/login.png)
+### 🔑 Live Weather Page
+![Live Weather Page](uploads/LiveWeather.png)
+
+### 🔑Login Page
+![Login Page](uploads/Login.png)
+
+### 🔑Sign Up Page
+![Sign Up Page](uploads/SignUp.png)
+
+
+## 📸 User Dashboard UI Screenshots
+
+### 📊 User Dashboard
+![User Dashboard](uploads/UserDashboard.png)
+
+### 📊 Add Disaster Report Page
+![Add Disaster Report Page](uploads/DisasterReportAdd.png)
+
+### 📊 My Disaster Report Page
+![My Disaster Report Page](uploads/MyReports.png)
+
+### 📊 User Profile Page
+![User Profile Page](uploads/UserProfile.png)
+
+### 📊 Donation Page
+![Donation Page](uploads/Donation.png)
+
+
+## 📸 Admin Dashboard UI Screenshots
 
 ### 📊 Admin Dashboard
-![Admin Dashboard](images/admin-dashboard.png)
+![Admin Dashboard](uploads/AdminDashboard.png)
+
+### 📊 Manage Volunteer Page
+![Manage Volunteer Page](uploads/ManageVolunteer.png)
+
+### 📊 Manage Donor Page
+![Manage Donor Page](uploads/ManageDonor.png)
+
+### 📊 Manage User Page
+![Manage User Page](uploads/ManageUsers.png)
+
+### 📊 Reports In Week Page
+![Reports In Week Page](uploads/WeeklyReport.png)
+![Volunteer Assign Page](uploads/AddVolunteerForReport.png)
+
+### 📊  Reports & Responses Page 
+![Weekly Reports & Responses Page](uploads/WeeklyReportResponse.png)
+![All Reports & Responses Page](uploads/AllReportResponse.png)
+
+### 📊 Allocate Donation Page
+![Allocate Donation Page](uploads/AllocateDonation.png)
+
+### 📊 Notification Page
+![Notification Page](uploads/Notification.png)
+
+
+## 📸 Volunteer Dashboard UI Screenshots
+
+### 📊 Volunteer Dashboard
+![Volunteer Dashboard](uploads/VolunteerDashboard.png)
+
+### 📊 Manage Volunteer Response Page
+![Manage Volunteer Page](uploads/SubmitResponse.png)
+
+### 📊 Manage Volunteer Profile Page
+![Manage Volunteer Profile Page](uploads/VolunteerProfile.png)
+![Manage Volunteer Profile Page](uploads/VolunteerProfileEdit.png)
 
 
 ## ⚙️ Setup Instructions
