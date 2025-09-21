@@ -1,4 +1,4 @@
-﻿# 🌪️ Natural Disaster Management and Response System (NDMRS)
+﻿ 🌪️ Natural Disaster Management and Response System (NDMRS)
 
 ---
 
