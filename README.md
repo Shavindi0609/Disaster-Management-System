@@ -125,7 +125,7 @@ Before starting, make sure you have the following installed:
 - 🐬 **MySQL 8.0+** – create a database, e.g., `ndmrs_db`
 - 🛠️ **Maven 3.8+** – for building the backend
 - 🔗 **Git** – for cloning the repository
-- 🌐 **Node.js & npm** – required to run the frontend (if using npm for dependencies)
+- 🌐 **HTML,CSS,JS** – required to run the frontend (if using npm for dependencies)
 
 
 ### ⚙️ Backend Setup (Spring Boot)
@@ -247,6 +247,45 @@ http://localhost:8081
 - `js/scripts.js` – Handles API calls and JWT functionality
 - `css/styles.css` – Contains styling for the frontend
 
+## 📂 Project Structure
+
+```
+Disaster_01/
+│── Back_End/ # Spring Boot backend
+│ ├── src/
+│ │ ├── main/
+│ │ │ ├── java/com/ijse/gdse/back_end/
+│ │ │ │ ├── config/ # Security & JWT configuration
+│ │ │ │ ├── controller/ # REST controllers
+│ │ │ │ ├── dto/ # Data Transfer Objects
+│ │ │ │ ├── entity/ # JPA Entities
+│ │ │ │ ├── exception/ # Custom exceptions
+│ │ │ │ ├── repository/ # Spring Data JPA repositories
+│ │ │ │ ├── service/ # Service layer
+│ │ │ │ └── util/ # Utility classes
+│ │ │ └── resources/ # application.properties, static, templates
+│ ├── pom.xml # Maven dependencies
+│ └── target/ # Build output
+│
+│── Front_End/ # Static frontend
+│ ├── css/ # Stylesheets
+│ ├── js/ # JavaScript files
+│ ├── images/ # Images
+│ ├── videos/ # Videos
+│ ├── dashboard.html # Home page
+│ ├── signUp.html # Registration page
+│ ├── userDashboard.html # Victim dashboard
+│ ├── volunteerDashboard.html # Volunteer dashboard
+│ ├── adminDashboard.html # Admin dashboard
+│ ├── donation.html # Donation page
+│ ├── report.html # Disaster report page
+│ ├── maps.html # Disaster location map
+│ └── ... (other HTML pages)
+│
+│── uploads/ # Uploaded files & screenshots
+│── README.md # Documentation
+│── .gitignore
+```
 
 ## 🎥 Project Demo (YouTube)
 
