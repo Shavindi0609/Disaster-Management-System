@@ -1,4 +1,4 @@
-﻿ 🌪️ Natural Disaster Management and Response System (NDMRS)
+﻿# 🌪️ Natural Disaster Management and Response System (NDMRS)
 
 ---
 
@@ -48,12 +48,22 @@ Before starting, make sure you have the following installed:
 - 🔗 **Git** – for cloning the repository
 - 🌐 **Node.js & npm** – required to run the frontend (if using npm for dependencies)
 
----
 
 ### ⚙️ Backend Setup (Spring Boot)
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/quickfix-api.git
-cd quickfix-api/backend
+git clone https://github.com/your-username/ndmrs-api.git
+cd ndmrs-api/backend
+
+```` 
+
+**Navigate to backend folder**
+```bash
+cd ndmrs-api/backend
+
+```` 
+
+
+
 
