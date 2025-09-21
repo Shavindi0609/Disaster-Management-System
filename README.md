@@ -36,6 +36,8 @@ It provides a **faster, organized, and accountable disaster response mechanism**
     - Weather API (real-time weather data for disaster management)
     - Email API (for SMS / Email alerts to users)
 
+
+
 ## ⚙️ Setup Instructions
 
 ### 🛠️ Prerequisites
@@ -64,7 +66,7 @@ cd ndmrs-api/backend
 
 ```
 
-3**Create uploads folder and copy default profile image**
+3. **Create uploads folder and copy default profile image**
 ```bash
 mkdir uploads
 cp ../frontend/images/default-profile.png uploads/
@@ -72,7 +74,7 @@ cp ../frontend/images/default-profile.png uploads/
 
 ```
 
-4**Configure application.properties**
+4. **Configure application.properties**
 ```bash
 spring.application.name=Back_End
 
@@ -126,6 +128,18 @@ spring.servlet.multipart.max-request-size=10MB
 
 ```
 
+4. **Build and run backend**
+```bash
+mvn clean install
+mvn spring-boot:run
+
+```
+
+5. **Build and run backend**
+```bash
+http://localhost:8080/api
+
+```
 
 
 
