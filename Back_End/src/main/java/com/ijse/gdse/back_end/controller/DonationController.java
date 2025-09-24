@@ -6,6 +6,7 @@ import com.ijse.gdse.back_end.dto.DonationDTO;
 import com.ijse.gdse.back_end.entity.Donation;
 import com.ijse.gdse.back_end.service.DonationService;
 import com.ijse.gdse.back_end.service.impl.DonationServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class DonationController {
     private final DonationService donationService;
 
     @PostMapping
-    public ResponseEntity<APIResponse> addDonation(@RequestBody DonationDTO donationDTO) {
+    public ResponseEntity<APIResponse> addDonation(@RequestBody @Valid DonationDTO donationDTO) {
         Donation savedDonation = donationService.addDonation(donationDTO);
 
         return ResponseEntity.ok(

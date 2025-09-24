@@ -8,6 +8,7 @@ import com.ijse.gdse.back_end.repository.ReportRepository;
 import com.ijse.gdse.back_end.service.DonationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,6 +68,7 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    @Transactional(readOnly = true)  // 🔹 read-only transaction
     public double getAvailableBalance() {
         Double total = donationRepository.getTotalBalance();
         return total != null ? total : 0.0;

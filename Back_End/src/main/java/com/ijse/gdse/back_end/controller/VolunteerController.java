@@ -6,6 +6,7 @@ import com.ijse.gdse.back_end.dto.VolunteerDTO;
 import com.ijse.gdse.back_end.entity.Volunteer;
 import com.ijse.gdse.back_end.service.VolunteerService;
 import com.ijse.gdse.back_end.service.impl.VolunteerServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class VolunteerController {
 
     @PostMapping
     public ResponseEntity<APIResponse> addVolunteer(
-            @RequestBody VolunteerDTO volunteerDTO) {
+            @RequestBody @Valid VolunteerDTO volunteerDTO) {
         return ResponseEntity.ok(
                 new APIResponse(
                         200,
