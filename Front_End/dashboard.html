@@ -770,9 +770,10 @@
     if(!city) { alert("Enter a city"); return; }
 
     const resultDiv = document.getElementById("result");
+    const userEmail = localStorage.getItem("userEmail"); // ලොග් වී නැතිනම් මෙය null වේ
 
     try {
-      const response = await fetch(`http://localhost:8080/api/weather?city=${city}`);
+      const response = await fetch(`http://localhost:8080/api/weather?city=${city}&email=${userEmail}`);
       if(!response.ok) {
         document.getElementById("result").innerHTML = "<p style='color:red'>❌ Error fetching data</p>";
         return;
@@ -783,6 +784,12 @@
       // Backend එකෙන් ලැබෙන Map එකෙන් දත්ත වෙන් කර ගැනීම
       const data = resultBody.weatherData;
       const alertMsg = resultBody.alert;
+
+      // Login වී නැතිනම් කුඩා දැනුම්දීමක් පෙන්වමු
+      let loginPrompt = "";
+      if (!userEmail) {
+        loginPrompt = `<div class="text-muted x-small mt-1">ℹ️ Log in to receive emergency email alerts.</div>`;
+      }
 
       // Warnings පෙන්වන ආකාරය වැඩිදියුණු කිරීම
       let alertColor = "alert-info";
@@ -805,6 +812,10 @@
                         <p><b>Humidity:</b> ${data.main.humidity}%</p>
                         <p><b>Wind Speed:</b> ${data.wind.speed} m/s</p>
                     </div>
+                </div>
+
+                <div class="mt-2 p-2 border-left border-warning bg-light">
+                    <small><b>📊 Damage Prediction:</b> ${resultBody.prediction}</small>
                 </div>
             </div>
         `;

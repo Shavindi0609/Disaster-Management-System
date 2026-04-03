@@ -28,16 +28,59 @@ public class WeatherController {
 //        }
 //    }
 
+//    @GetMapping
+//    public ResponseEntity<?> getWeather(@RequestParam String city) {
+//        try {
+//            WeatherDTO weather = weatherService.getWeather(city);
+//            String riskLevel = weatherService.calculateRiskLevel(weather); // නව ලොජික් එක
+//
+//            // Response එකක් ලෙස Weather දත්ත සහ Risk Level එක යන දෙකම යවන්න
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("weatherData", weather);
+//            response.put("alert", riskLevel);
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+//        }
+//    }
+
+//    @GetMapping
+//    public ResponseEntity<?> getWeather(@RequestParam String city, @RequestParam(required = false) String email) {
+//        try {
+//            WeatherDTO weather = weatherService.getWeather(city);
+//            String riskLevel = weatherService.calculateRiskLevel(weather);
+//
+//            // Email එකක් එවලා තියෙනවා නම් alert එකක් යැවිය යුතුදැයි බලන්න
+//            if (email != null && !email.isEmpty()) {
+//                weatherService.checkAndSendAlert(email, weather);
+//            }
+//
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("weatherData", weather);
+//            response.put("alert", riskLevel);
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+//        }
+//    }
+
     @GetMapping
-    public ResponseEntity<?> getWeather(@RequestParam String city) {
+    public ResponseEntity<?> getWeather(@RequestParam String city, @RequestParam(required = false) String email) {
         try {
             WeatherDTO weather = weatherService.getWeather(city);
-            String riskLevel = weatherService.calculateRiskLevel(weather); // නව ලොජික් එක
+            String riskLevel = weatherService.calculateRiskLevel(weather);
 
-            // Response එකක් ලෙස Weather දත්ත සහ Risk Level එක යන දෙකම යවන්න
+            // පරිශීලකයා ලොග් වී ඇත්නම් (Email එකක් තිබේ නම්) පමණක් Alert එක යවන්න
+            if (email != null && !email.isEmpty() && !email.equals("undefined") && !email.equals("null")) {
+                weatherService.checkAndSendAlert(email, weather);
+            }
+
             Map<String, Object> response = new HashMap<>();
             response.put("weatherData", weather);
             response.put("alert", riskLevel);
+            response.put("prediction", weatherService.getDamagePrediction(weather));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

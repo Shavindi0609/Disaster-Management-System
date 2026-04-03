@@ -1,16 +1,20 @@
 package com.ijse.gdse.back_end.service.impl;
 
 import com.ijse.gdse.back_end.dto.WeatherDTO;
+import com.ijse.gdse.back_end.service.AlertService;
 import com.ijse.gdse.back_end.service.WeatherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class WeatherServiceImpl implements WeatherService {
 
     @Autowired
     private RestTemplate restTemplate;
+    private final AlertService alertService;
 
     private final String API_KEY = "7438063e23b335097fc960d4ba85bbb4";  // ✅ Replace with your OpenWeatherMap key
     private final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
@@ -43,5 +47,33 @@ public class WeatherServiceImpl implements WeatherService {
         }
 
         return "LOW RISK: Weather conditions are stable.";
+    }
+
+    @Override
+    public void checkAndSendAlert(String email, WeatherDTO weather) {
+        String risk = calculateRiskLevel(weather);
+        // අවදානම HIGH RISK නම් පමණක් Email එකක් යවන්න
+        if (risk.contains("HIGH RISK")) {
+            alertService.sendEmergencyEmail(email, weather.getName(), risk);
+        }
+    }
+
+    // WeatherServiceImpl.java
+    @Override
+    public String getDamagePrediction(WeatherDTO weather) {
+        double windSpeed = weather.getWind().getSpeed();
+        int humidity = weather.getMain().getHumidity();
+        String desc = weather.getWeather().get(0).getDescription().toLowerCase();
+
+        // සරල අනාවැකි Algorithm එකක්
+        if (windSpeed > 20.0 || desc.contains("storm")) {
+            return "High Probability of structural damage to temporary buildings and fallen trees.";
+        } else if (desc.contains("heavy rain") && humidity > 90) {
+            return "Significant flood risk detected. Low-lying areas may experience 10-15cm of water logging.";
+        } else if (humidity > 80) {
+            return "Minor agricultural impact expected due to high moisture levels.";
+        }
+
+        return "No significant environmental damage predicted based on current data.";
     }
 }
