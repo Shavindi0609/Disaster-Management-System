@@ -1,127 +1,136 @@
 
     const BASE = "http://localhost:8080/api";
 
+
     // -------------------- Centralized fetch --------------------
     async function fetchWithToken(url, options = {}) {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-    alert("⚠️ Session expired. Please login again.");
-    localStorage.clear();
-    window.location.href = "login.html";
-    return Promise.reject("No token found");
-}
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            alert("⚠️ Session expired. Please login again.");
+            localStorage.clear();
+            window.location.href = "login.html";
+            return Promise.reject("No token found");
+        }
 
-    options.headers = {
-    ...options.headers,
-    "Authorization": `Bearer ${token}`,
-    "Content-Type": "application/json"
-};
+        options.headers = {
+            ...options.headers,
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        };
 
-    const res = await fetch(url, options);
-    if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HTTP ${res.status}: ${text}`);
-}
-    return res.json();
-}
+        const res = await fetch(url, options); //backend ekata request yawanna use karanawa
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`HTTP ${res.status}: ${text}`);
+        }
+        return res.json();
+    }
 
     // -------------------- Page Navigation --------------------
     function showPage(pageId, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
 
-    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-    if (el) el.classList.add('active');
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        if (el) el.classList.add('active');
 
-    document.getElementById("pageTitle").innerText =
-    pageId.charAt(0).toUpperCase() + pageId.slice(1);
+        document.getElementById("pageTitle").innerText =
+        pageId.charAt(0).toUpperCase() + pageId.slice(1);
 
-    if (pageId === "volunteers") loadVolunteers();
-    if (pageId === "donors") loadDonors();
-    if (pageId === "users") loadUsers();
-}
+        if (pageId === "volunteers") loadVolunteers();
+        if (pageId === "donors") loadDonors();
+        if (pageId === "users") loadUsers();
+    }
 
     // -------------------- Volunteers --------------------
     async function loadVolunteers() {
-    try {
-    const result = await fetchWithToken(`${BASE}/volunteers`);
-    const container = document.getElementById("volunteerList");
-    container.innerHTML = "";
-    result.data.forEach(v => {
-    const card = document.createElement("div");
-    card.className = "item-card";
-    card.innerHTML = `
-                <h4>${v.name}</h4>
-                <p><strong>Email:</strong> ${v.email}</p>
-                <p><strong>Phone:</strong> ${v.phone || "-"}</p>
-                <p><strong>Skills:</strong> ${v.skills || "-"}</p>
-                <button onclick="openEditModal('volunteer', ${v.id}, '${v.name}', '${v.email}', '${v.phone || ''}', '${v.skills || ''}')">Edit</button>
-                <button onclick="deleteVolunteer(${v.id})">Delete</button>
-            `;
-    container.appendChild(card);
-});
-} catch (err) {
-    console.error("Error loading volunteers:", err);
-}
-}
+      try {
+         const result = await fetchWithToken(`${BASE}/volunteers`);
+         const container = document.getElementById("volunteerList");
+         container.innerHTML = "";
+         result.data.forEach(v => {
+            const card = document.createElement("div");
+            card.className = "item-card";
+            card.innerHTML = `
+                    <h4>${v.name}</h4>
+                    <p><strong>Email:</strong> ${v.email}</p>
+                    <p><strong>Phone:</strong> ${v.phone || "-"}</p>
+                    <p><strong>Skills:</strong> ${v.skills || "-"}</p>
+                    <button onclick="openEditModal('volunteer', ${v.id}, '${v.name}', '${v.email}', '${v.phone || ''}', '${v.skills || ''}')">Edit</button>
+                    <button onclick="deleteVolunteer(${v.id})">Delete</button>
+                `;
+             container.appendChild(card);
+        });
+      } catch (err) {
+         console.error("Error loading volunteers:", err);
+      }
+    }
 
     document.getElementById("addVolunteerForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const vol = {
-    name: volName.value,
-    email: volEmail.value,
-    phone: volPhone.value,
-    skills: volSkills.value
-};
-    try {
-    await fetchWithToken(`${BASE}/volunteers`, { method:"POST", body: JSON.stringify(vol) });
-    loadVolunteers();
-    e.target.reset();
-        alert("✅ Volunteer added successfully!");
-} catch(err) {
-    console.error("Error adding volunteer:", err);
-}
-});
+        e.preventDefault();
+        const vol = {
+            name: volName.value,
+            email: volEmail.value,
+            phone: volPhone.value,
+            skills: volSkills.value
+        };
+        try {
+            await fetchWithToken(`${BASE}/volunteers`, { method:"POST", body: JSON.stringify(vol) });
+            loadVolunteers();
+            e.target.reset();
+                alert("✅ Volunteer added successfully!");
+        } catch(err) {
+            console.error("Error adding volunteer:", err);
+        }
+    });
 
     async function deleteVolunteer(id) {
-    if (!confirm("Are you sure you want to delete this volunteer?")) return;
-    try {
-    await fetchWithToken(`${BASE}/volunteers/${id}`, { method:"DELETE" });
-    loadVolunteers();
-} catch(err) { console.error("Error deleting volunteer:", err); }
-}
+        if (!confirm("Are you sure you want to delete this volunteer?"))
+            return;
+        try {
+            await fetchWithToken(`${BASE}/volunteers/${id}`, { method:"DELETE" });
+            loadVolunteers();
+        } catch(err) {
+            console.error("Error deleting volunteer:", err);
+        }
+    }
 
     // -------------------- Donors --------------------
     async function loadDonors() {
-    try {
-    const result = await fetchWithToken(`${BASE}/donors`);
-    const container = document.getElementById("donorList");
-    container.innerHTML = "";
-    result.data.forEach(d => {
-    const card = document.createElement("div");
-    card.className = "item-card";
-    card.innerHTML = `
-                <h4>${d.name}</h4>
-                <p><strong>Email:</strong> ${d.email}</p>
-                <p><strong>Amount:</strong> $${d.amount}</p>
-                <button onclick="openEditModal('donor', ${d.id}, '${d.name}', '${d.email}', '${d.amount}')">Edit</button>
-                <button onclick="deleteDonor(${d.id})">Delete</button>
-            `;
-    container.appendChild(card);
-});
-} catch(err) { console.error("Error loading donors:", err); }
-}
+        try {
+            const result = await fetchWithToken(`${BASE}/donors`);
+            const container = document.getElementById("donorList");
+            container.innerHTML = "";
+            result.data.forEach(d => {
+                const card = document.createElement("div");
+                card.className = "item-card";
+                card.innerHTML = `
+                            <h4>${d.name}</h4>
+                            <p><strong>Email:</strong> ${d.email}</p>
+                            <p><strong>Amount:</strong> $${d.amount}</p>
+                            <button onclick="openEditModal('donor', ${d.id}, '${d.name}', '${d.email}', '${d.amount}')">Edit</button>
+                            <button onclick="deleteDonor(${d.id})">Delete</button>
+                        `;
+                container.appendChild(card);
+            });
+        } catch(err) {
+            console.error("Error loading donors:", err);
+        }
+    }
 
     document.getElementById("addDonorForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const don = { name: donName.value, email: donEmail.value, amount: donAmount.value };
-    try {
-    await fetchWithToken(`${BASE}/donors`, { method:"POST", body: JSON.stringify(don) });
-    loadDonors();
-    e.target.reset();
-    alert("✅ Donor added successfully!");
-} catch(err) { console.error("Error adding donor:", err); }
-});
+        e.preventDefault();
+        const don = { name: donName.value, email: donEmail.value, amount: donAmount.value };
+        try {
+             await fetchWithToken(`${BASE}/donors`, { method:"POST", body: JSON.stringify(don) });
+             loadDonors();
+             e.target.reset();
+             alert("✅ Donor added successfully!");
+        } catch(err) {
+            console.error("Error adding donor:", err);
+        }
+    });
+
 
     async function deleteDonor(id) {
     if (!confirm("Are you sure you want to delete this donor?")) return;

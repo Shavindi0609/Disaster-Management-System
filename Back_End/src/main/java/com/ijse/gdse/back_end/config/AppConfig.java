@@ -13,3 +13,5 @@ public class AppConfig {
         }
     }
 
+
+    // weather API eka call karanna me class eka use karanawa (external API call) - weatherServiceImpl eke

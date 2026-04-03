@@ -44,3 +44,5 @@ public class AdminNotificationController {
     }
 
 }
+
+//provide REST API endpoints for Admin notifications manage

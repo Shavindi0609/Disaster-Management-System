@@ -326,6 +326,13 @@
       margin-top: 1rem;
     }
 
+    @keyframes blinker {
+      50% { opacity: 0.5; background-color: #ffcccc; }
+    }
+    .high-risk-blink {
+      animation: blinker 1s linear infinite;
+      border: 2px solid red !important;
+    }
   </style>
 </head>
 <body>
@@ -762,6 +769,8 @@
     const city = document.getElementById("city").value.trim();
     if(!city) { alert("Enter a city"); return; }
 
+    const resultDiv = document.getElementById("result");
+
     try {
       const response = await fetch(`http://localhost:8080/api/weather?city=${city}`);
       if(!response.ok) {
@@ -769,26 +778,45 @@
         return;
       }
 
-      const data = await response.json();
+      const resultBody = await response.json();
 
-      let warnings = "";
-      if(data.wind.speed > 10) warnings += "<p class='warning'>⚠️ Storm Warning!</p>";
-      if(data.main.humidity > 80) warnings += "<p class='warning' style='color:blue'>⚠️ Flood Risk!</p>";
+      // Backend එකෙන් ලැබෙන Map එකෙන් දත්ත වෙන් කර ගැනීම
+      const data = resultBody.weatherData;
+      const alertMsg = resultBody.alert;
+
+      // Warnings පෙන්වන ආකාරය වැඩිදියුණු කිරීම
+      let alertColor = "alert-info";
+      if (alertMsg.includes("HIGH RISK")) alertColor = "alert-danger";
+      else if (alertMsg.includes("MODERATE")) alertColor = "alert-warning";
 
       document.getElementById("result").innerHTML = `
-            <div class="card mt-3">
-                <h4>${data.name}</h4>
-                <p><b>Condition:</b> ${data.weather[0].description}</p>
-                <p><b>Temperature:</b> ${data.main.temp} °C</p>
-                <p><b>Feels Like:</b> ${data.main.feels_like} °C</p>
-                <p><b>Humidity:</b> ${data.main.humidity}%</p>
-                <p><b>Wind Speed:</b> ${data.wind.speed} m/s</p>
-                ${warnings}
+            <div class="alert ${alertColor} mt-3">
+                <strong>Safety Status:</strong> ${alertMsg}
+            </div>
+            <div class="card mt-2 p-3 shadow-sm">
+                <h4 class="text-success">${data.name}</h4>
+                <div class="row">
+                    <div class="col-6">
+                        <p><b>Condition:</b> ${data.weather[0].description}</p>
+                        <p><b>Temperature:</b> ${data.main.temp} °C</p>
+                        <p><b>Feels Like:</b> ${data.main.feels_like} °C</p>
+                    </div>
+                    <div class="col-6">
+                        <p><b>Humidity:</b> ${data.main.humidity}%</p>
+                        <p><b>Wind Speed:</b> ${data.wind.speed} m/s</p>
+                    </div>
+                </div>
             </div>
         `;
 
+      if (alertMsg.includes("HIGH RISK")) {
+        resultDiv.classList.add("high-risk-blink");
+      } else {
+        resultDiv.classList.remove("high-risk-blink");
+      }
+
     } catch (error) {
-      document.getElementById("result").innerHTML = "<p style='color:red'>❌ Error fetching data</p>";
+      document.getElementById("result").innerHTML = "<p style='color:red'>❌ Connection Error: Check if Backend is running</p>";
       console.error(error);
     }
   });

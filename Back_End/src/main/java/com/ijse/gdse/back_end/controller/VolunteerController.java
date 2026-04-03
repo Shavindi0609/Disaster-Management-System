@@ -108,35 +108,6 @@ public class VolunteerController {
         );
     }
 
-//    // ✅ Toggle Active Status
-//    @PatchMapping("/{id}/status")
-//    public ResponseEntity<APIResponse> toggleVolunteerStatus(
-//            @PathVariable Long id,
-//            @RequestBody Map<String, Boolean> statusMap) {
-//
-//        Boolean active = statusMap.get("active");
-//        VolunteerDTO updatedVolunteer = volunteerService.updateVolunteerStatus(id, active);
-//
-//        return ResponseEntity.ok(
-//                new APIResponse(
-//                        200,
-//                        "Volunteer status updated successfully",
-//                        updatedVolunteer
-//                )
-//        );
-//    }
-//
-//    @GetMapping(params = "email")
-//    public ResponseEntity<APIResponse> getVolunteerByEmail(@RequestParam String email) {
-//        return volunteerService.getVolunteerByEmail(email)
-//                .map(volunteer -> ResponseEntity.ok(
-//                        new APIResponse(200, "Volunteer fetched successfully", volunteer)
-//                ))
-//                .orElse(ResponseEntity.status(404).body(
-//                        new APIResponse(404, "Volunteer not found", null)
-//                ));
-//    }
-
     // Get logged-in volunteer profile
     @GetMapping("/me")
     public ResponseEntity<APIResponse> getLoggedInVolunteer(Authentication authentication) {

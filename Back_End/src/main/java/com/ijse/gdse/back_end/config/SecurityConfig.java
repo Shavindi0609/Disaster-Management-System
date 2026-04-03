@@ -87,3 +87,5 @@ public class SecurityConfig {
         return new CorsFilter(corsConfigurationSource());
     }
 }
+
+//Security + JWT authentication system

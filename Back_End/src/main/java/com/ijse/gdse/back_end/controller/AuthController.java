@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:63342") // 👈 FRONTEND origin එක
+@CrossOrigin(origins = "http://localhost:63342") //  FRONTEND origin එක
 public class AuthController {
     private final AuthService authService;
     private final VolunteerService volunteerService;
@@ -81,3 +81,5 @@ public class AuthController {
     }
 
 }
+
+//Authentication (Login / Register) APIs handle (user , volunteer)

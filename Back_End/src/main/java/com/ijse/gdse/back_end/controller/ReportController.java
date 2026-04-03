@@ -80,14 +80,6 @@ public class ReportController {
 
 
     // ================= My Reports (User) =================
-//    @GetMapping("/my")
-//    public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
-//        String token = authHeader.replace("Bearer ", "");
-//        String email = jwtUtil.extractUsername(token);
-//
-//        List<Report> reports = reportService.getReportsByEmail(email);
-//        return ResponseEntity.ok(new APIResponse(200, "My reports fetched successfully", reports));
-//    }
 
     @GetMapping("/my")
     public ResponseEntity<APIResponse> getMyReports(@RequestHeader("Authorization") String authHeader) {
@@ -128,14 +120,6 @@ public class ReportController {
         return ResponseEntity.ok(new APIResponse(200, "Total reports fetched", total));
     }
 
-//    @PutMapping("/{reportId}/assign/{volunteerId}")
-//    public ResponseEntity<APIResponse> assignVolunteerToReport(
-//            @PathVariable Long reportId,
-//            @PathVariable Long volunteerId
-//    ) {
-//        Report updatedReport = reportService.assignVolunteer(reportId, volunteerId);
-//        return ResponseEntity.ok(new APIResponse(200, "Volunteer assigned successfully", updatedReport));
-//    }
 
     @PutMapping("/{reportId}/assign/{volunteerId}")
     public ResponseEntity<APIResponse> assignVolunteer(
@@ -172,58 +156,6 @@ public class ReportController {
         );
     }
 
-//    @PostMapping("/{reportId}/respond")
-//    public ResponseEntity<APIResponse> respondToReport(
-//            @PathVariable Long reportId,
-//            @RequestHeader("Authorization") String authHeader,
-//            @RequestParam String statusUpdate,
-//            @RequestParam(required = false) MultipartFile photo
-//    ) throws IOException {
-//
-//        String token = authHeader.replace("Bearer ", "");
-//        String email = jwtUtil.extractUsername(token);
-//
-//        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
-//
-//        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response));
-//    }
-
-//    @PostMapping("/{reportId}/respond")
-//    public ResponseEntity<?> addResponse(
-//            @PathVariable Long reportId,
-//            @RequestParam String statusUpdate,
-//            @RequestParam(required = false) MultipartFile photo,
-//            Authentication authentication
-//    ) throws IOException {
-//
-//        // 1. Find logged-in volunteer from JWT
-//        String email = authentication.getName();
-//        Volunteer volunteer = volunteerRepository.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("Volunteer not found"));
-//
-//        // 2. Get the report
-//        Report report = reportRepository.findById(reportId)
-//                .orElseThrow(() -> new RuntimeException("Report not found"));
-//
-//        // 3. Check if this report is assigned to the volunteer
-//        if (!report.getAssignedVolunteer().getId().equals(volunteer.getId())) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                    .body("You are not allowed to respond to this report");
-//        }
-//
-//        // 4. Create and save response
-//        ReportResponse response = ReportResponse.builder()
-//                .report(report)
-//                .volunteer(volunteer)
-//                .statusUpdate(statusUpdate)
-//                .respondedAt(LocalDateTime.now())
-//                .photo(photo != null ? photo.getBytes() : null)
-//                .build();
-//
-//        reportResponseRepository.save(response);
-//
-//        return ResponseEntity.ok("Response saved successfully!");
-//    }
 @PostMapping("/{reportId}/respond")
 public ResponseEntity<AdminNotification> submitResponse(
         @PathVariable Long reportId,
@@ -270,47 +202,6 @@ public ResponseEntity<AdminNotification> submitResponse(
     return ResponseEntity.ok(notification);
 }
 
-//    // Volunteer submitting a response
-//    @PostMapping("/{reportId}/respond")
-//    public ResponseEntity<APIResponse> respondToReport(
-//            @PathVariable Long reportId,
-//            @RequestParam String statusUpdate,
-//            @RequestParam(required = false) MultipartFile photo,
-//            @AuthenticationPrincipal UserDetails userDetails // token වලින් volunteer email ගන්න
-//    ) throws IOException {
-//        String volunteerEmail = userDetails.getUsername(); // token එකෙන් email
-//        var response = reportResponseService.addResponse(reportId, volunteerEmail, statusUpdate, photo);
-//        System.out.println(response);
-//
-//        return ResponseEntity.ok(new APIResponse(200, "Response submitted successfully", response.getId()));
-//    }
-
-//    @PostMapping("/{reportId}/respond")
-//    public APIResponse respondToReport(
-//            @PathVariable Long reportId,
-//            @RequestHeader("Authorization") String authHeader,
-//            @RequestParam String statusUpdate,
-//            @RequestParam(required = false) MultipartFile photo
-//    ) throws Exception {
-//
-//        String token = authHeader.replace("Bearer ", "");
-//        String email = jwtUtil.extractUsername(token);
-//
-//        ReportResponse response = reportResponseService.addResponse(reportId, email, statusUpdate, photo);
-//
-//        // Send real-time notification to admin
-//        NotificationDTO notification = new NotificationDTO(
-//                reportId,
-//                response.getVolunteer().getName(),
-//                statusUpdate
-//        );
-//        messagingTemplate.convertAndSend("/topic/admin-notifications", notification);
-//
-//        return new APIResponse(200, "Response submitted successfully", response);
-//    }
-//
-
-
     @GetMapping("/volunteer/{volunteerId}/count")
     public ResponseEntity<APIResponse> getReportCountByVolunteer(@PathVariable Long volunteerId) {
         long count = reportService.getReportsByVolunteer(volunteerId).size();
@@ -322,20 +213,6 @@ public ResponseEntity<AdminNotification> submitResponse(
         List<LastWeekReportDTO> reports = reportService.getLastWeekReports();
         return ResponseEntity.ok(new APIResponse(200, "Last week reports fetched", reports));
     }
-
-//    @PostMapping("/{reportId}/donations")
-//    public ResponseEntity<APIResponse> addDonationToReport(
-//            @PathVariable Long reportId,
-//            @RequestBody DonationDTO dto
-//    ) {
-//        Donation donation = donationService.addDonationToReport(reportId, dto);
-//
-//        return ResponseEntity.ok(new APIResponse(
-//                200,
-//                "Donation added successfully",
-//                donation
-//        ));
-//    }
 
     // Allocate donations to a report (by admin)
     @PutMapping("/{reportId}/allocate")
@@ -396,9 +273,5 @@ public ResponseEntity<AdminNotification> submitResponse(
         reportService.deleteReport(reportId, email);
         return ResponseEntity.ok(new APIResponse(200, "Report deleted successfully", null));
     }
-
-
-
-
 
 }
