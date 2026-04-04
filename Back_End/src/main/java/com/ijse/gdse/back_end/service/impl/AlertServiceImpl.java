@@ -52,11 +52,19 @@ public class AlertServiceImpl implements AlertService {
         subscriber.setActive(true);
 
         // 3. Database එකට Save කිරීම
-        repository.save(subscriber);
 
         repository.save(subscriber); // 1. Database එකට Save වෙනවා
-        smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful"); // 2. SMS එක යනවා
-        return "Successfully Registered"; // 3. අවසානයට තමයි return වෙන්නේ
+//        smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful"); // 2. SMS එක යනවා
+//        return "Successfully Registered"; // 3. අවසානයට තමයි return වෙන්නේ
+        // 2. SMS එක යැවීම (මෙය අනිවාර්යයෙන්ම තිබිය යුතුයි)
+        try {
+            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful");
+            System.out.println("SMS Triggered for: " + alertDTO.getPhoneNumber());
+        } catch (Exception e) {
+            System.err.println("SMS Trigger failed: " + e.getMessage());
+        }
+
+        return "Successfully Registered for alerts in " + alertDTO.getCity();
         // 4. Save වූ පසු වහාම SMS එකක් යැවීම (Return එකට ඉහළින් තිබිය යුතුයි)
 //        try {
 //            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful");
