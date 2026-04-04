@@ -8,16 +8,16 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
 @Service
-public class SmsServiceImpl implements SmsService {
+public class SmsServiceImpl  {
 
-    @Value("${twilio.account.sid}")
-    private String accountSid;
-
-    @Value("${twilio.auth.token}")
-    private String authToken;
-
-    @Value("${twilio.phone.number}")
-    private String twilioPhone;
+//    @Value("${twilio.account.sid}")
+//    private String accountSid;
+//
+//    @Value("${twilio.auth.token}")
+//    private String authToken;
+//
+//    @Value("${twilio.phone.number}")
+//    private String twilioPhone;
     // Twilio Dashboard එකෙන් ලැබුණු අගයන් මෙලෙස String එකක් ලෙස ලබා දෙන්න
 //    public static final String ACCOUNT_SID = "ACe5beefe7909e67f7625cba0b746d9562";
 //    public static final String AUTH_TOKEN = "1837393f238af3173fdeaeb61df3ff99";
@@ -39,21 +39,21 @@ public class SmsServiceImpl implements SmsService {
 //        }
 //    }
 
-    @Override // මෙය එක් කිරීමෙන් interface එකේ method එකක් බව තහවුරු වේ
-    public void sendAlert(String to, String city, String risk) {
-        try {
-            Twilio.init(accountSid,authToken);
-
-            Message message = Message.creator(
-                    new PhoneNumber(to),
-                    new PhoneNumber(twilioPhone),
-//                    "⚠️ NDMS ALERT: High " + risk + " risk detected in " + city + ". Please stay safe!"
-                    "NDMS: High risk in " + city + ". Stay safe!" // පණිවිඩය කෙටි කරන්න
-            ).create();
-
-            System.out.println("SMS Sent Successfully! SID: " + message.getSid());
-        } catch (Exception e) {
-            System.err.println("Error sending SMS: " + e.getMessage());
-        }
-    }
+//    @Override // මෙය එක් කිරීමෙන් interface එකේ method එකක් බව තහවුරු වේ
+//    public void sendAlert(String to, String city, String risk) {
+//        try {
+//            Twilio.init(accountSid,authToken);
+//
+//            Message message = Message.creator(
+//                    new PhoneNumber(to),
+//                    new PhoneNumber(twilioPhone),
+////                    "⚠️ NDMS ALERT: High " + risk + " risk detected in " + city + ". Please stay safe!"
+//                    "NDMS: High risk in " + city + ". Stay safe!" // පණිවිඩය කෙටි කරන්න
+//            ).create();
+//
+//            System.out.println("SMS Sent Successfully! SID: " + message.getSid());
+//        } catch (Exception e) {
+//            System.err.println("Error sending SMS: " + e.getMessage());
+//        }
+//    }
 }

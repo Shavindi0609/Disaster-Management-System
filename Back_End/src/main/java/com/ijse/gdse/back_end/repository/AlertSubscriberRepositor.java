@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface AlertSubscriberRepositor extends JpaRepository<AlertSubscriber, Long> {
+    // නගරය අනුව Active පරිශීලකයින් ලැයිස්තුවක් ලබා ගැනීම
     List<AlertSubscriber> findByCityAndActiveTrue(String city);
 }

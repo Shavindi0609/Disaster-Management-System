@@ -11,6 +11,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AlertServiceImpl implements AlertService {
@@ -57,14 +59,14 @@ public class AlertServiceImpl implements AlertService {
 //        smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful"); // 2. SMS එක යනවා
 //        return "Successfully Registered"; // 3. අවසානයට තමයි return වෙන්නේ
         // 2. SMS එක යැවීම (මෙය අනිවාර්යයෙන්ම තිබිය යුතුයි)
-        try {
-            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful");
-            System.out.println("SMS Triggered for: " + alertDTO.getPhoneNumber());
-        } catch (Exception e) {
-            System.err.println("SMS Trigger failed: " + e.getMessage());
-        }
-
-        return "Successfully Registered for alerts in " + alertDTO.getCity();
+//        try {
+//            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful");
+//            System.out.println("SMS Triggered for: " + alertDTO.getPhoneNumber());
+//        } catch (Exception e) {
+//            System.err.println("SMS Trigger failed: " + e.getMessage());
+//        }
+//
+//        return "Successfully Registered for alerts in " + alertDTO.getCity();
         // 4. Save වූ පසු වහාම SMS එකක් යැවීම (Return එකට ඉහළින් තිබිය යුතුයි)
 //        try {
 //            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), "Registration Successful");
@@ -73,6 +75,38 @@ public class AlertServiceImpl implements AlertService {
 //        }
 //
 //        return "Successfully Registered and SMS Sent to " + alertDTO.getCity();
+        try {
+            // ලියාපදිංචි වීමේ පණිවිඩය මෙහිදී ලබා දෙන්න
+            String welcomeMsg = "NDMS: Registration Successful for " + alertDTO.getCity() + ". You will receive alerts soon!";
+            smsService.sendAlert(alertDTO.getPhoneNumber(), alertDTO.getCity(), welcomeMsg);
+        } catch (Exception e) {
+            System.err.println("Welcome SMS failed: " + e.getMessage());
+        }
+
+        return "Successfully Registered for alerts in " + alertDTO.getCity();
     }
 
+    @Override
+    public void checkAndSendAlerts(String city, String riskDescription) {
+        // 1. අදාළ නගරයේ ඉන්න සියලුම subscribers ලා සොයා ගැනීම
+        List<AlertSubscriber> subscribers = repository.findByCityAndActiveTrue(city);
+
+        // 2. එක් එක් කෙනාට SMS එක බැගින් යැවීම
+        for (AlertSubscriber s : subscribers) {
+            try {
+                smsService.sendAlert(s.getPhoneNumber(), city, riskDescription);
+                System.out.println("Emergency Alert Sent to: " + s.getPhoneNumber() + " for " + city);
+            } catch (Exception e) {
+                System.err.println("Failed to send alert to " + s.getPhoneNumber());
+            }
+        }
+    }
+
+    @Override
+    public void sendBulkSms(String city, String risk) {
+        List<AlertSubscriber> subscribers = repository.findByCityAndActiveTrue(city);
+        for (AlertSubscriber s : subscribers) {
+            smsService.sendAlert(s.getPhoneNumber(), city, risk);
+        }
+    }
 }
