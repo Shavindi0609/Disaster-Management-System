@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/auth/password/**",
                                 "/api/weather",
-                                "/ws/**"
+                                "/ws/**",
+                               "/api/alerts/**"
                         ).permitAll()
 
                         // Admin Only Endpoints

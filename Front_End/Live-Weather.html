@@ -112,6 +112,43 @@
 <div class="container map-container">
     <h2 class="text-center mb-4 fw-bold">🌍 Live Weather Danger Map</h2>
 
+    <div class="text-center mb-4">
+        <button type="button" class="btn btn-warning rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#alertModal">
+            🔔 Register for SMS Alerts
+        </button>
+    </div>
+
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Get Real-time SMS Alerts</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="alertForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="regName" class="form-control" placeholder="Enter your name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="regPhone" class="form-control" placeholder="+947XXXXXXXX" required>
+                            <small class="text-muted">Use international format (e.g., +94771234567)</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Select City</label>
+                            <select id="regCity" class="form-select" required>
+                                <option value="">Choose a city...</option>
+                            </select>
+                        </div>
+                        <button type="button" onclick="registerForAlerts()" class="btn btn-primary w-100">Register Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Dropdown Filter -->
     <div class="text-center mb-3">
         <select id="filter" class="form-select w-50 mx-auto">
@@ -217,7 +254,59 @@
     });
 
     loadWeather();
-</script>
 
+    // Modal එකේ නගර ලැයිස්තුව පිරවීම
+    const regCitySelect = document.getElementById("regCity");
+    cities.forEach(city => {
+        let option = document.createElement("option");
+        option.value = city;
+        option.text = city;
+        regCitySelect.appendChild(option);
+    });
+
+    async function registerForAlerts() {
+        const name = document.getElementById("regName").value;
+        const phoneNumber = document.getElementById("regPhone").value;
+        const city = document.getElementById("regCity").value;
+
+        if(!name || !phoneNumber || !city) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        // AlertDTO එකට අදාළ දත්ත ව්‍යුහය
+        const alertData = {
+            name: name,
+            phoneNumber: phoneNumber,
+            city: city
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/alerts/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(alertData)
+            });
+
+            const result = await response.text();
+
+            if (response.ok) {
+                alert("✅ " + result);
+                // Modal එක වැසීම
+                const modal = bootstrap.Modal.getInstance(document.getElementById('alertModal'));
+                modal.hide();
+                document.getElementById("alertForm").reset();
+            } else {
+                alert("❌ Error: " + result);
+            }
+        } catch (error) {
+            console.error("Error registering:", error);
+            alert("❌ Connection Error: Backend is not reachable");
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

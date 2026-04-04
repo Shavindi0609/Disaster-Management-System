@@ -1,12 +1,15 @@
 package com.ijse.gdse.back_end.service.impl;
 
 import com.ijse.gdse.back_end.dto.WeatherDTO;
+import com.ijse.gdse.back_end.entity.AlertSubscriber;
 import com.ijse.gdse.back_end.service.AlertService;
 import com.ijse.gdse.back_end.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +58,10 @@ public class WeatherServiceImpl implements WeatherService {
         // අවදානම HIGH RISK නම් පමණක් Email එකක් යවන්න
         if (risk.contains("HIGH RISK")) {
             alertService.sendEmergencyEmail(email, weather.getName(), risk);
+//            List<AlertSubscriber> subscribers = subscriberRepository.findByCityAndActiveTrue(weather.getName());
+//            for (AlertSubscriber s : subscribers) {
+//                smsService.sendEmergencySms(s.getPhoneNumber(), weather.getName(), riskLevel);
+//            }
         }
     }
 
