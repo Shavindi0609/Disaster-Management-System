@@ -8,7 +8,7 @@ public interface WeatherService {
 
     String calculateRiskLevel(WeatherDTO weather);
 
-    void checkAndSendAlert(String email, WeatherDTO weather);
+    void checkAndSendAlert(WeatherDTO weather);
 
     String getDamagePrediction(WeatherDTO weather);
 }

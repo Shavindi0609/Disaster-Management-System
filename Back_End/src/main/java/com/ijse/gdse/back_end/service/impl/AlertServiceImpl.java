@@ -106,7 +106,8 @@ public class AlertServiceImpl implements AlertService {
     public void sendBulkSms(String city, String risk) {
         List<AlertSubscriber> subscribers = repository.findByCityAndActiveTrue(city);
         for (AlertSubscriber s : subscribers) {
-            smsService.sendAlert(s.getPhoneNumber(), city, risk);
+//            smsService.sendAlert(s.getPhoneNumber(), city, risk);
+            System.out.println("Emergency Alert Sent to: " + s.getPhoneNumber());
         }
     }
 }

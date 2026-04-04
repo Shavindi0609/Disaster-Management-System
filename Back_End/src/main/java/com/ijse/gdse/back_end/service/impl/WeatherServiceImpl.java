@@ -76,12 +76,14 @@ public class WeatherServiceImpl implements WeatherService {
 //    }
 
     @Override
-    public void checkAndSendAlert(String email, WeatherDTO weather) {
+    public void checkAndSendAlert(WeatherDTO weather) {
         String risk = calculateRiskLevel(weather); // උදා: "HIGH RISK: Severe Storm!"
         String city = weather.getName();
 
         if (risk.contains("HIGH RISK")) {
-            alertService.sendEmergencyEmail(email, city, risk);
+
+//            String email;
+//            alertService.sendEmergencyEmail(email, city, risk);
 
             // පණිවිඩය සකස් කර Bulk SMS එක Trigger කරන්න
             String alertMsg = "🚨 NDMS EMERGENCY: " + risk + " in " + city + ". Take care!";
